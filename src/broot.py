@@ -9,7 +9,7 @@ import art
 
 
 end_prgm_flag = False
-version = "broot v" + str(.15)
+version = "broot v" + str(.75)
 about = """
 Author: midnightseer
 About: 
@@ -91,6 +91,14 @@ def validate_options():
         validated = False
     return validated
 
+def detect_bool(string):
+    bool_true = ["yes", "true", "1", "t"]
+    bool_false = ["no", "false", "0", "n"]
+    if string in bool_true:
+        return True
+    elif string in bool_false:
+        return False
+
 def initialize():
     clear_screen()
     print("Loading...")
@@ -123,6 +131,7 @@ def main():
                         colors.PrintColor("INFO", "Executing...")
                         if var.check_module_loaded():
                             engine.initialize()
+                        importlib.reload(engine)
                 elif cmds[0] == "back":
                     module = "/broot"
                     var.unload_module()
@@ -162,7 +171,10 @@ def main():
                         var.import_module(cmds[1])
                         colors.PrintColor("SUCCESS", "Loaded {} module successfully".format(cmds[1]))
                     except ModuleNotFoundError as e:
+                        colors.PrintColor("FAIL", "Module not found")
+                    except:
                         colors.PrintColor("FAIL", "Unable to load module")
+                        print(sys.exc_info())
                     module = module + "/" + cmds[1]
                     var.update_cmds()
                 elif cmds[0] == "set":
@@ -173,7 +185,13 @@ def main():
                             variable['Value'] = cmds[2]
                         elif cmds[1] in loaded_module.module_vars:
                             variable = loaded_module.module_vars[cmds[1].lower()]
-                            variable['Value'] = cmds[2]
+                            if variable['Type'] == "Boolean":
+                                try:
+                                    variable['Value'] = detect_bool(cmds[2])
+                                except:
+                                    colors.PrintColor("FAIL", "Value must be a boolean")
+                            else:
+                                variable['Value'] = cmds[2]
                     except:
                         colors.PrintColor("FAIL", "Unable to set variable")
             else:

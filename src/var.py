@@ -245,7 +245,13 @@ def avail_mods_to_list():
 
 def reload_loaded_module():
     m = module_info['Loaded-Module']['Object']
-    importlib.reload(m)
+    try:
+        importlib.reload(m)
+        colors.PrintColor("SUCCESS", "Successfully reloaded module")
+    except:
+        colors.PrintColor("FAIL", "Unable to load module")
+        print(sys.exc_info())
+
 
 def unload_module():
     m = module_info['Loaded-Module']['Object']
