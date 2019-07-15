@@ -1,3 +1,4 @@
+- Update module template
 - Add support for random time periods
 -- Example: if 999 then random --> integer
 -- Example: allow users to enter a random integer between a given range
