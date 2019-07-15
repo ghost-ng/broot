@@ -8,9 +8,12 @@ from time import sleep
 import queue
 
 loaded_module = var.get_loaded_module_object()
-exitFlag = 0
+exitFlag = False
 queueLock = threading.Lock()
 task_queue = queue.Queue(10)
+attempt_number = 1
+
+
 #Order of checks
 # passwords
 #     a. password file
@@ -72,24 +75,58 @@ def clean_up(obj):
         obj.close()
 
 class brootThread (threading.Thread):
-    def __init__(self, x, q, loaded_module):
+
+    def __init__(self, thread_id, q, loaded_module):
         threading.Thread.__init__(self)
-        self.thread_id = x
+        self.thread_id = thread_id
         self.q = q
         self.loaded_module = loaded_module
+
     def run(self):
-        print("running thread",self.thread_id)
+        print("running thread", self.thread_id)
         broot(self.q, self.loaded_module)
 
 def broot(q, loaded_module):
+    global attempt_number
+    global attempt_number
+    global exitFlag
+
+    wait_interval = var.global_vars['wait-interval']['Value']
+    wait_period = var.global_vars['wait-period']['Value']
+    wait_failue = var.global_vars['wait-on-failure']['Value']
+    re_try = var.global_vars['re-try']['Value']
+    exitFlag = False
+
+    attempt_number = 1
     while not exitFlag:
         #queueLock.acquire()
-        if not task_queue.empty(): 
-            target, username, password = q.get()
+        if not task_queue.empty():
+            creds = q.get()
+            target, username, password = creds
+            if attempt_number % wait_interval == 0 and attempt_number > wait_interval:
+                print("sleeping for {} sec".format(wait_period))
+                sleep(wait_period)
             #queueLock.release()
-            loaded_module.run(username, password, target)
+            status = loaded_module.run(username, password, target)
+            attempt_number += 1
+            print(status)
+            if status is False and wait_failue > 0:
+                print("Failed, time to sleep {} sec".format(wait_failue))
+                sleep(wait_failue)
+            if status is False and re_try > 0:
+                print("Trying again...")
+                for i in range(re_try):
+                    if status == False:
+                        if attempt_number % wait_interval == 0 and attempt_number > wait_interval:
+                            print("sleeping for {} sec".format(wait_period))
+                            sleep(wait_period)
+                        status = loaded_module.run(username, password, target)
+                        attempt_number += 1
+            
         else:
+            #print("queue is empty")
             #queueLock.release()
+            #exitFlag = True
             sleep(.5)
 
 def initialize():
@@ -121,7 +158,7 @@ def initialize():
             for username in username_list:
                 #colors.PrintColor("INFO", "Current Username: " + username)
                 for password in password_list:
-                    task_queue.put((target, username, password))
+                    task_queue.put((target.rstrip(), username.rstrip(), password.rstrip()))
         #queueLock.release()
     except KeyboardInterrupt:
         print("punch!")
@@ -139,7 +176,7 @@ def initialize():
         while not task_queue.empty():
             pass
         # Notify threads it's time to exit
-        exitFlag = 1
+        exitFlag = True
         # Wait for all threads to complete
         for t in threads:
             t.join()

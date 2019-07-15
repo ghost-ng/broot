@@ -9,7 +9,7 @@ import art
 
 
 end_prgm_flag = False
-version = "broot v" + str(.75)
+version = "broot v" + str(.90)
 about = """
 Author: midnightseer
 About: 
@@ -91,13 +91,21 @@ def validate_options():
         validated = False
     return validated
 
-def detect_bool(string):
+def format_variable(variable, setting):
     bool_true = ["yes", "true", "1", "t"]
     bool_false = ["no", "false", "0", "n"]
-    if string in bool_true:
+    if setting in bool_true:
         return True
-    elif string in bool_false:
+    elif setting in bool_false:
         return False
+    elif variable['Type'] == 'Integer':
+        try:
+            temp = int(setting)
+            return temp
+        except:
+            colors.PrintColor("FAIL", "Incorrect variable type")
+    else:
+        return setting
 
 def initialize():
     clear_screen()
@@ -182,18 +190,13 @@ def main():
                         loaded_module = var.get_loaded_module_object()
                         if cmds[1] in var.global_vars:
                             variable = var.global_vars[cmds[1].lower()]
-                            variable['Value'] = cmds[2]
+                            variable['Value'] = format_variable(variable, cmds[2])
                         elif cmds[1] in loaded_module.module_vars:
                             variable = loaded_module.module_vars[cmds[1].lower()]
-                            if variable['Type'] == "Boolean":
-                                try:
-                                    variable['Value'] = detect_bool(cmds[2])
-                                except:
-                                    colors.PrintColor("FAIL", "Value must be a boolean")
-                            else:
-                                variable['Value'] = cmds[2]
-                    except:
-                        colors.PrintColor("FAIL", "Unable to set variable")
+                            variable['Value'] = format_variable(variable, cmds[2])
+                    except Exception as e:
+                        colors.PrintColor("FAIL", "Unable to set variable (is the right module loaded?)")
+                        #print(e)
             else:
                 print("Unrecognized Command -->", '"' + response + '"')
         except IndexError:

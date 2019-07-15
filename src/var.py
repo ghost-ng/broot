@@ -33,6 +33,14 @@ global_vars = {
         "Help": "Amount of attempts in between each wait period",
         "Example": "3 (attempts)"
     },
+    'wait-on-failure': {
+        "Name": "Wait-On-Failure",
+        "Value": 0,
+        "Type": 'Integer',
+        "Default": "Wait x seconds after a failed authentication attempt.",
+        "Help": "If greater than 0, each failed attempt will trigger a waiting period",
+        "Example": "3 (sec)"
+    },
     're-try': {
         "Name": "Re-Try",
         "Value": 0,
