@@ -1,0 +1,141 @@
+import sys
+import os
+sys.path.append(os.getcwd() + "\\..\\..\\misc")
+import colors
+sys.path.append(os.getcwd() + "\\..\\..\\src")
+import var
+import requires
+import requests
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+try:
+    from bs4 import BeautifulSoup
+except ModuleNotFoundError:
+    colors.PrintColor("WARN", "Unable to find 'bs4', install?")
+    ans = input("[Y/N] ")
+    if ans.lower() == "y":
+        requires.install('bs4')
+    else:
+        colors.PrintColor("FAIL", "'bs4' is a dependency!")
+
+###################
+#ABOUT SECTION
+###################
+name = "pfsense"
+author = "midnightseer"
+version = "1.0"
+art = """
+ (    (     (            )  (         
+ )\ ) )\ )  )\ )      ( /(  )\ )      
+(()/((()/( (()/( (    )\())(()/( (    
+ /(_))/(_)) /(_)))\  ((_)\  /(_)))\   
+(_)) (_))_|(_)) ((_)  _((_)(_)) ((_)  
+| _ \| |_  / __|| __|| \| |/ __|| __| 
+|  _/| __| \__ \| _| | .` |\__ \| _|  
+|_|  |_|   |___/|___||_|\_||___/|___| 
+                                      
+"""
+###################
+#Executed on Import
+###################
+banner = '''
+{}
+{}
+Author:  {}
+Version: {}'''.format(art,name,author,version)
+print(banner)
+###################
+
+#This is an example, you do not necessarily need extra commands
+module_cmds = {
+
+}
+
+#This is an example, variables must have a unique name
+module_vars = {
+    'ssl': {
+        "Name": "SSL",
+        "Value": False,
+        "Type": 'Boolean',
+        "Default": False,
+        "Help": "Enable SSL for the http connection.",
+        "Example": "Enable SSL: https"
+    },
+    'port': {
+        "Name": "Port",
+        "Value": None,
+        "Type": 'Integer',
+        "Default": "Not set",
+        "Help": "Target port for the http connection.",
+        "Example": "port '80'" 
+    },
+    'user-agent': {
+        "Name": "User-Agent",
+        "Value": "broot",
+        "Type": 'String',
+        "Default": "broot",
+        "Help": "Change the user-agent for the web requests",
+        "Example": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+    },
+    'verify-cert': {
+        "Name": "Verify-Cert",
+        "Value": False,
+        "Type": 'Boolean',
+        "Default": False,
+        "Help": "Proceed or halt connections with 'untrusted' ssl certificates",
+        "Example": "False"
+    }
+}
+
+def run(username, password, target):
+    attempt = "Target:{} Username:{} Password:{}".format(target, username, password)
+    verbose = module_vars['verbose']['Value']
+
+    if module_vars['ssl']['Value'] is True and module_vars['port']['Value'] is None:
+        port = 443
+    elif module_vars['port']['Value'] is not None:
+        port = module_vars['port']['Value']
+
+    if module_vars['ssl']['Value'] is True:
+        preface = 'https'
+    else:
+        preface = 'http'
+
+    user_agent = module_vars['user-agent']['Value']
+
+    target_url = "{}://{}:{}".format(preface, target, str(port))
+    with requests.Session() as s:
+        response = s.get(target_url, verify=module_vars['verify-cert']['Value'])
+        soup = BeautifulSoup(response.content, "html.parser")
+        #print(soup)
+        csrf_token = soup.input['value']
+        referer = "{}://{}".format(preface, target)
+        login_headers = {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'User-Agent': user_agent,
+            'Referer': referer
+        }
+        login_payload = {
+            'usernamefld': username,
+            'passwordfld': password,
+            'login': 'Sign In',
+            '__csrf_magic': csrf_token
+        }
+        response = s.post(target_url, data=login_payload, headers=login_headers, verify=module_vars['verify-cert']['Value'])
+        soup = BeautifulSoup(response.content, "html.parser")
+        if soup.title.text.lower() != "login":
+            return True
+        else:
+            return False
+            
+if __name__ == "__main__":
+#for testing only
+    module_vars['ssl']['Value'] = True
+    module_vars['verify-cert']['Value'] = False
+    module_vars['verbose']['Value'] = True
+    username = "admin"
+    password = 'pfsense'
+    target = "192.168.1.254"
+
+    run(username, password, target)

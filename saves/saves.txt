@@ -1,0 +1,1 @@
+seq=set threads 1;set wait-time 0;set wait-interval 1;set wait-on-failure 0;set re-try 0;set password-file None;set password None;set username-file None;set usernames None;set username None;set target-file None;set targets None;set target None;set verbose False;set print-failures False;set stop-on-success None;

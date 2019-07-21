@@ -1,9 +1,21 @@
 #This file a list of all the common variables available to any given
-import os,sys
-from prettytable import PrettyTable
+import os
+import sys
+import requires
+import importlib
 sys.path.append(os.getcwd() + "\\..\\misc")
 import colors
-import importlib
+
+
+try:
+    from prettytable import PrettyTable
+except ModuleNotFoundError:
+    colors.PrintColor("WARN", "Unable to find 'prettytable', install?")
+    ans = input("[Y/N] ")
+    if ans.lower() == "y":
+        requires.install('prettytable')
+    else:
+        colors.PrintColor("FAIL", "'prettytable' is a dependency")
 
 #GLOBALS
 global_cmds = {}
@@ -13,47 +25,47 @@ global_vars = {
         "Name": "Threads",
         "Value": 1,
         "Type": 'Integer',
-        "Default": "1 Thread",
+        "Default": 1,
         "Help": "Amount of concurrent threads to run.  High values may slow down your computer.",
-        "Example": "10 (threads)"
+        "Example": "set threads 10"
     },
-    'wait-period': {
-        "Name": "Wait-Period",
+    'wait-time': {
+        "Name": "Wait-Time",
         "Value": 0,
         "Type": 'Integer',
-        "Default": "Wait 0 seconds in between attempts",
-        "Help": "Amount of time in seconds to wait in between attempts.",
-        "Example": "60 (secs)" 
+        "Default": 0,
+        "Help": "Amount of time in seconds to wait in between wait-intervals.",
+        "Example": "set wait-time 5" 
     },
     'wait-interval': {
         "Name": "Wait-Interval",
         "Value": 1,
         "Type": 'Integer',
-        "Default": "After 1 attempt, wait the desired [wait time] seconds.",
-        "Help": "Amount of attempts in between each wait period",
-        "Example": "3 (attempts)"
+        "Default": 1,
+        "Help": "Amount of attempts in between each wait period.  This will never be 0.",
+        "Example": "set wait-interval 5"
     },
     'wait-on-failure': {
         "Name": "Wait-On-Failure",
         "Value": 0,
         "Type": 'Integer',
-        "Default": "Wait x seconds after a failed authentication attempt.",
+        "Default": 0,
         "Help": "If greater than 0, each failed attempt will trigger a waiting period",
-        "Example": "3 (sec)"
+        "Example": "set wait-on-failure 5"
     },
     're-try': {
         "Name": "Re-Try",
         "Value": 0,
         "Type": 'Integer',
-        "Default": "Re-Try the given combination 0 times after a failure.",
+        "Default": 0,
         "Help": "Amount of times to re-try a set of credentials, even after a failure.  Normally 0.",
-        "Example": "0 (tries)"
+        "Example": "set re-try 2"
     },
     'password-file': {
         "Name": "Password-File",
         "Value": None,
         "Type": 'String',
-        "Default": "[empty]",
+        "Default": None,
         "Help": "A list of usernames, 1 per line, in a file.",
         "Example": r"C:\Users\MidnightSeer\Documents\passwords.lst"
     },
@@ -69,7 +81,7 @@ global_vars = {
         "Name": "Password",
         "Value": None,
         "Type": 'String',
-        "Default": "[empty]",
+        "Default": None,
         "Help": "A single password to try.",
         "Example": "P@ssword"
      },
@@ -77,23 +89,23 @@ global_vars = {
         "Name": "Username-File",
         "Value": None,
         "Type": 'String',
-        "Default": "[empty]",
+        "Default": None,
         "Help": "A list of usernames, 1 per line, in a file.",
         "Example": r"C:\Users\MidnightSeer\Documents\username.lst"
     },
-    # 'usernames': {
-    #     "Name": "Usernames",
-    #     "Value": None,
-    #     "Type": 'String',
-    #     "Default": "[empty]",
-    #     "Help": "A comma seperated list of usernames.",
-    #     "Example": "username1,root,username3"
-    # },
+    'usernames': {
+        "Name": "Usernames",
+        "Value": None,
+        "Type": 'String',
+        "Default": None,
+        "Help": "A comma seperated list of usernames. If a username consists of a comma, it needs to be in a file.",
+        "Example": "username1,root,username3"
+    },
     'username': {
         "Name": "Username",
         "Value": None,
         "Type": 'String',
-        "Default": "[empty]",
+        "Default": None,
         "Help": "A single username to try",
         "Example": "root"
      },
@@ -101,7 +113,7 @@ global_vars = {
         "Name": "Target-File",
         "Value": None,
         "Type": 'String',
-        "Default": "[empty]",
+        "Default": None,
         "Help": "A list of IPs and/or Fully Qualified Domain Names, 1 per line, in a file.",
         "Example": r"C:\Users\MidnightSeer\Documents\targets.lst"
     },
@@ -109,7 +121,7 @@ global_vars = {
         "Name": "Targets",
         "Value": None,
         "Type": 'String',
-        "Default": "[empty]",
+        "Default": None,
         "Help": "A comma seperated list of IPs or Fully Qualiifed Domain Names.",
         "Example": "12.232.223.12,root.net,hackme.com"
     },
@@ -117,10 +129,35 @@ global_vars = {
         "Name": "Target",
         "Value": None,
         "Type": 'String',
-        "Default": "[empty]",
+        "Default": None,
         "Help": "Single IP or Fully Qualified Domain Name.",
         "Example": "root.target.net"
+    },
+    "verbose": {
+        "Name": "Verbose",
+        "Value": False,
+        "Type": 'Boolean',
+        "Default": False,
+        "Help": "Will print verbose messages.",
+        "Example": "set verbose true"
+    },
+    "print-failures": {
+        "Name": "Print-Failures",
+        "Value": False,
+        "Type": 'Boolean',
+        "Default": False,
+        "Help": "Print failures as well as successes.  By default broot only prints successes.",
+        "Example": "set print-failures true"
+    },
+    "stop-on-success": {
+        "Name": "Stop-on-Success",
+        "Value": None,
+        "Type": 'String',
+        "Default": None,
+        "Help": "If set to True, then stop testing creds against a given target after a successful authentication",
+        "Example": "set stop-on-success target,username"
     }
+
     # 'credentials': {
     #     "Name": "Credentials",
     #     "Value": None,
@@ -139,6 +176,16 @@ global_vars = {
     # }
 }
 
+read_only_vars = {
+    "valid-creds": {
+        "Name": "Valid-Creds",
+        "Credentials": [],
+        "Usernames": [],
+        "Targets": [],
+        "Help": "List credentials for successful authentications",
+    }
+}
+
 module_info = { 
     "Loaded-Module": {
         'Name': None,
@@ -146,6 +193,17 @@ module_info = {
     },
     "Available-Modules": {}
 }
+
+def gen_random(command):
+    #command will be in the form of 'random 1-10' or 'random'
+    from random import randint
+    cmds = command.split(" ")
+    if len(cmds) > 1:
+        temp = cmds[1].split("-")
+        return randint(int(temp[0]), int(temp[1]))
+    else:
+        return randint(1, 30)
+
 
 def print_var_desc():
     for d in global_vars:
@@ -158,6 +216,30 @@ def print_var_desc():
         Example: {e}""".format(name=item['Name'], h=item['Help'], d=item['Default'],
                     t=item['Type'], e=item['Example'])
         print(info)
+
+def save_creds(creds):
+
+    target, username, password = creds
+    module_name = get_loaded_module_name()
+    success = "Module:{} Target:{} Username:{} Password:{}".format(module_name, target, username, password)
+    saved_creds = read_only_vars['valid-creds']['Credentials']
+    saved_creds.append(creds)
+    read_only_vars['valid-creds']['Credentials'] = saved_creds
+
+    u_list = read_only_vars['valid-creds']['Usernames']
+    u_list.append(username)
+    read_only_vars['valid-creds']['Usernames'] = u_list
+
+    t_list = read_only_vars['valid-creds']['Targets']
+    t_list.append(target)
+    read_only_vars['valid-creds']['Targets'] = t_list
+
+
+def print_successes():
+    count = 0
+    for cred in read_only_vars['valid-creds']['Credentials']:
+        count += 1
+        print(cred)
 
 def import_module(name):
     loaded_module = importlib.import_module(name, package=None)
@@ -260,7 +342,6 @@ def reload_loaded_module():
         colors.PrintColor("FAIL", "Unable to load module")
         print(sys.exc_info())
 
-
 def unload_module():
     m = module_info['Loaded-Module']['Object']
     del m
@@ -299,14 +380,23 @@ def update_cmds():
     else:
         set_vars = vars_to_list(global_vars)
     global_cmds = {
-        "show":["commands", "help", "modules", "options", "loaded-module"],
+        "show":["commands", "modules", "options", "loaded-module", "creds", "sequence"],
+        "help": "",
+        "version": "",
+        "about": "",
+        "clear": "",
+        "cls": ["alias for clear"],
+        "?": ["alias for 'help'"],
         "reload": [get_loaded_module_name()],
-        "unload": [get_loaded_module_name()],
         "set": set_vars,
+        "unset": set_vars,
         "use": avail_mods_to_list(),
         "load": ["alias for 'use'"],
+        "back": "",
         "run": "",
         "broot": ["alias for 'run'"],
+        "save": ["config", "sequence"],
+        "validate": "",
         "exit": "",
         "x": ["alias for 'exit'"],
         "quit": ["alias for 'exit'"],

@@ -1,7 +1,5 @@
-- Update module template
-- Add support for random time periods
--- Example: if 999 then random --> integer
--- Example: allow users to enter a random integer between a given range
-
-- Add pfsense module
-- Add telnet module
+- add option to send bogus authentication requests from bogus IPs
+- add ability to save query
+- add ability to save full configuration
+- add ability to load a query
+- add ability to load a configuration
