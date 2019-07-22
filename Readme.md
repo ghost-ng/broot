@@ -4,6 +4,10 @@ This is a bruteforcing framework that takes advantage of the "plug-n-play" appro
 
 Time to "be root," **broot**
 
+## What is this?
+
+broot is a bruteforce framework.  The structure and wrappers provided here dictate the logic that wraps arounds authentication methods.  That is to say, byom, bring your own module.  If you code, simply create a method to authenticate to a service, give it some specific methods, and hit run...broot will do the rest.
+
 ## Getting Started
 
 This code is written exclusively for python3 with no plans to port it to python2 or a different language.  
@@ -17,7 +21,25 @@ The main "broot" framework aims to utilize packages included in the python insta
 pip prettytables
 ```
 #2:
-Let the script install dependencies for you.  View the "requires.py" file to understand how this work; essentially it invokes 'pip' for you.
+Let the script install dependencies for you.  View the "requires.py" file to understand how this work; essentially it invokes 'pip' for you.  I anticipate 3rd party plugins or modules having python packages not installed with the default installation of python.  Because of this, I've built a module to pre-install these dependencies.  As with all software, use this AT YOUR OWN RISK.  DO NOT GIVE BLIND TRUST TO 3RD PARTY MODULES.  
+
+### The Command Line Interface (CLI)
+
+My intent in writing this framework was to make it user friendly and familiar.  Naturally this pushed me to gravitate to the very familiar metasploit CLI framework.  Inspired by its usability, i have provided a few commands that will let you explore the tool.
+
+To honor RTFM, the variables and commands have their own help entries and their own command tree structure.
+
+```
+help
+help [variable]
+show commands
+set
+unset
+show options
+run
+```
+
+Many of the commands are accompanied with an alias or two, best way to see this all is to run the ```show commands```
 
 ## Built With
 
