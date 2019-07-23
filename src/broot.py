@@ -19,9 +19,9 @@ About:
     broot is a crowdsourced open source bruteforcing framework."""
 
 def update_paths():
-    dir_list = next(os.walk('..//plugins'))[1]
+    dir_list = next(os.walk(os.path.join(os.getcwd(), "..", "plugins")))[1]
     for path in dir_list:
-        sys.path.append(os.getcwd() + "\\..\\plugins\\" + path)
+        sys.path.append(os.path.join(os.path.join(os.getcwd(), "..", "plugins"), path))
 
 def signal_handler(signal, frame):
     global end_prgm_flag
