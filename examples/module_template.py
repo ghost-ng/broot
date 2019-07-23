@@ -37,17 +37,25 @@ Version: {}'''.format(art,name,author,version)
 print(banner)
 ###################
 
-#This is an example, you do not necessarily need extra commands
-module_cmds = {
-
+#This is an example, you do not necessarily need extra commands.  Replace the below with your own
+plugin_cmds = {
+    # "test": {
+    #         "Command": "test",
+    #         "Help": "Print information related to the subsequent key-word.",
+    #         "Sub-Cmds": ["commands", "plugins", "options", "loaded-plugin", "creds", "sequence"],
+    #         "Usage": "test <sub-cmd>",
+    #         "Alias": None
+    #     },
 }
 
 #function to define what to do with the new commands
-def module_commands(cmds):
+def parse_plugin_cmds(cmds):
+    if cmds[0] == "test":
+        print("success!")
     pass
 
 #This is an example, variables must have a unique name
-module_vars = {
+plugin_vars = {
     'Threads': {
         "Name": "Threads",
         "Value": 1,

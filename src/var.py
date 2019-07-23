@@ -3,6 +3,7 @@ import os
 import sys
 import requires
 import importlib
+from time import sleep
 sys.path.append(os.getcwd() + "\\..\\misc")
 import colors
 
@@ -183,15 +184,12 @@ read_only_vars = {
         "Usernames": [],
         "Targets": [],
         "Help": "List credentials for successful authentications",
-    }
-}
-
-module_info = { 
-    "Loaded-Module": {
+    },
+    "Loaded-Plugin": {
         'Name': None,
         'Object': None
     },
-    "Available-Modules": {}
+    "Available-Plugins": {}
 }
 
 def gen_random(command):
@@ -220,8 +218,8 @@ def print_var_desc():
 def save_creds(creds):
 
     target, username, password = creds
-    module_name = get_loaded_module_name()
-    success = "Module:{} Target:{} Username:{} Password:{}".format(module_name, target, username, password)
+    plugin_name = get_loaded_plugin_name()
+    success = "Plugin:{} Target:{} Username:{} Password:{}".format(plugin_name, target, username, password)
     saved_creds = read_only_vars['valid-creds']['Credentials']
     saved_creds.append(creds)
     read_only_vars['valid-creds']['Credentials'] = saved_creds
@@ -241,15 +239,15 @@ def print_successes():
         count += 1
         print(cred)
 
-def import_module(name):
-    loaded_module = importlib.import_module(name, package=None)
-    module_info['Loaded-Module']['Object'] = loaded_module
-    module_info['Loaded-Module']['Name'] = name
+def import_plugin(name):
+    loaded_plugin = importlib.import_module(name, package=None)
+    read_only_vars['Loaded-Plugin']['Object'] = loaded_plugin
+    read_only_vars['Loaded-Plugin']['Name'] = name
 
-def refresh_modules():
-    module_info["Available-Modules"] = {}
+def refresh_plugins():
+    read_only_vars["Available-Plugin"] = {}
     root = os.getcwd()
-    path = root + "\..\modules"
+    path = root + "\..\plugins"
     dir_list = os.walk(path)
     for f in dir_list:
         if len(f[2]) > 0:
@@ -260,25 +258,25 @@ def refresh_modules():
                         "Name": dict_name,
                         "Path": f[0]
                     }
-                    module_info["Available-Modules"].update({dict_name: dict_value})
+                    read_only_vars["Available-Plugins"].update({dict_name: dict_value})
     update_cmds()
 
-def count_modules():
-    count = len(module_info['Available-Modules'])
+def count_plugins():
+    count = len(read_only_vars['Available-Plugins'])
     return count
 
-def show_modules():
-    module_list = []
-    colors.PrintColor("INFO", "Available Modules:")
+def show_plugins():
+    plugin_list = []
+    colors.PrintColor("INFO", "Available Plugins:")
     count = 0
-    for module in module_info['Available-Modules'].keys():
+    for plugin in read_only_vars['Available-Plugins'].keys():
         if count < 5:
-            print(module + "  ", end="")
+            print(plugin + "  ", end="")
         else:
-            print(module)
+            print(plugin)
         count += 1
     print()
-    msg = "Total: {}".format(count_modules())
+    msg = "Total: {}".format(count_plugins())
     colors.PrintColor("INFO", msg)
 
 def opts_to_table(var_type):
@@ -287,9 +285,9 @@ def opts_to_table(var_type):
         table.title = "Global Variables"
         v = global_vars
     else:
-        table.title = "Module Variables"
-        loaded_module = module_info['Loaded-Module']['Object']
-        v = loaded_module.module_vars
+        table.title = "Plugin Variables"
+        loaded_plugin = read_only_vars['Loaded-Plugin']['Object']
+        v = loaded_plugin.plugin_vars
     for d in v:
         table.add_row([v[d]['Name'], v[d]['Value'], v[d]['Example']])
     colors.PrintColor("Success", "{} Variables:".format(var_type.capitalize()))
@@ -326,79 +324,296 @@ def vars_to_list(var):
     return s
 
 def avail_mods_to_list():
-    if len(module_info['Available-Modules']) > 0:
+    if len(read_only_vars['Available-Plugins']) > 0:
         a=[]
-        for module in module_info['Available-Modules']:
-            #print(module)
-            a.append(module)
+        for plugin in read_only_vars['Available-Plugins']:
+            #print(plugin)
+            a.append(plugin)
         return a
 
-def reload_loaded_module():
-    m = module_info['Loaded-Module']['Object']
+def reload_loaded_plugin():
+    m = read_only_vars['Loaded-Plugin']['Object']
     try:
         importlib.reload(m)
-        colors.PrintColor("SUCCESS", "Successfully reloaded module")
+        colors.PrintColor("SUCCESS", "Successfully reloaded plugin")
     except:
-        colors.PrintColor("FAIL", "Unable to load module")
+        colors.PrintColor("FAIL", "Unable to load plugin")
         print(sys.exc_info())
 
-def unload_module():
-    m = module_info['Loaded-Module']['Object']
+def unload_plugin():
+    m = read_only_vars['Loaded-Plugin']['Object']
     del m
-    wipe_loaded_module_info()
+    wipe_loaded_plugin_info()
 
-def get_loaded_module_name():
-    if module_info["Loaded-Module"]['Name'] is not None:
-        return module_info["Loaded-Module"]['Name']
+def get_loaded_plugin_name():
+    if read_only_vars["Loaded-Plugin"]['Name'] is not None:
+        return read_only_vars["Loaded-Plugin"]['Name']
     else:
-        return "No Module Loaded"
+        return "No Plugin Loaded"
 
-def get_loaded_module_object():
-    if check_module_loaded():
-        return module_info["Loaded-Module"]['Object']
+def get_loaded_plugin_object():
+    if check_plugin_loaded():
+        return read_only_vars["Loaded-Plugin"]['Object']
     else:
-        return "No Module Loaded"
+        return "No Plugin Loaded"
 
-def check_module_loaded():
-    if module_info["Loaded-Module"]['Name'] is None:
+def check_plugin_loaded():
+    if read_only_vars["Loaded-Plugin"]['Name'] is None:
         return False
     else:
         return True
 
-def wipe_loaded_module_info():
-    module_info['Loaded-Module']['Name'] = None
-    module_info['Loaded-Module']['Object'] = None
+def get_help(cmds):
+    if len(cmds) > 1:
+        try:
+            #Check for the key-word as an alias
+            for cmd in global_cmds:
+                try:
+            #check for aliases first
+                    if cmds[1] in global_cmds[cmd]['Alias']:
+                        print_enum_dict(global_cmds[cmd], m="vars")
+                    elif check_plugin_loaded():
+                        loaded_plugin = get_loaded_plugin_object()
+                        if cmds[1] in loaded_plugin.plugin_cmds[cmd]['Alias']:
+                            print_enum_dict(loaded_plugin.plugin_cmds[cmd], m="vars")
+                except (TypeError, KeyError):
+                    pass
+            #Check for the key-word in global commands
+            if cmds[1] in global_cmds.keys():
+                print_enum_dict(global_cmds[cmds[1]], m="vars")
+                print()
+            #Check for the key-word in global variables
+            elif cmds[1] in global_vars.keys():
+                print_enum_dict(global_vars[cmds[1]], m="vars")
+                print()
+            #Check for the key-word in plugin variables
+            elif check_plugin_loaded():
+                loaded_plugin = get_loaded_plugin_object()
+                if cmds[1] in loaded_plugin.plugin_cmds.keys():
+                    print_enum_dict(loaded_plugin.plugin_cmds[cmds[1]], m="vars")
+                    print()
+                if cmds[1] in loaded_plugin.plugin_vars.keys():
+                    print_enum_dict(loaded_plugin.plugin_vars[cmds[1]], m="vars")
+                    print()
+            else:
+                print("Help topic does not exist!")
+        except:
+            print("Error in looking up help entry!")
+            if global_vars['verbose']['Value']:
+                print(sys.exc_info())
+    else:
+        colors.PrintColor("INFO", "Printing Global Variables:")
+        sleep(.5)
+        print_enum_dict(global_vars, m="vars")
+        print()
+        colors.PrintColor("INFO", "Printing Global Commands:")
+        sleep(.5)
+        print_enum_dict(global_cmds, m="vars")
+        print()
+        if check_plugin_loaded():
+            loaded_plugin = get_loaded_plugin_object()
+            print()
+            colors.PrintColor("INFO", "Printing Plugin Variables:")
+            sleep(.5)
+            print_enum_dict(loaded_plugin.plugin_vars, m="vars")
+            print()
+            colors.PrintColor("INFO", "Printing Plugin Commands:")
+            sleep(.5)
+            print_enum_dict(loaded_plugin.plugin_cmds, m="vars")
 
-def load_module(module_name):
-    module_info['Loaded-Module']['Name'] = module_name
+def print_cmds(cmds):
+    count = 1
+    for d in cmds:
+        if " " not in d:
+            if count < 4:
+                print(d, end="\t")
+                count += 1
+            else:
+                print(d)
+                count = 1
+    print()
+
+def wipe_loaded_plugin_info():
+    read_only_vars['Loaded-Plugin']['Name'] = None
+    read_only_vars['Loaded-Plugin']['Object'] = None
+
+def load_plugin(plugin_name):
+    read_only_vars['Loaded-Plugin']['Name'] = plugin_name
+
+def get_available_cmds():
+    avail_cmds = []
+    #get list of main commands
+    for i in global_cmds.keys(): avail_cmds.append(i)
+    
+    #get list of aliases
+    for i in global_cmds.keys(): avail_cmds.append(global_cmds[i]['Alias'])
+    
+    #get commands in the loaded plugin
+    if check_plugin_loaded():
+        loaded_plugin = get_loaded_plugin_object()
+        for i in loaded_plugin.plugin_cmds.keys(): avail_cmds.append(i)
+        try:
+            for i in global_cmds.keys(): avail_cmds.append(global_cmds[i]['Alias'])
+        except KeyError:
+            pass
+    #remove all none values
+    temp_list = [x for x in avail_cmds if x != None]
+    #flatten the list
+    new_cmd_list = []
+    for item in temp_list:
+        if isinstance(item, list):
+            for i in item:
+                new_cmd_list.append(i)
+        else:
+            new_cmd_list.append(item)
+    return new_cmd_list
 
 def update_cmds():
     global global_cmds
-    if check_module_loaded():    
-        loaded_module = get_loaded_module_object()
-        set_vars = vars_to_list(global_vars) + vars_to_list(loaded_module.module_vars)
+    if check_plugin_loaded():    
+        loaded_plugin = get_loaded_plugin_object()
+        set_vars = vars_to_list(global_vars) + vars_to_list(loaded_plugin.plugin_vars)
     else:
         set_vars = vars_to_list(global_vars)
     global_cmds = {
-        "show":["commands", "modules", "options", "loaded-module", "creds", "sequence"],
-        "help": "",
-        "version": "",
-        "about": "",
-        "clear": "",
-        "cls": ["alias for clear"],
-        "?": ["alias for 'help'"],
-        "reload": [get_loaded_module_name()],
-        "set": set_vars,
-        "unset": set_vars,
-        "use": avail_mods_to_list(),
-        "load": ["alias for 'use'"],
-        "back": "",
-        "run": "",
-        "broot": ["alias for 'run'"],
-        "save": ["config", "sequence"],
-        "validate": "",
-        "exit": "",
-        "x": ["alias for 'exit'"],
-        "quit": ["alias for 'exit'"],
-        "q": ["alias for 'exit'"],
+        "show": {
+            "Command": "show",
+            "Help": "Print information related to the subsequent key-word.",
+            "Sub-Cmds": ["commands", "plugins", "options", "loaded-plugin", "creds", "sequence"],
+            "Usage": "show <sub-cmd>",
+            "Alias": None
+        },
+        "show commands": {
+            "Command": "show commands",
+            "Help": "Print all available commands with the main broot plugin and, if loaded, the loaded plugin.",
+            "Sub-Cmds": None,
+            "Usage": "show commands",
+            "Alias": None
+        },
+        "show plugins": {
+            "Command": "show plugins",
+            "Help": "List all plugins that are available to be imported.  All plugins must be in the 'plugin' folder.",
+            "Sub-Cmds": None,
+            "Usage": "show plugins",
+            "Alias": None
+        },
+        "show options": {
+            "Command": "show options",
+            "Help": "Print all available and configurable parameters.",
+            "Sub-Cmds": None,
+            "Usage": "show options",
+            "Alias": None
+        },
+        "show loaded-plugin": {
+            "Command": "show loaded-plugin",
+            "Help": "List the currently loaded plugin.  The will only produce a meaningful result after 'load <plugin>' successfully executes",
+            "Sub-Cmds": ["name", "object"],
+            "Usage": "show loaded-plugin",
+            "Alias": None
+        },
+        "show creds": {
+            "Command": "show creds",
+            "Help": "List all credentials that resulted in a successful authentication.",
+            "Sub-Cmds": None,
+            "Usage": "show creds",
+            "Alias": None
+        },
+        "show sequence": {
+            "Command": "show sequence",
+            "Help": "Print the sequence string.  This can be pasted in a later broot prompt to quickly load an exact copy of the current configuration.",
+            "Sub-Cmds": None,
+            "Usage": "show sequence",
+            "Alias": None
+        },
+        "help": {
+            "Command": "help",
+            "Help": "Print the help files.  Alone, the command prints the entire manual.",
+            "Sub-Cmds": [set_vars, "commands"],
+            "Usage": "help, help <command>, help <variable>",
+            "Alias": "?"
+        },
+        "version": {
+            "Command": "version",
+            "Help": "Print the versioning information.",
+            "Sub-Cmds": None,
+            "Usage": "version",
+            "Alias": None
+        },
+        "about": {
+            "Command": "about",
+            "Help": "Print the about information.",
+            "Sub-Cmds": None,
+            "Usage": "about",
+            "Alias": None
+        },
+        "clear": {
+            "Command": "clear",
+            "Help": "Clear the screen.",
+            "Sub-Cmds": None,
+            "Usage": "clear",
+            "Alias": "cls"
+        },
+        "use": {
+            "Command": "use",
+            "Help": "Load a new plugin.  This will add any new variables and erase all data associated to any previously loaded plugins.",
+            "Sub-Cmds": avail_mods_to_list(),
+            "Usage": "use <plugin>",
+            "Alias": "load"
+        },
+        "reload": {
+            "Command": "reload",
+            "Help": "Reload the currently loaded plugin.  Helpful if you are troubleshooting the plugin or modifying it.",
+            "Sub-Cmds": [get_loaded_plugin_name()],
+            "Usage": "clear",
+            "Alias": None
+        },
+        "set": {
+            "Command": "set",
+            "Help": "Load a parameter to a given variable.",
+            "Sub-Cmds": set_vars,
+            "Usage": "set <variable>",
+            "Alias": None
+        },
+        "unset": {
+            "Command": "unset",
+            "Help": "Reset a variable to its default setting.",
+            "Sub-Cmds": set_vars,
+            "Usage": "unset <variable>",
+            "Alias": None
+        },
+        "back": {
+            "Command": "back",
+            "Help": "'Go back' and remove the loaded plugin.",
+            "Sub-Cmds": None,
+            "Usage": "back",
+            "Alias": None
+        },
+        "run": {
+            "Command": "run",
+            "Help": "Execute the bruteforce method through the plugin's 'run' function.",
+            "Sub-Cmds": None,
+            "Usage": "unset <variable>",
+            "Alias": "broot"
+        },
+        "save": {
+            "Command": "save",
+            "Help": "Save either the configuration's sequence (config) or the framework's state (state).  Saving the 'state' will save the state of all variables.",
+            "Sub-Cmds": ["state", "config"],
+            "Usage": "save <sub-cmd>",
+            "Alias": None
+        },
+        "validate": {
+            "Command": "validate",
+            "Help": "Do a quick check for a loaded plugin, target, username, and password.  This is run before every 'run' command.",
+            "Sub-Cmds": None,
+            "Usage": "validate",
+            "Alias": None
+        },
+        "exit": {
+            "Command": "exit",
+            "Help": "Exit the program.",
+            "Sub-Cmds": None,
+            "Usage": "exit",
+            "Alias": ["x", "quit", "q"]
+        },
     }

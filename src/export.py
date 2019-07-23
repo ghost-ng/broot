@@ -11,13 +11,13 @@ def get_current_sequence():
         command = "set " + item + " " + str(value) + ";"
         sequence = sequence + command
     
-    if var.check_module_loaded():
-        mod_name = var.get_loaded_module_name()
+    if var.check_plugin_loaded():
+        mod_name = var.get_loaded_plugin_name()
         command = "load " + mod_name + ";"
         sequence = sequence + command
-        loaded_module = var.get_loaded_module_object()
-        for item in loaded_module.module_vars:
-            value = loaded_module.module_vars[item]['Value']
+        loaded_plugin = var.get_loaded_plugin_object()
+        for item in loaded_plugin.plugin_vars:
+            value = loaded_plugin.plugin_vars[item]['Value']
             command = "set " + item + " " + str(value) + ";"
             sequence = sequence + command
     return sequence
@@ -26,5 +26,6 @@ def export_sequence():
     save_file = "../saves/saves.txt"
     with open(save_file,'a') as file:
         seq = get_current_sequence()
-        file.write(seq+"\n")
+        file.write(seq)
+        file.write('\n')
     colors.PrintColor("SUCCESS","Saved Current Sequence")

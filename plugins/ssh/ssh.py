@@ -43,14 +43,23 @@ print(banner)
 ###################
 
 #This is an example, you do not necessarily need extra commands
-module_cmds = {
+plugin_cmds = {
+    "test": {
+            "Command": "test",
+            "Help": "Print information related to the subsequent key-word.",
+            "Sub-Cmds": ["commands", "plugins", "options", "loaded-plugin", "creds", "sequence"],
+            "Usage": "test <sub-cmd>",
+            "Alias": None
+        },
 }
 
-def module_commands(cmds):
+def parse_plugin_cmds(cmds):
+    if cmds[0] == "test":
+        print("success!")
     pass
 
 #This is an example, variables must have a unique name
-module_vars = {
+plugin_vars = {
     "port": {
         "Name": "Port",
         "Value": 22,
@@ -90,14 +99,14 @@ module_vars = {
 def run(username, password, target):
     success = False
     verbose = var.global_vars['verbose']['Value']
-    timeout = module_vars['timeout']['Value']
-    port = module_vars['port']['Value']
-    banner_timeout = module_vars['banner-timeout']['Value']
+    timeout = plugin_vars['timeout']['Value']
+    port = plugin_vars['port']['Value']
+    banner_timeout = plugin_vars['banner-timeout']['Value']
     attempt = "Target:{} Username:{} Password:{}".format(target, username, password)
 
     try:
         client = paramiko.SSHClient()
-        if module_vars['allow-hosts']['Value']:  
+        if plugin_vars['allow-hosts']['Value']:  
             client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         if verbose:
             colors.PrintColor("INFO", "Trying " + attempt)

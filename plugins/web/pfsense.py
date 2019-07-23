@@ -48,12 +48,12 @@ print(banner)
 ###################
 
 #This is an example, you do not necessarily need extra commands
-module_cmds = {
+plugin_cmds = {
 
 }
 
 #This is an example, variables must have a unique name
-module_vars = {
+plugin_vars = {
     'ssl': {
         "Name": "SSL",
         "Value": False,
@@ -90,23 +90,23 @@ module_vars = {
 
 def run(username, password, target):
     attempt = "Target:{} Username:{} Password:{}".format(target, username, password)
-    verbose = module_vars['verbose']['Value']
+    verbose = plugin_vars['verbose']['Value']
 
-    if module_vars['ssl']['Value'] is True and module_vars['port']['Value'] is None:
+    if plugin_vars['ssl']['Value'] is True and plugin_vars['port']['Value'] is None:
         port = 443
-    elif module_vars['port']['Value'] is not None:
-        port = module_vars['port']['Value']
+    elif plugin_vars['port']['Value'] is not None:
+        port = plugin_vars['port']['Value']
 
-    if module_vars['ssl']['Value'] is True:
+    if plugin_vars['ssl']['Value'] is True:
         preface = 'https'
     else:
         preface = 'http'
 
-    user_agent = module_vars['user-agent']['Value']
+    user_agent = plugin_vars['user-agent']['Value']
 
     target_url = "{}://{}:{}".format(preface, target, str(port))
     with requests.Session() as s:
-        response = s.get(target_url, verify=module_vars['verify-cert']['Value'])
+        response = s.get(target_url, verify=plugin_vars['verify-cert']['Value'])
         soup = BeautifulSoup(response.content, "html.parser")
         #print(soup)
         csrf_token = soup.input['value']
@@ -122,7 +122,7 @@ def run(username, password, target):
             'login': 'Sign In',
             '__csrf_magic': csrf_token
         }
-        response = s.post(target_url, data=login_payload, headers=login_headers, verify=module_vars['verify-cert']['Value'])
+        response = s.post(target_url, data=login_payload, headers=login_headers, verify=plugin_vars['verify-cert']['Value'])
         soup = BeautifulSoup(response.content, "html.parser")
         if soup.title.text.lower() != "login":
             return True
@@ -131,9 +131,9 @@ def run(username, password, target):
             
 if __name__ == "__main__":
 #for testing only
-    module_vars['ssl']['Value'] = True
-    module_vars['verify-cert']['Value'] = False
-    module_vars['verbose']['Value'] = True
+    plugin_vars['ssl']['Value'] = True
+    plugin_vars['verify-cert']['Value'] = False
+    plugin_vars['verbose']['Value'] = True
     username = "admin"
     password = 'pfsense'
     target = "192.168.1.254"

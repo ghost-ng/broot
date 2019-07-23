@@ -7,7 +7,7 @@ import threading
 from time import sleep
 import queue
 
-loaded_module = var.get_loaded_module_object()
+loaded_plugin = var.get_loaded_plugin_object()
 exitFlag = False
 queueLock = threading.Lock()
 task_queue = queue.Queue(10)
@@ -81,8 +81,8 @@ def clean_up(obj):
 
 def check_status(status, creds):
     target, username, password = creds
-    module_name = var.get_loaded_module_name()
-    attempt = "Module:{} Target:{} Username:{} Password:{}".format(module_name, target, username, password)
+    plugin_name = var.get_loaded_plugin_name()
+    attempt = "Plugin:{} Target:{} Username:{} Password:{}".format(plugin_name, target, username, password)
     if status is True:
         colors.PrintColor("SUCCESS", "Success --> {}".format(attempt))
         var.save_creds(creds)
@@ -91,18 +91,18 @@ def check_status(status, creds):
 
 class brootThread (threading.Thread):
 
-    def __init__(self, thread_id, q, loaded_module):
+    def __init__(self, thread_id, q, loaded_plugin):
         threading.Thread.__init__(self)
         self.thread_id = thread_id
         self.q = q
-        self.loaded_module = loaded_module
+        self.loaded_plugin = loaded_plugin
 
     def run(self):
         if var.global_vars['verbose']['Value']:
             print("running thread", self.thread_id)
-        broot(self.q, self.loaded_module)
+        broot(self.q, self.loaded_plugin)
 
-def broot(q, loaded_module):
+def broot(q, loaded_plugin):
     global attempt_number
     global attempt_number
     global exitFlag
@@ -148,7 +148,7 @@ def broot(q, loaded_module):
                 skip = True
 
             if skip is False:
-                status = loaded_module.run(username, password, target)
+                status = loaded_plugin.run(username, password, target)
                 check_status(status, creds)
                 attempt_number += 1
 
@@ -165,7 +165,7 @@ def broot(q, loaded_module):
                                 if verbose:
                                     print("[re-try,wait-interval] Sleeping for {} sec".format(wait_time))
                                 sleep(wait_time)
-                            success = loaded_module.run(username, password, target)
+                            success = loaded_plugin.run(username, password, target)
                             check_status(status, creds)
                             attempt_number += 1
             else:
@@ -195,14 +195,14 @@ def initialize():
     else:
         num_threads = int(var.global_vars['threads']['Value'])
     threads = []
-    loaded_module = var.get_loaded_module_object()
+    loaded_plugin = var.get_loaded_plugin_object()
     for x in range(num_threads):
         # Create new threads
-        thread = brootThread(x, task_queue, loaded_module)
+        thread = brootThread(x, task_queue, loaded_plugin)
         thread.start()
         threads.append(thread)
     try:
-#        print(loaded_module)
+#        print(loaded_plugin)
         target_list = get_targets()
         username_list = get_usernames()
         password_list = get_passwords()
