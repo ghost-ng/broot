@@ -17,6 +17,7 @@ except ModuleNotFoundError:
         requires.install('<new_module_here>')
     else:
         colors.PrintColor("FAIL", "'<new_module_here>' is a dependency!")
+        input()
 
 ###################
 #ABOUT SECTION

@@ -11,12 +11,13 @@ import colors
 try:
     from prettytable import PrettyTable
 except ModuleNotFoundError:
-    colors.PrintColor("WARN", "Unable to find 'prettytable', install?")
+    colors.PrintColor("WARN", "Unable to find 'Prettytable', install?")
     ans = input("[Y/N] ")
     if ans.lower() == "y":
         requires.install('prettytable')
     else:
-        colors.PrintColor("FAIL", "'prettytable' is a dependency")
+        colors.PrintColor("FAIL", "'Prettytable' is a dependency")
+        input()
 
 #GLOBALS
 global_cmds = {}

@@ -11,3 +11,4 @@ def install(package):
     except Exception as e:
         colors.PrintColor("FAIL", "Unable to install")
         print(e)
+        input()

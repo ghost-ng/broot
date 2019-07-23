@@ -17,6 +17,7 @@ except ModuleNotFoundError:
         requires.install('bs4')
     else:
         colors.PrintColor("FAIL", "'bs4' is a dependency!")
+        input()
 
 ###################
 #ABOUT SECTION

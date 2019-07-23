@@ -15,6 +15,7 @@ except ModuleNotFoundError:
         requires.install('paramiko')
     else:
         colors.PrintColor("FAIL", "'Paramiko' is a dependency!")
+        input()
     
 ###################
 #ABOUT SECTION
