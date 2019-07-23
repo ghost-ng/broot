@@ -222,7 +222,7 @@ def save_creds(creds):
     plugin_name = get_loaded_plugin_name()
     success = "Plugin:{} Target:{} Username:{} Password:{}".format(plugin_name, target, username, password)
     saved_creds = read_only_vars['valid-creds']['Credentials']
-    saved_creds.append(creds)
+    saved_creds.append(success)
     read_only_vars['valid-creds']['Credentials'] = saved_creds
 
     u_list = read_only_vars['valid-creds']['Usernames']

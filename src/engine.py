@@ -126,7 +126,7 @@ def broot(q, loaded_plugin):
             wait_interval = var.gen_random(temp)
         if "random" in str(var.global_vars['wait-time']['Value']):
             temp = var.global_vars['wait-time']['Value']
-            wait_period = var.gen_random(temp)
+            wait_time = var.gen_random(temp)
         if "random" in str(var.global_vars['wait-on-failure']['Value']):
             temp = var.global_vars['wait-on-failure']['Value']
             wait_failure = var.gen_random(temp)
