@@ -4,7 +4,7 @@ import sys
 import requires
 import importlib
 from time import sleep
-sys.path.append(os.getcwd() + "\\..\\misc")
+sys.path.append(os.path.join(os.getcwd(), "..", "misc"))
 import colors
 
 

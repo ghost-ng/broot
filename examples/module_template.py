@@ -2,9 +2,11 @@
 
 import sys
 import os
-sys.path.append(os.getcwd() + "\\..\\..\\misc")
+sys.path.append(os.path.join(os.getcwd(), "..", "..", "misc"))
 import colors
+sys.path.append(os.path.join(os.getcwd(), "..", "..", "src"))
 import requires
+from var import global_vars
 
 try:
     import <new_module_here>

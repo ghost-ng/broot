@@ -3,7 +3,7 @@ import os, sys, signal
 from time import sleep
 import var
 import engine
-sys.path.append(os.getcwd() + "\\..\\misc")
+sys.path.append(os.path.join(os.getcwd(), "..", "misc"))
 import colors
 import importlib
 import art

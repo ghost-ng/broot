@@ -1,7 +1,7 @@
 import os
 import sys
 from pip._internal import main as pipmain
-sys.path.append(os.getcwd() + "\\..\\misc")
+sys.path.append(os.path.join(os.getcwd(), "..", "misc"))
 import colors
 
 def install(package):

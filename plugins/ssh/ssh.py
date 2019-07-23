@@ -1,10 +1,10 @@
 import sys
 import os
-import requires
-sys.path.append(os.getcwd() + "\\..\\misc")
+sys.path.append(os.path.join(os.getcwd(), "..", "..", "misc"))
 import colors
-sys.path.append(os.getcwd() + "\\..\\..\\src")
-import var
+sys.path.append(os.path.join(os.getcwd(), "..", "..", "src"))
+import requires
+from var import global_vars
 
 try:
     import paramiko
@@ -98,7 +98,7 @@ plugin_vars = {
 #This function does the main exection of the brutefore method
 def run(username, password, target):
     success = False
-    verbose = var.global_vars['verbose']['Value']
+    verbose = global_vars['verbose']['Value']
     timeout = plugin_vars['timeout']['Value']
     port = plugin_vars['port']['Value']
     banner_timeout = plugin_vars['banner-timeout']['Value']

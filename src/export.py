@@ -1,6 +1,6 @@
 import os
 import sys
-sys.path.append(os.getcwd() + "\\..\\misc")
+sys.path.append(os.path.join(os.getcwd(), "..", "misc"))
 import colors
 import var
 

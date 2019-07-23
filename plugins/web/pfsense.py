@@ -1,9 +1,8 @@
 import sys
 import os
-sys.path.append(os.getcwd() + "\\..\\..\\misc")
+sys.path.append(os.path.join(os.getcwd(), "..", "..", "misc"))
 import colors
-sys.path.append(os.getcwd() + "\\..\\..\\src")
-import var
+sys.path.append(os.path.join(os.getcwd(), "..", "..", "src"))
 import requires
 import requests
 import urllib3

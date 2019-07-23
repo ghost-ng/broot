@@ -1,7 +1,7 @@
 import sys, os
 import var
 import multiprocessing
-sys.path.append(os.getcwd() + "\\..\\misc")
+sys.path.append(os.path.join(os.getcwd(), "..", "misc"))
 import colors
 import threading
 from time import sleep
