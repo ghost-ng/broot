@@ -39,6 +39,7 @@ def file_exists(filename):
         colors.PrintColor("FAIL", "File does not exist, try again")
         file = input("[New File]: ")
         return file_exists(file)
+    var.global_vars['password-file']['Value'] = file
     return exists
 
 def get_passwords():
