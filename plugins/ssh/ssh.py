@@ -13,6 +13,7 @@ except ModuleNotFoundError:
     ans = input("[Y/N] ")
     if ans.lower() == "y":
         requires.install('paramiko')
+        import paramiko
     else:
         colors.PrintColor("FAIL", "'Paramiko' is a dependency!")
         input()

@@ -15,6 +15,7 @@ except ModuleNotFoundError:
     ans = input("[Y/N] ")
     if ans.lower() == "y":
         requires.install('bs4')
+        from bs4 import BeautifulSoup
     else:
         colors.PrintColor("FAIL", "'bs4' is a dependency!")
         input()

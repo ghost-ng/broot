@@ -15,6 +15,7 @@ except ModuleNotFoundError:
     ans = input("[Y/N] ")
     if ans.lower() == "y":
         requires.install('prettytable')
+        from prettytable import PrettyTable
     else:
         colors.PrintColor("FAIL", "'Prettytable' is a dependency")
         input()
