@@ -133,10 +133,16 @@ def parse_cmds(cmds):
                             if cmds[2] == 'random':
                                 handle_random_input(variable, cmds)
                             else:
-                                variable['Value'] = format_variable(variable, cmds[2])
+                                if "file" in cmds[1]:
+                                    filename = var.file_exists(cmds[2])
+                                    variable['Value'] = filename
+                                else:
+                                    variable['Value'] = format_variable(variable, cmds[2])
                         elif cmds[1] in loaded_plugin.plugin_vars:
                             variable = loaded_plugin.plugin_vars[cmds[1].lower()]
                             variable['Value'] = format_variable(variable, cmds[2])
+                    except IndexError:
+                        pass
                     except Exception as e:
                         colors.PrintColor("FAIL", "Unable to set variable (is the right plugin loaded?)")
                         if verbose:

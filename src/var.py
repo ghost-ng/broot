@@ -204,6 +204,17 @@ def gen_random(command):
     else:
         return randint(1, 30)
 
+def file_exists(filename):
+    exists = os.path.isfile(filename)  # initial check 
+    #colors.PrintColor("FAIL","File does not exist, try again")    
+    try:
+        while exists is False:
+            colors.PrintColor("FAIL", "File does not exist, try again")
+            file = input("[New File]: ")
+            return file_exists(file)
+    except KeyboardInterrupt:
+        filename = None
+    return filename
 
 def print_var_desc():
     for d in global_vars:

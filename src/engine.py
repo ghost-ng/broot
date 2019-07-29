@@ -39,13 +39,11 @@ def file_exists(filename):
         colors.PrintColor("FAIL", "File does not exist, try again")
         file = input("[New File]: ")
         return file_exists(file)
-    var.global_vars['password-file']['Value'] = file
     return exists
 
 def get_passwords():
     password_list = ""
     if var.global_vars['password-file']['Value'] is not None:
-        file_exists(var.global_vars['password-file']['Value'])
         password_list = open(var.global_vars['password-file']['Value'],'r')
     else:
         password_list = [var.global_vars['password']['Value']]
@@ -54,9 +52,7 @@ def get_passwords():
 def get_usernames():
     username_list = ""
     if var.global_vars['username-file']['Value'] is not None:
-        file_exists(var.global_vars['username-file']['Value'])
         username_list = open(var.global_vars['username-file']['Value'],'r')
-
     elif var.global_vars['usernames']['Value'] is not None:
         username_list = var.global_vars['usernames']['Value']
         username_list = username_list.split(",")
@@ -68,9 +64,7 @@ def get_usernames():
 def get_targets():
     target_list = ""
     if var.global_vars['target-file']['Value'] is not None:
-        file_exists(var.global_vars['target-file']['Value'])
         target_list = open(var.global_vars['target-file']['Value'],'r')
-    
     elif var.global_vars['targets']['Value'] is not None:
         targets = var.global_vars['targets']['Value']
         target_list = targets.split(",")
