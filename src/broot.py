@@ -120,6 +120,7 @@ def parse_cmds(cmds):
                 except:
                     colors.PrintColor("FAIL", "Unable to load plugin")
                     print(sys.exc_info())
+                    print("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
                 
             elif cmds[0] == "set":
                 if cmds[1] not in var.global_cmds['set']['Sub-Cmds']:
@@ -140,6 +141,7 @@ def parse_cmds(cmds):
                         colors.PrintColor("FAIL", "Unable to set variable (is the right plugin loaded?)")
                         if verbose:
                             print(e)
+                            print("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
             elif cmds[0] == "unset":
                 if var.check_plugin_loaded():
                     loaded_plugin = var.get_loaded_plugin_object()
@@ -156,6 +158,7 @@ def parse_cmds(cmds):
                     colors.PrintColor("FAIL", "Unable to reset the variable (are you sure that's the right variable?)")
                     if verbose:
                         print(e)
+                        print("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
             if var.check_plugin_loaded():
                 loaded_plugin = var.get_loaded_plugin_object()
                 if cmds[0] in loaded_plugin.plugin_cmds:

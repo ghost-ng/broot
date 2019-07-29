@@ -214,6 +214,7 @@ def initialize():
         print("punch!")
     except Exception as e:
         print(e)
+        print("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
 
     try:
         #Load the queue
@@ -234,7 +235,8 @@ def initialize():
     except KeyboardInterrupt:
         print("punch!")
     except Exception as e:
-        print(e)    
+        print(e)
+        print("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
     
     try:
         clean_up(target_list)
@@ -258,7 +260,8 @@ def initialize():
         exitFlag = True
         print("punch!")
     except Exception as e:
-        print(e)  
+        print(e)
+        print("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
 
 if __name__ == "__main__":
     initialize()
