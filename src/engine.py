@@ -43,6 +43,7 @@ def file_exists(filename):
     return exists
 
 def get_passwords():
+    password_list = ""
     if var.global_vars['password-file']['Value'] is not None:
         file_exists(var.global_vars['password-file']['Value'])
         password_list = open(var.global_vars['password-file']['Value'],'r')
@@ -51,6 +52,7 @@ def get_passwords():
     return password_list
 
 def get_usernames():
+    username_list = ""
     if var.global_vars['username-file']['Value'] is not None:
         file_exists(var.global_vars['username-file']['Value'])
         username_list = open(var.global_vars['username-file']['Value'],'r')
@@ -64,6 +66,7 @@ def get_usernames():
     return username_list
 
 def get_targets():
+    target_list = ""
     if var.global_vars['target-file']['Value'] is not None:
         file_exists(var.global_vars['target-file']['Value'])
         target_list = open(var.global_vars['target-file']['Value'],'r')
