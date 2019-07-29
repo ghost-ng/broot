@@ -22,13 +22,13 @@ except ModuleNotFoundError:
 #ABOUT SECTION
 ###################
 name = "ssh broot-forcer"
+description = '''
+The SSH plugin helps with probing the ssh authentication service to determine valid credentials.\
+This is a simple plugin that comes with the default 'broot' framework.
+'''
 author = "midnightseer"
 version = "1.0"
-art = ""
-###################
-#Executed on Import
-###################
-banner = '''
+art = '''
                     $$\       
                     $$ |      
  $$$$$$$\  $$$$$$$\ $$$$$$$\  
@@ -36,7 +36,12 @@ $$  _____|$$  _____|$$  __$$\
 \$$$$$$\  \$$$$$$\  $$ |  $$ |
  \____$$\  \____$$\ $$ |  $$ |
 $$$$$$$  |$$$$$$$  |$$ |  $$ |
-\_______/ \_______/ \__|  \__|
+\_______/ \_______/ \__|  \__|'''
+
+###################
+#Executed on Import
+###################
+banner = '''
 {}
 {}
 Author:  {}

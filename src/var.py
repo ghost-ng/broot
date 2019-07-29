@@ -408,6 +408,13 @@ def get_help(cmds):
                 if cmds[1] in loaded_plugin.plugin_vars.keys():
                     print_enum_dict(loaded_plugin.plugin_vars[cmds[1]], m="vars")
                     print()
+                if cmds[1] == get_loaded_plugin_name():
+                    description = ("""Plugin: {}\nDescription: {}""".format(get_loaded_plugin_name(), loaded_plugin.description))
+                    print(description)
+                    print_enum_dict(loaded_plugin.plugin_cmds, m="vars")
+                    print()
+                    print_enum_dict(loaded_plugin.plugin_vars, m="vars")
+                    print()
             else:
                 print("Help topic does not exist!")
         except:

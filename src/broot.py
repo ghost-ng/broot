@@ -89,7 +89,9 @@ def parse_cmds(cmds):
                 if cmds[1] == "creds":
                     var.print_successes()
                 if cmds[1] == "plugins":
-                    var.show_plugins()
+                    var.refresh_plugins()
+                    var.count_plugins()
+                    
                 if cmds[1] == "commands":
                     var.refresh_plugins()
                     var.print_cmds(var.global_cmds)

@@ -23,6 +23,10 @@ except ModuleNotFoundError:
 #ABOUT SECTION
 ###################
 name = ""
+description = '''
+The <example> plugin helps with probing the ssh authentication service to determine valid credentials.\
+This is a simple plugin that comes with the default 'broot' framework.
+'''
 author = ""
 version = "1.0"
 art = """

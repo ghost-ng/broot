@@ -24,6 +24,10 @@ except ModuleNotFoundError:
 #ABOUT SECTION
 ###################
 name = "pfsense"
+description = '''
+The pfense plugin helps with probing the pfense web GUI authentication service to determine valid credentials.\
+This is a simple plugin that comes with the default 'broot' framework.
+'''
 author = "midnightseer"
 version = "1.0"
 art = """
