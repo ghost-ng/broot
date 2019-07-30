@@ -179,7 +179,7 @@ global_vars = {
     # }
 }
 
-read_only_vars = {
+system_vars = {
     "valid-creds": {
         "Name": "Valid-Creds",
         "Credentials": [],
@@ -233,32 +233,32 @@ def save_creds(creds):
     target, username, password = creds
     plugin_name = get_loaded_plugin_name()
     success = "Plugin:{} Target:{} Username:{} Password:{}".format(plugin_name, target, username, password)
-    saved_creds = read_only_vars['valid-creds']['Credentials']
+    saved_creds = system_vars['valid-creds']['Credentials']
     saved_creds.append(success)
-    read_only_vars['valid-creds']['Credentials'] = saved_creds
+    system_vars['valid-creds']['Credentials'] = saved_creds
 
-    u_list = read_only_vars['valid-creds']['Usernames']
+    u_list = system_vars['valid-creds']['Usernames']
     u_list.append(username)
-    read_only_vars['valid-creds']['Usernames'] = u_list
+    system_vars['valid-creds']['Usernames'] = u_list
 
-    t_list = read_only_vars['valid-creds']['Targets']
+    t_list = system_vars['valid-creds']['Targets']
     t_list.append(target)
-    read_only_vars['valid-creds']['Targets'] = t_list
+    system_vars['valid-creds']['Targets'] = t_list
 
 
 def print_successes():
     count = 0
-    for cred in read_only_vars['valid-creds']['Credentials']:
+    for cred in system_vars['valid-creds']['Credentials']:
         count += 1
         print(cred)
 
 def import_plugin(name):
     loaded_plugin = importlib.import_module(name, package=None)
-    read_only_vars['Loaded-Plugin']['Object'] = loaded_plugin
-    read_only_vars['Loaded-Plugin']['Name'] = name
+    system_vars['Loaded-Plugin']['Object'] = loaded_plugin
+    system_vars['Loaded-Plugin']['Name'] = name
 
 def refresh_plugins():
-    read_only_vars["Available-Plugin"] = {}
+    system_vars["Available-Plugin"] = {}
     root = os.getcwd()
     path = root + "\..\plugins"
     dir_list = os.walk(path)
@@ -271,18 +271,18 @@ def refresh_plugins():
                         "Name": dict_name,
                         "Path": f[0]
                     }
-                    read_only_vars["Available-Plugins"].update({dict_name: dict_value})
+                    system_vars["Available-Plugins"].update({dict_name: dict_value})
     update_cmds()
 
 def count_plugins():
-    count = len(read_only_vars['Available-Plugins'])
+    count = len(system_vars['Available-Plugins'])
     return count
 
 def show_plugins():
     plugin_list = []
     colors.PrintColor("INFO", "Available Plugins:")
     count = 0
-    for plugin in read_only_vars['Available-Plugins'].keys():
+    for plugin in system_vars['Available-Plugins'].keys():
         if count < 5:
             print(plugin + "  ", end="")
         else:
@@ -299,7 +299,7 @@ def opts_to_table(var_type):
         v = global_vars
     else:
         table.title = "Plugin Variables"
-        loaded_plugin = read_only_vars['Loaded-Plugin']['Object']
+        loaded_plugin = system_vars['Loaded-Plugin']['Object']
         v = loaded_plugin.plugin_vars
     for d in v:
         table.add_row([v[d]['Name'], v[d]['Value'], v[d]['Example']])
@@ -337,15 +337,15 @@ def vars_to_list(var):
     return s
 
 def avail_mods_to_list():
-    if len(read_only_vars['Available-Plugins']) > 0:
+    if len(system_vars['Available-Plugins']) > 0:
         a=[]
-        for plugin in read_only_vars['Available-Plugins']:
+        for plugin in system_vars['Available-Plugins']:
             #print(plugin)
             a.append(plugin)
         return a
 
 def reload_loaded_plugin():
-    m = read_only_vars['Loaded-Plugin']['Object']
+    m = system_vars['Loaded-Plugin']['Object']
     try:
         importlib.reload(m)
         colors.PrintColor("SUCCESS", "Successfully reloaded plugin")
@@ -354,24 +354,24 @@ def reload_loaded_plugin():
         print(sys.exc_info())
 
 def unload_plugin():
-    m = read_only_vars['Loaded-Plugin']['Object']
+    m = system_vars['Loaded-Plugin']['Object']
     del m
     wipe_loaded_plugin_info()
 
 def get_loaded_plugin_name():
-    if read_only_vars["Loaded-Plugin"]['Name'] is not None:
-        return read_only_vars["Loaded-Plugin"]['Name']
+    if system_vars["Loaded-Plugin"]['Name'] is not None:
+        return system_vars["Loaded-Plugin"]['Name']
     else:
         return "No Plugin Loaded"
 
 def get_loaded_plugin_object():
     if check_plugin_loaded():
-        return read_only_vars["Loaded-Plugin"]['Object']
+        return system_vars["Loaded-Plugin"]['Object']
     else:
         return "No Plugin Loaded"
 
 def check_plugin_loaded():
-    if read_only_vars["Loaded-Plugin"]['Name'] is None:
+    if system_vars["Loaded-Plugin"]['Name'] is None:
         return False
     else:
         return True
@@ -454,11 +454,11 @@ def print_cmds(cmds):
     print()
 
 def wipe_loaded_plugin_info():
-    read_only_vars['Loaded-Plugin']['Name'] = None
-    read_only_vars['Loaded-Plugin']['Object'] = None
+    system_vars['Loaded-Plugin']['Name'] = None
+    system_vars['Loaded-Plugin']['Object'] = None
 
 def load_plugin(plugin_name):
-    read_only_vars['Loaded-Plugin']['Name'] = plugin_name
+    system_vars['Loaded-Plugin']['Name'] = plugin_name
 
 def get_available_cmds():
     avail_cmds = []

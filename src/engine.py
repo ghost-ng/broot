@@ -140,9 +140,9 @@ def broot(q, loaded_plugin):
                 if verbose:
                     print("[wait-interval] Sleeping for {} sec".format(wait_time))
                 sleep(wait_time)
-            if "username" in str(stop) and username in str(var.read_only_vars['valid-creds']['Usernames']):
+            if "username" in str(stop) and username in str(var.system_vars['valid-creds']['Usernames']):
                 skip = True
-            if "target" in str(stop) and target in str(var.read_only_vars['valid-creds']['Targets']):
+            if "target" in str(stop) and target in str(var.system_vars['valid-creds']['Targets']):
                 skip = True
 
             if skip is False:

@@ -1,5 +1,9 @@
 #TEMPLATE VERSION 1.0
 
+##############################################
+#SECTION 0 - DEFAULT IMPORTS (DO NOT CHANGE)
+#############################################
+
 import sys
 import os
 sys.path.append(os.path.join(os.getcwd(), "..", "..", "misc"))
@@ -8,20 +12,25 @@ sys.path.append(os.path.join(os.getcwd(), "..", "..", "src"))
 import requires
 from var import global_vars
 
+
+###########################
+#SECTION 1 - IMPORTS
+###########################
 try:
-    import <new_module_here>
+    import <new_module_here>    #HERE
 except ModuleNotFoundError:
-    colors.PrintColor("WARN", "Unable to find '<new_module_here>', install?")
+    colors.PrintColor("WARN", "Unable to find '<new_module_here>', install?")   #HERE
     ans = input("[Y/N] ")
     if ans.lower() == "y":
-        requires.install('<new_module_here>')
+        requires.install('<new_module_here>')   #HERE
+        import <new_module_here>
     else:
-        colors.PrintColor("FAIL", "'<new_module_here>' is a dependency!")
+        colors.PrintColor("FAIL", "'<new_module_here>' is a dependency!")   #HERE
         input()
 
-###################
-#ABOUT SECTION
-###################
+###########################
+#SECTION 2 - ABOUT
+###########################
 name = ""
 description = '''
 The <example> plugin helps with probing the ssh authentication service to determine valid credentials.\
@@ -33,16 +42,16 @@ art = """
 
 
 """
-###################
-#Executed on Import
-###################
 banner = '''
 {}
 {}
 Author:  {}
 Version: {}'''.format(art,name,author,version)
 print(banner)
-###################
+
+#############################
+#SECTION 3 - PLUGIN COMMANDS
+#############################
 
 #This is an example, you do not necessarily need extra commands.  Replace the below with your own
 plugin_cmds = {
@@ -60,6 +69,10 @@ def parse_plugin_cmds(cmds):
     if cmds[0] == "test":
         print("success!")
     pass
+
+#############################
+#SECTION 4 - PLUGIN VARIABLES
+#############################
 
 #This is an example, variables must have a unique name
 plugin_vars = {
@@ -81,7 +94,9 @@ plugin_vars = {
     }
 }
 
-
+#############################
+#SECTION 5 - MAIN
+#############################
 #This function does the main exection of the brutefore method and MUST BE HERE
 def run():
 

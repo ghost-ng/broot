@@ -1,6 +1,6 @@
 # BROOT
 
-This is a bruteforcing framework that takes advantage of the "plug-n-play" approach offered by python.  Modular behavior allows this framework to remain static while scaling available plugins or "plugins."
+This is a bruteforcing framework that takes advantage of the "plug-n-play" approach offered by python.  Modular behavior allows this framework to remain static while scaling available plugins or "plugins."  A plugin can be easily confused with a module, and in order to avoid confusion between this from the python module, I opted for the term plugin.  Functionally, this is a "plug-n-play" file that defines how to authenticate to a service/login page.  Once you have defined that code, the broot framework will wrap around the plugin and provide you wil some brootforcing options.
 
 Time to "be root," **broot**
 
@@ -32,6 +32,8 @@ To honor RTFM, the variables and commands have their own help entries and their 
 ```
 help
 help [variable]
+help [command]
+help [plugin]
 show commands
 set
 unset

@@ -51,13 +51,13 @@ print(banner)
 
 #This is an example, you do not necessarily need extra commands
 plugin_cmds = {
-    "test": {
-            "Command": "test",
-            "Help": "Print information related to the subsequent key-word.",
-            "Sub-Cmds": ["commands", "plugins", "options", "loaded-plugin", "creds", "sequence"],
-            "Usage": "test <sub-cmd>",
-            "Alias": None
-        },
+    # "test": {
+    #         "Command": "test",
+    #         "Help": "Print information related to the subsequent key-word.",
+    #         "Sub-Cmds": ["commands", "plugins", "options", "loaded-plugin", "creds", "sequence"],
+    #         "Usage": "test <sub-cmd>",
+    #         "Alias": None
+    #     }
 }
 
 def parse_plugin_cmds(cmds):
