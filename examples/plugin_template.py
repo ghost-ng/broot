@@ -65,7 +65,8 @@ plugin_cmds = {
 }
 
 #function to define what to do with the new commands
-def parse_plugin_cmds(cmds):
+def parse_plugin_cmds(commands):
+    cmds = commands.split(" ")
     if cmds[0] == "test":
         print("success!")
     pass
@@ -98,6 +99,6 @@ plugin_vars = {
 #SECTION 5 - MAIN
 #############################
 #This function does the main exection of the brutefore method and MUST BE HERE
-def run():
+def run(target, username, password):
 
     pass

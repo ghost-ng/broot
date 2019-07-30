@@ -146,7 +146,11 @@ def broot(q, loaded_plugin):
                 skip = True
 
             if skip is False:
-                status = loaded_plugin.run(username, password, target)
+                try:
+                    status = loaded_plugin.run(username, password, target)
+                except NameError:
+                    colors.PrintColor("FAIL", "Unable to find 'run' function)
+                    return
                 check_status(status, creds)
                 attempt_number += 1
 
@@ -163,7 +167,11 @@ def broot(q, loaded_plugin):
                                 if verbose:
                                     print("[re-try,wait-interval] Sleeping for {} sec".format(wait_time))
                                 sleep(wait_time)
-                            success = loaded_plugin.run(username, password, target)
+                            try:
+                                status = loaded_plugin.run(username, password, target)
+                            except NameError:
+                                colors.PrintColor("FAIL", "Unable to find 'run' function)
+                                return
                             check_status(status, creds)
                             attempt_number += 1
             else:
