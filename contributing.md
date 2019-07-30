@@ -39,13 +39,19 @@ These commands will automatically be available when you *load* a plugin.  The ac
 This variable MUST retain the dictionary structure in the tempalte example.
 
 **parse_plugin_cmds**
-The role of this function is to parse the input commands and dictate subsequent actions.  The frame work will default to this function if it see a command found in the *plugin_cmds* dictionary variable.
+The role of this function is to parse the input commands and dictate subsequent actions.  The framework will default to this function if it see a command found in the *plugin_cmds* dictionary variable.
 
 ### Section 4 - Plugin Variables
-Use this section to define plugin-specific variables that will help execute or fine-tune your new plugin.  A user can "set" these variables in the main broot framework, but your "run" method will reference these variables to help with your authentication function.  
+Use this section to define plugin-specific variables that will help execute or fine-tune your new plugin.  A user can "set" these variables in the main broot framework, but your "run" method will reference these variables to help with your authentication function. The **plugin-vars** variable MUST retain the dictionary structure in the tempalte example. 
 
 ### Section 5 - Main
 This section MUST be present or the broot framework with throw an error.  The main engine will call the *run* function to execute the plugin.  The broot framework will iterate over the list of usernames, targets, and password and pass each combination to the *run* method.  
 
 ## Dynamic Refresh
+To help with troubleshooting and overall ease of use, as you modify your plugin or add new plugins to the framework, you can execute a "reload plugins" commands to refresh the plugins list.  
 
+## Directory Structure
+I recommend you create your plugin seperately, verify it works, then include it into the framework.  This can be achieved with the python if/main commands:
+*if __name__ == "__main__":*
+
+Here you can preset all your variables to test that the authentication method works before testing framework integration.

@@ -149,7 +149,7 @@ def broot(q, loaded_plugin):
                 try:
                     status = loaded_plugin.run(username, password, target)
                 except NameError:
-                    colors.PrintColor("FAIL", "Unable to find 'run' function)
+                    colors.PrintColor("FAIL", "Unable to find 'run' function")
                     return
                 check_status(status, creds)
                 attempt_number += 1
@@ -170,7 +170,7 @@ def broot(q, loaded_plugin):
                             try:
                                 status = loaded_plugin.run(username, password, target)
                             except NameError:
-                                colors.PrintColor("FAIL", "Unable to find 'run' function)
+                                colors.PrintColor("FAIL", "Unable to find 'run' function")
                                 return
                             check_status(status, creds)
                             attempt_number += 1
