@@ -135,7 +135,7 @@ def broot(q, loaded_plugin):
             creds = q.get()
             target, username, password = creds
             attempt = "Target:{} Username:{} Password:{}".format(target, username, password)
-            
+            colors.PrintColor("INFO","Trying --> {}".format(attempt))
             if attempt_number % wait_interval == 0 and attempt_number > 0:
                 if verbose:
                     print("[wait-interval] Sleeping for {} sec".format(wait_time))
