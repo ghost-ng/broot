@@ -208,10 +208,11 @@ def file_exists(filename):
     exists = os.path.isfile(filename)  # initial check 
     #colors.PrintColor("FAIL","File does not exist, try again")    
     try:
-        while exists is False:
-            colors.PrintColor("FAIL", "File does not exist, try again")
-            file = input("[New File]: ")
-            return file_exists(file)
+        if filename is not None:
+            while exists is False:
+                colors.PrintColor("FAIL", "File does not exist, try again")
+                file = input("[New File]: ")
+                return file_exists(file)
     except KeyboardInterrupt:
         filename = None
     return filename
