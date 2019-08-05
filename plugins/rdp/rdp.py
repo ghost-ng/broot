@@ -34,13 +34,28 @@ import subprocess
 ###########################
 name = ""
 description = '''
-The <example> plugin helps with probing the ssh authentication service to determine valid credentials.\
+The rdp plugin helps with probing the rdp service to determine valid credentials.\
 This is a simple plugin that comes with the default 'broot' framework.
 '''
-author = ""
+author = "midnightseer"
 version = "1.0"
 art = """
+              .--._
+               `.  `-.
+               .-'    `.
+             .'      _..:._
+            `.  .--.'      `.
+            _.'  \.      .--.\\
+          .'      |     |    |
+         `--.     |  .--|    D
+             `;  /'\/   ,`---'@
+           .'  .'   '._ `-.__.'
+         .'  .'      _.`---'
+       .'--''   .   `-..__.--.
+jgs ~-=  =-~_-   `-..___(  ===;
+    ~-=  - -    .'       `---'
 
+Check RDP creds as fast as Sonic! **almost as fast**
 
 """
 banner = '''
@@ -56,13 +71,13 @@ print(banner)
 
 #This is an example, you do not necessarily need extra commands.  Replace the below with your own
 plugin_cmds = {
-    "test": {
-            "Command": "test",
-            "Help": "Print information related to the subsequent key-word.",
-            "Sub-Cmds": ["commands", "plugins", "options", "loaded-plugin", "creds", "sequence"],
-            "Usage": "test <sub-cmd>",
-            "Alias": None
-        },
+    # "test": {
+    #         "Command": "test",
+    #         "Help": "Print information related to the subsequent key-word.",
+    #         "Sub-Cmds": ["commands", "plugins", "options", "loaded-plugin", "creds", "sequence"],
+    #         "Usage": "test <sub-cmd>",
+    #         "Alias": None
+    #     },
 }
 
 #function to define what to do with the new commands
@@ -153,7 +168,7 @@ def run(target, username, password):
         if rdp_path is None or "xfreerdp" not in rdp_path:
             plugin_vars['rdp-path']['Value'] = "/usr/bin/xfreerdp"
             rdp_bin = plugin_vars['rdp-path']['Value']
-        cmd = "{b} /v:{t} /u:{u} /p:{p} /client-hostname:{h} /cert-ignore +auth-only".format(b=rdp_bin,t=target,u=username,p=password,h=target)
+        cmd = "{} /v:{} /u:{} /p:{} /client-hostname:{} /cert-ignore +auth-only".format(rdp_bin,target,username,password,target,target)
         if proxy_ip is not None:
             append = "/proxy:{}://{}:{}".format(proxy_proto,proxy_ip,proxy_port)
             cmd = cmd + " " + append
@@ -169,8 +184,10 @@ def run(target, username, password):
         elif "proxy: failed" in result.stderr.decode():
             success = False
             colors.PrintColor("FAIL", "Proxy Connection Error!")
-            return success
+        elif "Host unreachable" in str(result):
+            colors.PrintColor("FAIL", "Host is unreachable!")
+            success = False
         else:
-            success = True  
+            success = True
 
     return success
