@@ -120,7 +120,7 @@ plugin_vars = {
     },
     'proxy-port': {
         "Name": "Proxy-Port",
-        "Value": None,
+        "Value": 8080,
         "Type": 'Integer',
         "Default": 8080,
         "Help": "The listening port for the proxy service",
@@ -156,7 +156,7 @@ def run(target, username, password):
         cmd = "{b} /v:{t} /u:{u} /p:{p} /client-hostname:{h} /cert-ignore +auth-only".format(b=rdp_bin,t=target,u=username,p=password,h=target)
         if proxy_ip is not None:
             append = "/proxy:{}://{}:{}".format(proxy_proto,proxy_ip,proxy_port)
-            cmd = " " + append
+            cmd = cmd + " " + append
         result = subprocess.run(cmd.split(), capture_output=True)
         if "AUTHENTICATION_FAILED" in result.stderr:
             success = False
