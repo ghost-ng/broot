@@ -158,6 +158,9 @@ def run(target, username, password):
             append = "/proxy:{}://{}:{}".format(proxy_proto,proxy_ip,proxy_port)
             cmd = cmd + " " + append
         result = subprocess.run(cmd.split(), capture_output=True)
+        if verbose:
+            print("sterr: "result.stderr.decode())
+            print("stdout: "result.stdout.decode())
         if "AUTHENTICATION_FAILED" in result.stderr.decode():
             success = False
             if verbose:
@@ -167,6 +170,6 @@ def run(target, username, password):
             colors.PrintColor("FAIL", "Proxy Connection Error!")
             return success
         else:
-            success = True
+            success = True  
 
     return success
