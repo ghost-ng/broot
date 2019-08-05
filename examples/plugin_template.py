@@ -99,7 +99,7 @@ plugin_vars = {
 #SECTION 5 - MAIN
 #############################
 #This function does the main exection of the brutefore method and MUST BE HERE
-def run(target, username, password):
+def run(username, password, target):
     attempt = "Target:{} Username:{} Password:{}".format(target, username, password)
     verbose = global_vars['verbose']['Value']
     pass
