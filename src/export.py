@@ -7,8 +7,9 @@ import var
 def get_current_sequence():
     sequence = "seq="
     for item in var.global_vars:
-        value = var.global_vars[item]['Value']
-        command = "set " + item + " " + str(value) + ";"
+        if var.global_vars[item]['Value'] != var.global_vars[item]['Default']:
+            value = var.global_vars[item]['Value']
+            command = "set " + item + " " + str(value) + ";"
         sequence = sequence + command
     
     if var.check_plugin_loaded():
@@ -17,8 +18,9 @@ def get_current_sequence():
         sequence = sequence + command
         loaded_plugin = var.get_loaded_plugin_object()
         for item in loaded_plugin.plugin_vars:
-            value = loaded_plugin.plugin_vars[item]['Value']
-            command = "set " + item + " " + str(value) + ";"
+            if var.plugin_vars[item]['Value'] != var.plugin_vars[item]['Default']:
+                value = loaded_plugin.plugin_vars[item]['Value']
+                command = "set " + item + " " + str(value) + ";"
             sequence = sequence + command
     return sequence
 
