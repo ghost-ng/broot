@@ -169,6 +169,8 @@ def run(target, username, password):
             plugin_vars['rdp-path']['Value'] = "/usr/bin/xfreerdp"
             rdp_bin = plugin_vars['rdp-path']['Value']
         cmd = "{} /v:{} /u:{} /p:{} /client-hostname:{} /cert-ignore +auth-only".format(rdp_bin,target,username,password,target,target)
+        if verbose:
+            print("cmd: " + cmd)
         if proxy_ip is not None:
             append = "/proxy:{}://{}:{}".format(proxy_proto,proxy_ip,proxy_port)
             cmd = cmd + " " + append
@@ -177,11 +179,11 @@ def run(target, username, password):
             print(result)
             #print("sterr: " + result.stderr.decode())
             #print("stdout: " + result.stdout.decode())
-        if "AUTHENTICATION_FAILED" in result.stderr.decode():
+        if "AUTHENTICATION_FAILED" in str(result):
             success = False
             if verbose:
                 colors.PrintColor("INFO", "Failed Authentication --> {}".format(attempt))
-        elif "proxy: failed" in result.stderr.decode():
+        elif "proxy: failed" in str(result):
             success = False
             colors.PrintColor("FAIL", "Proxy Connection Error!")
         elif "Host unreachable" in str(result):
