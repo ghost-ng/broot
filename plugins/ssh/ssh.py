@@ -122,7 +122,7 @@ def run(username, password, target):
         success = True
     except paramiko.AuthenticationException:
         if verbose:
-            colors.PrintColor("FAIL", "Failed Authentication --> {}".format(attempt))
+            colors.PrintColor("INFO", "Failed Authentication --> {}".format(attempt))
     except paramiko.SSHException as sshException:
         if verbose:    
             colors.PrintColor("FAIL", "Fail --> {} Could not establish SSH connection".format(attempt))

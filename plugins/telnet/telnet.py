@@ -17,15 +17,15 @@ from var import global_vars
 #SECTION 1 - IMPORTS
 ###########################
 try:
-    import <new_module_here>    #HERE
+    import telnetlib    #HERE
 except ModuleNotFoundError:
-    colors.PrintColor("WARN", "Unable to find '<new_module_here>', install?")   #HERE
+    colors.PrintColor("WARN", "Unable to find 'telnetlib', install?")   #HERE
     ans = input("[Y/N] ")
     if ans.lower() == "y":
-        requires.install('<new_module_here>')   #HERE
-        import <new_module_here>
+        requires.install('telnetlib')   #HERE
+        import telnetlib
     else:
-        colors.PrintColor("FAIL", "'<new_module_here>' is a dependency!")   #HERE
+        colors.PrintColor("FAIL", "'telnetlib' is a dependency!")   #HERE
         input()
 
 ###########################
@@ -33,7 +33,7 @@ except ModuleNotFoundError:
 ###########################
 name = ""
 description = '''
-The <example> plugin helps with probing the ssh authentication service to determine valid credentials.\
+The telnet plugin helps with probing the telnet authentication service to determine valid credentials.\
 This is a simple plugin that comes with the default 'broot' framework.
 '''
 author = ""
@@ -55,13 +55,7 @@ print(banner)
 
 #This is an example, you do not necessarily need extra commands.  Replace the below with your own
 plugin_cmds = {
-    # "test": {
-    #         "Command": "test",
-    #         "Help": "Print information related to the subsequent key-word.",
-    #         "Sub-Cmds": ["commands", "plugins", "options", "loaded-plugin", "creds", "sequence"],
-    #         "Usage": "test <sub-cmd>",
-    #         "Alias": None
-    #     },
+    
 }
 
 #function to define what to do with the new commands
@@ -77,22 +71,15 @@ def parse_plugin_cmds(commands):
 
 #This is an example, variables must have a unique name
 plugin_vars = {
-    'Threads': {
-        "Name": "Threads",
-        "Value": 1,
+    'port': {
+        "Name": "Port",
+        "Value": 23,
         "Type": 'Integer',
-        "Default": 1,
-        "Help": "Amount of concurrent threads to run.  High values may slow down your computer.",
-        "Example": "10 (threads)"
+        "Default": 23,
+        "Help": "The target port with the telnet service listening",
+        "Example": "23"
     },
-    'Wait-Period': {
-        "Name": "Wait-Period",
-        "Value": 0,
-        "Type": 'Integer',
-        "Default": 0,
-        "Help": "Amount of time in seconds to wait in between attempts.",
-        "Example": "Wait 0 seconds in between attempts" 
-    }
+    
 }
 
 #############################
@@ -100,6 +87,9 @@ plugin_vars = {
 #############################
 #This function does the main exection of the brutefore method and MUST BE HERE
 def run(target, username, password):
-    attempt = "Target:{} Username:{} Password:{}".format(target, username, password)
-    verbose = global_vars['verbose']['Value']
-    pass
+tn = telnetlib.Telnet(target)
+tn.read_until("login: ")
+tn.write(username + "\n")
+tn.read_until("word: ")
+tn.write(password + "\n")
+print(tn.read_all())
