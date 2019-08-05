@@ -159,8 +159,9 @@ def run(target, username, password):
             cmd = cmd + " " + append
         result = subprocess.run(cmd.split(), capture_output=True)
         if verbose:
-            print("sterr: " + result.stderr.decode())
-            print("stdout: " + result.stdout.decode())
+            print(result)
+            #print("sterr: " + result.stderr.decode())
+            #print("stdout: " + result.stdout.decode())
         if "AUTHENTICATION_FAILED" in result.stderr.decode():
             success = False
             if verbose:
