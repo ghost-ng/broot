@@ -10,7 +10,7 @@ def get_current_sequence():
         if var.global_vars[item]['Value'] != var.global_vars[item]['Default']:
             value = var.global_vars[item]['Value']
             command = "set " + item + " " + str(value) + ";"
-        sequence = sequence + command
+            sequence = sequence + command
     
     if var.check_plugin_loaded():
         mod_name = var.get_loaded_plugin_name()
@@ -21,7 +21,7 @@ def get_current_sequence():
             if var.plugin_vars[item]['Value'] != var.plugin_vars[item]['Default']:
                 value = loaded_plugin.plugin_vars[item]['Value']
                 command = "set " + item + " " + str(value) + ";"
-            sequence = sequence + command
+                sequence = sequence + command
     return sequence
 
 def export_sequence():
