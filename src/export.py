@@ -18,7 +18,7 @@ def get_current_sequence():
         sequence = sequence + command
         loaded_plugin = var.get_loaded_plugin_object()
         for item in loaded_plugin.plugin_vars:
-            if var.plugin_vars[item]['Value'] != var.plugin_vars[item]['Default']:
+            if loaded_plugin.plugin_vars[item]['Value'] != loaded_plugin.plugin_vars[item]['Default']:
                 value = loaded_plugin.plugin_vars[item]['Value']
                 command = "set " + item + " " + str(value) + ";"
                 sequence = sequence + command
