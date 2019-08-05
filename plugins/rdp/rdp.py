@@ -142,7 +142,7 @@ def run(target, username, password):
         return
     rdp_bin = plugin_vars['rdp-bin']['Value']
     rdp_path = plugin_vars['rdp-path']['Value']
-    proxy_proto = plugin_vars['proxy']['Value']
+    proxy_proto = plugin_vars['proxy-protocol']['Value']
     proxy_port = plugin_vars['proxy-port']['Value']
     proxy_ip = plugin_vars['proxy-ip']['Value']
     if rdp_bin == "rdesktop":
