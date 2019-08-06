@@ -154,9 +154,9 @@ global_vars = {
     },
     "stop-on-success": {
         "Name": "Stop-on-Success",
-        "Value": None,
-        "Type": 'String',
-        "Default": None,
+        "Value": True,
+        "Type": 'Boolean',
+        "Default": True,
         "Help": "If set to True, then stop testing creds against a given target after a successful authentication",
         "Example": "set stop-on-success target,username"
     }

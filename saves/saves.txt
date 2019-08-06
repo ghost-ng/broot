@@ -1,2 +1,0 @@
-2019-08-05 21:06||seq=set username test;
-2019-08-05 21:06||seq=set password test;set username test;
