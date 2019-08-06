@@ -166,7 +166,7 @@ def run(username, password, target):
             plugin_vars['rdp-path']['Value'] = "/usr/bin/rdesktop"
             rdp_bin = plugin_vars['rdp-path']['Value']
     elif rdp_bin == "xfreerdp":
-        failure_lst = ["LOGIN_FAILURE", "AUTHENTICATION_FAILED"]
+        failure_lst = ["LOGON_FAILURE", "AUTHENTICATION_FAILED"]
         if rdp_path is None or "xfreerdp" not in rdp_path:
             plugin_vars['rdp-path']['Value'] = "/usr/bin/xfreerdp"
             rdp_bin = plugin_vars['rdp-path']['Value']
