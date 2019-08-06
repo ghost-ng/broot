@@ -149,6 +149,7 @@ plugin_vars = {
 #############################
 #This function does the main exection of the brutefore method and MUST BE HERE
 def run(username, password, target):
+    print_fails = vars.global_vars['print-failures']['Value']
     verbose = global_vars['verbose']['Value']
     attempt = "Target:{} Username:{} Password:{}".format(target, username, password)
     failed = False
@@ -187,7 +188,7 @@ def run(username, password, target):
                 failed = True
         if failed:
             success = False
-            if verbose:
+            if verbose is True or print_fails is True :
                 colors.PrintColor("INFO", "Failed Authentication --> {}".format(attempt))
         elif "proxy: failed" in str(result):
             success = False
