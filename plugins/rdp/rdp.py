@@ -183,20 +183,21 @@ def run(username, password, target):
             print(result)
             #print("sterr: " + result.stderr.decode())
             #print("stdout: " + result.stdout.decode())
-        for x in failure_lst:
-            if x in str(result):
-                failed = True
-        if failed:
+        if "exit status 1" in result:
             success = False
-            if verbose is True or print_fails is True :
-                colors.PrintColor("INFO", "Failed Authentication --> {}".format(attempt))
-        elif "proxy: failed" in str(result):
-            success = False
-            colors.PrintColor("FAIL", "Proxy Connection Error!")
-        elif "Host unreachable" in str(result):
-            colors.PrintColor("FAIL", "Host is unreachable!")
-            success = False
-        else:
+            # print_fails is True:
+            #     colors.PrintColor("INFO", "Failed Authentication --> {}".format(attempt))                
+            if verbose is True:
+                if "proxy: failed" in str(result):
+                    success = False
+                    colors.PrintColor("FAIL", "Proxy Connection Error!")
+                if "Host unreachable" in str(result):
+                    colors.PrintColor("FAIL", "Host is unreachable!")
+                    success = False
+        elif "exit status 0" in result:
             success = True
+        else:
+            success = False
+            colors.PrintColor("WARN", "Unknown Result --> {}".format(attempt))
 
     return success
