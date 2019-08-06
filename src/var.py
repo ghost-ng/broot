@@ -489,6 +489,17 @@ def get_available_cmds():
             new_cmd_list.append(item)
     return new_cmd_list
 
+def get_sub_cmds(cmd):
+    try:
+        sub_cmds = global_cmds[cmd]['Sub-Cmds']
+    except:
+        pass
+    return sub_cmds
+
+def reset_all_vars():
+    for d in global_vars.keys():
+        global_vars[d]['Value']  = global_vars[d]['Default']
+
 def update_cmds():
     global global_cmds
     if check_plugin_loaded():    
@@ -500,7 +511,7 @@ def update_cmds():
         "show": {
             "Command": "show",
             "Help": "Print information related to the subsequent key-word.",
-            "Sub-Cmds": ["commands", "plugins", "options", "loaded-plugin", "creds", "sequence"],
+            "Sub-Cmds": ["commands", "plugins", "options", "loaded-plugin", "creds", "config", "saved-configs"],
             "Usage": "show <sub-cmd>",
             "Alias": None
         },
@@ -539,11 +550,25 @@ def update_cmds():
             "Usage": "show creds",
             "Alias": None
         },
-        "show sequence": {
-            "Command": "show sequence",
-            "Help": "Print the sequence string.  This can be pasted in a later broot prompt to quickly load an exact copy of the current configuration.",
+        "show config": {
+            "Command": "show config",
+            "Help": "Print the sequence string (config).  This can be pasted in a later broot prompt to quickly load an exact copy of the current configuration.",
             "Sub-Cmds": None,
-            "Usage": "show sequence",
+            "Usage": "show config",
+            "Alias": None
+        },
+        "show saved-configs": {
+            "Command": "show saved-configs",
+            "Help": "Print the saved configurations (sequences).  Retrieve the sequences by 'load config <id>'",
+            "Sub-Cmds": None,
+            "Usage": "show saved-configs",
+            "Alias": 'saved-seq'
+        },
+        "reset": {
+            "Command": "reset",
+            "Help": "Reset all global variables to their defaults",
+            "Sub-Cmds": None,
+            "Usage": "reset",
             "Alias": None
         },
         "help": {
@@ -577,7 +602,7 @@ def update_cmds():
         "use": {
             "Command": "use",
             "Help": "Load a new plugin.  This will add any new variables and erase all data associated to any previously loaded plugins.",
-            "Sub-Cmds": avail_mods_to_list(),
+            "Sub-Cmds": avail_mods_to_list() + ['config'],
             "Usage": "use <plugin>",
             "Alias": "load"
         },
@@ -619,7 +644,7 @@ def update_cmds():
         "save": {
             "Command": "save",
             "Help": "Save either the configuration's sequence (config) or the framework's state (state).  Saving the 'state' will save the state of all variables.",
-            "Sub-Cmds": ["state", "config"],
+            "Sub-Cmds": ["config"],
             "Usage": "save <sub-cmd>",
             "Alias": None
         },

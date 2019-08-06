@@ -7,7 +7,7 @@ sys.path.append(os.path.join(os.getcwd(), "..", "misc"))
 import colors
 import importlib
 import art
-import export
+import save
 
 plugin = "/broot"
 prompt = plugin + "/>> "
@@ -49,6 +49,9 @@ def parse_cmds(cmds):
                 colors.PrintColor("INFO", "Exiting")
                 engine.exitFlag = True
                 sys.exit()
+            elif cmds[0] == "reset":
+                var.reset_all_vars()
+                colors.PrintColor("INFO","Reset complete")
             elif cmds[0] == "validate":
                 if validate_options() is True:
                     colors.PrintColor("INFO", "Everything seems ok!")
@@ -80,18 +83,20 @@ def parse_cmds(cmds):
                 #    importlib.reload(engine)
                 #    importlib.reload(var)
             elif cmds[0] == "save":
-                if cmds[1] == "sequence":
-                    export.export_sequence()
+                if cmds[1] == "config":
+                    save.export_sequence()
             elif cmds[0] == "show":
-                if cmds[1] in ['seq', 'sequence']:
-                    seq = export.get_current_sequence()
+                if cmds[1] == 'config':
+                    seq = save.get_current_sequence()
                     print(seq)
+                if cmds[1] == 'saved-configs':
+                    save.show_sequences()
                 if cmds[1] == "creds":
                     var.print_successes()
                 if cmds[1] == "plugins":
                     var.refresh_plugins()
-                    var.count_plugins()
-                    
+                    var.show_plugins()
+                    #var.count_plugins()
                 if cmds[1] == "commands":
                     var.refresh_plugins()
                     var.print_cmds(var.global_cmds)
@@ -101,6 +106,10 @@ def parse_cmds(cmds):
                         loaded_plugin_object = var.get_loaded_plugin_object()
                         print("New Available Commands for '{}' Plugin:".format(loaded_plugin_name))
                         var.print_cmds(loaded_plugin_object.plugin_cmds)
+                if cmds[1] == "sub-cmds":
+                    if len(cmds) == 3:
+                        sub_cmds = var.get_sub_cmds(cmds[2])
+                        for x in sub_cmds: print(x)
                 if cmds[1] == "loaded-plugin":
                     if len(cmds) > 2:
                         if cmds[2] == "name":
@@ -112,17 +121,27 @@ def parse_cmds(cmds):
                     if var.check_plugin_loaded():
                         var.opts_to_table("plugin")
             elif cmds[0] == "use" or cmds[0] == "load":
-                try:
-                    var.import_plugin(cmds[1])
-                    colors.PrintColor("SUCCESS", "Loaded {} plugin successfully".format(cmds[1]))
-                    plugin = plugin + "/" + cmds[1]
-                    var.update_cmds()
-                except ModuleNotFoundError as e:
-                    colors.PrintColor("FAIL", "Plugin not found")
-                except:
-                    colors.PrintColor("FAIL", "Unable to load plugin")
-                    print(sys.exc_info())
-                    print("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
+                if cmds[1] == "config":
+                    try:
+                        resp = input("[?] [m]erge/[r]eset: ")
+                        if resp.lower() == "r":
+                            var.reset_all_vars()
+                        seq = save.load_sequences(cmds[2])
+                        parse_seq(seq.rstrip())
+                    except IndexError:
+                        pass
+                else:
+                    try:
+                        var.import_plugin(cmds[1])
+                        colors.PrintColor("SUCCESS", "Loaded {} plugin successfully".format(cmds[1]))
+                        plugin = plugin + "/" + cmds[1]
+                        var.update_cmds()
+                    except ModuleNotFoundError as e:
+                        colors.PrintColor("FAIL", "Plugin not found")
+                    except:
+                        colors.PrintColor("FAIL", "Unable to load plugin")
+                        print(sys.exc_info())
+                        print("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
                 
             elif cmds[0] == "set":
                 if cmds[1] not in var.global_cmds['set']['Sub-Cmds']:
@@ -265,6 +284,13 @@ def initialize():
     print(about)
     print(version)
 
+def parse_seq(cmd):
+    temp = cmd.replace("seq=", '')
+    commands = temp.rstrip(";").split(";")
+    for cmd in commands:
+        temp = cmd.split(" ")
+        parse_cmds(temp) 
+
 def main():
     initialize()
     while not end_prgm_flag:
@@ -272,11 +298,7 @@ def main():
         response = input(prompt).lower()
         commands = response
         if "seq=" in response:
-            temp = response.replace("seq=", '')
-            commands = temp.rstrip(";").split(";")
-            for cmd in commands:
-                temp = cmd.split(" ")
-                parse_cmds(temp)     
+            parse_seq(response)    
         elif commands != "":
             cmds = commands.split(" ")
             parse_cmds(cmds)

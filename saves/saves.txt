@@ -1,2 +1,2 @@
-seq=set threads 1;set wait-time 4;set wait-interval 1;set wait-on-failure 0;set re-try 0;set password-file None;set password password1234;set username-file None;set usernames None;set username unknown;set target-file None;set targets None;set target 192.168.1.254;set verbose True;set print-failures False;set stop-on-success None;load ssh;set port 2222;set timeout 3;set banner-timeout 10;set allow-hosts True;
-seq=set threads 1;set wait-time 4;set wait-interval 1;set wait-on-failure 0;set re-try 0;set password-file None;set password password1234;set username-file None;set usernames None;set username unknown;set target-file None;set targets None;set target 192.168.1.254;set verbose True;set print-failures False;set stop-on-success None;load ssh;set port 2222;set timeout 3;set banner-timeout 10;set allow-hosts True;
+2019-08-05 21:06||seq=set username test;
+2019-08-05 21:06||seq=set password test;set username test;

@@ -165,21 +165,26 @@ def run(username, password, target):
             plugin_vars['rdp-path']['Value'] = "/usr/bin/rdesktop"
             rdp_bin = plugin_vars['rdp-path']['Value']
     elif rdp_bin == "xfreerdp":
+        failure_lst = ["LOGIN_FAILURE", "AUTHENTICATION_FAILED"]
         if rdp_path is None or "xfreerdp" not in rdp_path:
             plugin_vars['rdp-path']['Value'] = "/usr/bin/xfreerdp"
             rdp_bin = plugin_vars['rdp-path']['Value']
         cmd = "{} /v:{} /u:{} /p:{} /client-hostname:{} /cert-ignore +auth-only".format(rdp_bin,target,username,password,target,target)
-        if verbose:
-            print("cmd: " + cmd)
+        
         if proxy_ip is not None:
             append = "/proxy:{}://{}:{}".format(proxy_proto,proxy_ip,proxy_port)
             cmd = cmd + " " + append
+            if verbose:
+                print("cmd: " + cmd)
         result = subprocess.run(cmd.split(), capture_output=True)
         if verbose:
             print(result)
             #print("sterr: " + result.stderr.decode())
             #print("stdout: " + result.stdout.decode())
-        if "AUTHENTICATION_FAILED" in str(result):
+        for x in failure_lst:
+            if x in str(result):
+                failed = True
+        if failed:
             success = False
             if verbose:
                 colors.PrintColor("INFO", "Failed Authentication --> {}".format(attempt))
