@@ -272,7 +272,7 @@ def refresh_plugins():
                         "Name": dict_name,
                         "Path": f[0]
                     }
-                    system_vars["Available-Plugins"].update({dict_name: dict_value})
+                    system_vars['Available-Plugins'].update({dict_name: dict_value})
     update_cmds()
 
 def count_plugins():
