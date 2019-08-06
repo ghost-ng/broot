@@ -110,7 +110,10 @@ def parse_cmds(cmds):
                 if cmds[1] == "sub-cmds":
                     if len(cmds) == 3:
                         sub_cmds = var.get_sub_cmds(cmds[2])
-                        for x in sub_cmds: print(x)
+                        try:
+                            for x in sub_cmds: print(x)
+                        except TypeError:
+                            pass
                 if cmds[1] == "loaded-plugin":
                     if len(cmds) > 2:
                         if cmds[2] == "name":
