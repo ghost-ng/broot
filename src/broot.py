@@ -78,6 +78,7 @@ def parse_cmds(cmds):
                     var.reload_loaded_plugin()
                 if cmds[1] == "plugins":
                     var.refresh_plugins()
+                    var.show_plugins()
                     var.count_plugins()
                 #if cmds[1] == "self":
                 #    importlib.reload(engine)
@@ -94,7 +95,7 @@ def parse_cmds(cmds):
                 if cmds[1] == "creds":
                     var.print_successes()
                 if cmds[1] == "plugins":
-                    var.refresh_plugins()
+                    #var.refresh_plugins()
                     var.show_plugins()
                     #var.count_plugins()
                 if cmds[1] == "commands":
