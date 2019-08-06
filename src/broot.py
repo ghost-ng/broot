@@ -80,6 +80,7 @@ def parse_cmds(cmds):
                     var.refresh_plugins()
                     var.show_plugins()
                     var.count_plugins()
+                    var.update_cmds()
                 #if cmds[1] == "self":
                 #    importlib.reload(engine)
                 #    importlib.reload(var)
@@ -283,6 +284,7 @@ def handle_random_input(variable, cmds):
 def initialize():
     clear_screen()
     var.refresh_plugins()
+    var.update_cmds()
     update_paths()
     print(art.banner)
     print(about)
