@@ -183,7 +183,7 @@ def run(username, password, target):
             print(result)
             #print("sterr: " + result.stderr.decode())
             #print("stdout: " + result.stdout.decode())
-        if "exit status 1" in result:
+        if "exit status 1" in str(result):
             success = False
             # print_fails is True:
             #     colors.PrintColor("INFO", "Failed Authentication --> {}".format(attempt))                
@@ -194,7 +194,7 @@ def run(username, password, target):
                 if "Host unreachable" in str(result):
                     colors.PrintColor("FAIL", "Host is unreachable!")
                     success = False
-        elif "exit status 0" in result:
+        elif "exit status 0" in str(result):
             success = True
         else:
             success = False

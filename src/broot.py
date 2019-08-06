@@ -253,8 +253,8 @@ def validate_options():
     return validated
 
 def format_variable(variable, setting):
-    bool_true = ["yes", "true", "1", "t"]
-    bool_false = ["no", "false", "0", "n"]
+    bool_true = ["yes", "true", "1", "t", "y"]
+    bool_false = ["no", "false", "0", "n", "f"]
     if variable['Type'] == "Boolean":
         if str(setting).lower() in bool_true:
             return True
