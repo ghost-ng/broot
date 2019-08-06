@@ -178,7 +178,8 @@ def broot(q, loaded_plugin):
                             check_status(status, creds)
                             attempt_number += 1
             else:
-                print("Skipping...")
+                if verbose:
+                    print("Skipping...")
                 attempt_number += 1
             
         else:
