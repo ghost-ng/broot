@@ -250,8 +250,10 @@ def initialize():
         clean_up(target_list)
     except KeyboardInterrupt:
         print("punch!")
-    except UnboundLocalError:
-        pass
+    except UnboundLocalError as e:
+        if verbose:
+            print(e)
+            print(sys.exc_info)
     try:
         # Wait for queue to empty
         while not task_queue.empty():
