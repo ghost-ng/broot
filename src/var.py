@@ -602,7 +602,7 @@ def update_cmds():
         "use": {
             "Command": "use",
             "Help": "Load a new plugin.  This will add any new variables and erase all data associated to any previously loaded plugins.",
-            "Sub-Cmds": avail_mods_to_list() + ['config'],
+            "Sub-Cmds": ['config'].append(avail_mods_to_list()),
             "Usage": "use <plugin>",
             "Alias": "load"
         },
