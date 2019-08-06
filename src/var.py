@@ -261,7 +261,7 @@ def import_plugin(name):
 def refresh_plugins():
     system_vars["Available-Plugin"] = {}
     root = os.getcwd()
-    path = root + "\..\plugins"
+    path = os.path.join(os.getcwd(), "..", "plugins")
     dir_list = os.walk(path)
     for f in dir_list:
         if len(f[2]) > 0:
