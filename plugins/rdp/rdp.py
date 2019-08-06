@@ -149,7 +149,7 @@ plugin_vars = {
 #############################
 #This function does the main exection of the brutefore method and MUST BE HERE
 def run(username, password, target):
-    print_fails = vars.global_vars['print-failures']['Value']
+    print_fails = global_vars['print-failures']['Value']
     verbose = global_vars['verbose']['Value']
     attempt = "Target:{} Username:{} Password:{}".format(target, username, password)
     failed = False
