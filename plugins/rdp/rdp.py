@@ -151,6 +151,7 @@ plugin_vars = {
 def run(username, password, target):
     verbose = global_vars['verbose']['Value']
     attempt = "Target:{} Username:{} Password:{}".format(target, username, password)
+    failed = False
     success = False
     if os.name == 'nt':
         colors.PrintColor("WARN","Windows is not supported at this time!")
