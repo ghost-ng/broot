@@ -148,7 +148,10 @@ def broot(q, loaded_plugin):
             if skip is False:
                 try:
                     status = loaded_plugin.run(username, password, target)
-                except NameError:
+                except NameError as e:
+                    if verbose:
+                        print(e)
+                        print(sys.exc_info)
                     colors.PrintColor("FAIL", "Unable to find 'run' function")
                     return
                 check_status(status, creds)
