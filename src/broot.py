@@ -50,8 +50,15 @@ def parse_cmds(cmds):
                 engine.exitFlag = True
                 sys.exit()
             elif cmds[0] == "reset":
-                var.reset_all_vars()
-                colors.PrintColor("INFO","Reset complete")
+                if len(cmds) > 1:
+                    if cmds[1] == "creds":
+                        creds = var.system_vars['valid-creds']
+                        creds['Credentials'] = []
+                        creds['Usernames'] = []
+                        creds['Targets'] = []
+                else:
+                    var.reset_all_vars()
+                    colors.PrintColor("INFO","Reset complete")
             elif cmds[0] == "validate":
                 if validate_options() is True:
                     colors.PrintColor("INFO", "Everything seems ok!")
