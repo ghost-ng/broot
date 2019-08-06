@@ -492,9 +492,9 @@ def get_available_cmds():
 def get_sub_cmds(cmd):
     try:
         sub_cmds = global_cmds[cmd]['Sub-Cmds']
+        return sub_cmds
     except:
         pass
-    return sub_cmds
 
 def reset_all_vars():
     for d in global_vars.keys():
