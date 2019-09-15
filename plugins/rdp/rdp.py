@@ -135,15 +135,19 @@ plugin_vars = {
     },
     'proxy-port': {
         "Name": "Proxy-Port",
-        "Value": 8080,
+        "Value": None,
         "Type": 'Integer',
-        "Default": 8080,
+        "Default": None,
         "Help": "The listening port for the proxy service",
         "Example": "9050"
     }
 
 }
 
+def validate():
+    if plugin_vars['proxy-protocol']['Value'] not in ['socks4', 'socks5', 'http', None]:
+        print_fail("Proxy protocol must be socks4, socks5, or http")
+        return False
 #############################
 #SECTION 5 - MAIN
 #############################

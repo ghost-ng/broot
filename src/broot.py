@@ -165,12 +165,13 @@ def parse_cmds(cmds):
                             variable = var.global_vars[cmds[1].lower()]
                             if cmds[2] == 'random':
                                 handle_random_input(variable, cmds)
+                            elif "file" in cmds[1]:
+                                filename = var.file_exists(cmds[2])
+                                variable['Value'] = filename
+                            elif "list" in cmds[1]:
+                                variable['Value'] = format_variable(variable)
                             else:
-                                if "file" in cmds[1]:
-                                    filename = var.file_exists(cmds[2])
-                                    variable['Value'] = filename
-                                else:
-                                    variable['Value'] = format_variable(variable, cmds[2])
+                                variable['Value'] = format_variable(variable, cmds[2])
                         elif cmds[1] in loaded_plugin.plugin_vars:
                             variable = loaded_plugin.plugin_vars[cmds[1].lower()]
                             variable['Value'] = format_variable(variable, cmds[2])
@@ -257,9 +258,13 @@ def validate_options():
     if var.check_plugin_loaded() is False:
         colors.PrintColor("FAIL", "Please load a plugin")
         validated = False
+#VALIDATE MODULE STUFF
+    else:
+        loaded_plugin = var.get_loaded_plugin_object()
+        validated = loaded_plugin.validate()
     return validated
 
-def format_variable(variable, setting):
+def format_variable(variable, setting=None):
     bool_true = ["yes", "true", "1", "t", "y"]
     bool_false = ["no", "false", "0", "n", "f"]
     if variable['Type'] == "Boolean":
@@ -273,6 +278,18 @@ def format_variable(variable, setting):
             return temp
         except:
             colors.PrintColor("FAIL", "Incorrect variable type")
+    elif variable['Type'] == 'List':
+        exit_loop = False
+        input_list = []
+        print("Enter input, separate each item with ENTER [CTRL-C TO END]")
+        while exit_loop is False:
+            try:
+                res = input()
+                input_list.append(res)
+            except KeyboardInterrupt:
+                exit_loop = True
+        return input_list
+
     elif str(setting).lower() == "none":
         return None
     else:

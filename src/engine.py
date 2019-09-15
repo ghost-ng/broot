@@ -17,7 +17,7 @@ threads = []
 #Order of checks
 # passwords
 #     a. password file
-#     b. passwords list
+#     b. password list
 #     c. single password
 # usernames
 #     a. username file
@@ -45,6 +45,8 @@ def get_passwords():
     password_list = ""
     if var.global_vars['password-file']['Value'] is not None:
         password_list = open(var.global_vars['password-file']['Value'],'r')
+    elif var.global_vars['password-list']['Value'] is not None:
+        password_list = var.global_vars['password-list']['Value']
     else:
         password_list = [var.global_vars['password']['Value']]
     return password_list

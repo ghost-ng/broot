@@ -6,7 +6,7 @@ import colors
 
 def install(package):
     try:
-        pipmain(['install', package])
+        pipmain(['install', package, '--user'])
         colors.PrintColor("SUCCESS", "Installed Successfully")
     except Exception as e:
         colors.PrintColor("FAIL", "Unable to install")

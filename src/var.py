@@ -72,14 +72,14 @@ global_vars = {
         "Help": "A list of usernames, 1 per line, in a file.",
         "Example": r"C:\Users\MidnightSeer\Documents\passwords.lst"
     },
-    # 'passwords': {
-    #     "Name": "Passwords",
-    #     "Value": None,
-    #     "Type": 'String',
-    #     "Default": "[empty]",
-    #     "Help": "A comma seperated list of passwords.",
-    #     "Example": "toor,password12324,qaz123456"
-    # },
+    'password-list': {
+        "Name": "Password-List",
+        "Value": None,
+        "Type": 'List',
+        "Default": None,
+        "Help": "A 'return-key' separated list'",
+        "Example": "[toor,password12324,qaz123456]"
+    },
     'password': {
         "Name": "Password",
         "Value": None,
@@ -567,7 +567,7 @@ def update_cmds():
         "reset": {
             "Command": "reset",
             "Help": "Reset all global variables to their defaults",
-            "Sub-Cmds": None,
+            "Sub-Cmds": 'creds',
             "Usage": "reset",
             "Alias": None
         },
