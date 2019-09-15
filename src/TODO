@@ -3,3 +3,7 @@
 - add ability to save full configuration
 - add ability to load a query
 - add ability to load a configuration
+
+code fixes:
+- update code to reflect new print function in 'colors.py'
+- fix the issue that cause 'rdp' to show as 'rd'

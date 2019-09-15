@@ -260,17 +260,19 @@ def import_plugin(name):
 
 def refresh_plugins():
     system_vars["Available-Plugin"] = {}
+    words_to_ignore = ['pyc','output']
     root = os.getcwd()
     path = os.path.join(os.getcwd(), "..", "plugins")
     dir_list = os.walk(path)
-    for f in dir_list:
-        if len(f[2]) > 0:
-            for d in f[2]:
-                dict_name = d.rstrip(".py")
-                if ".pyc" not in dict_name:
+    for file_directory in dir_list:
+        if len(file_directory[2]) > 0:       #if file placeholder is not empty
+            for file in file_directory[2]:
+                f_array = os.path.splitext(file)
+                if ".py" == f_array[1]:
+                    dict_name = f_array[0]
                     dict_value = {
                         "Name": dict_name,
-                        "Path": f[0]
+                        "Path": file_directory[0]
                     }
                     system_vars['Available-Plugins'].update({dict_name: dict_value})
     update_cmds()
