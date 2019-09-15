@@ -34,3 +34,21 @@ def PrintColor(status, msg):
     else:
         text = "[*] " + msg + RSTCOLORS
     print(text)
+
+def print_good(msg):
+    PrintColor("SUCCESS", msg)
+
+def print_fail(msg):
+    PrintColor("FAIL", msg)
+
+def print_warn(msg):
+    PrintColor("WARN", msg)
+
+def print_info(msg):
+    PrintColor("INFO", msg)
+
+def print_dbug(msg):
+    PrintColor("DEBUG", msg)
+
+def print_stat(msg):
+    PrintColor("STATUS", msg)

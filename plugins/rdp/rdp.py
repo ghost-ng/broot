@@ -3,16 +3,14 @@
 ##############################################
 #SECTION 0 - DEFAULT IMPORTS (DO NOT CHANGE)
 #############################################
-
 import sys
 import os
+import subprocess
 sys.path.append(os.path.join(os.getcwd(), "..", "..", "misc"))
-import colors
+from colors import print_good, print_fail, print_dbug, print_info, print_warn, print_stat
 sys.path.append(os.path.join(os.getcwd(), "..", "..", "src"))
 import requires
 from var import global_vars
-import subprocess
-
 
 ###########################
 #SECTION 1 - IMPORTS
@@ -36,6 +34,8 @@ name = ""
 description = '''
 The rdp plugin helps with probing the rdp service to determine valid credentials.\
 This is a simple plugin that comes with the default 'broot' framework.
+
+Note: Unable to checks creds for RDP Security!
 '''
 author = "midnightseer"
 version = "1.0"
@@ -82,9 +82,9 @@ plugin_cmds = {
 
 #function to define what to do with the new commands
 def parse_plugin_cmds(commands):
-    cmds = commands.split(" ")
-    if cmds[0] == "test":
-        print("success!")
+    # cmds = commands.split(" ")
+    # if cmds[0] == "test":
+    #     print("success!")
     pass
 
 #############################
@@ -103,10 +103,10 @@ plugin_vars = {
     },
     'rdp-bin': {
         "Name": "RDP-Bin",
-        "Value": None,
+        "Value": "xfreerdp",
         "Type": 'String',
         "Default": None,
-        "Help": "Options are: rdesktop xfreerdp",
+        "Help": "Currently only works with freerdp",
         "Example": "xfreerdp"
     },
     'rdp-path': {
@@ -149,6 +149,7 @@ plugin_vars = {
 #############################
 #This function does the main exection of the brutefore method and MUST BE HERE
 def run(username, password, target):
+    skipped = []        #list of rdp servers with rdp security
     verbose = global_vars['verbose']['Value']
     if verbose:
         colors.PrintColor("INFO", "Running RDP Plugin")
@@ -164,42 +165,42 @@ def run(username, password, target):
     proxy_proto = plugin_vars['proxy-protocol']['Value']
     proxy_port = plugin_vars['proxy-port']['Value']
     proxy_ip = plugin_vars['proxy-ip']['Value']
-    if rdp_bin == "rdesktop":
-        if rdp_path is None or "rdesktop" not in rdp_path:
-            plugin_vars['rdp-path']['Value'] = "/usr/bin/rdesktop"
-            rdp_bin = plugin_vars['rdp-path']['Value']
-    elif rdp_bin == "xfreerdp":
-        failure_lst = ["LOGON_FAILURE", "AUTHENTICATION_FAILED"]
-        if rdp_path is None or "xfreerdp" not in rdp_path:
-            plugin_vars['rdp-path']['Value'] = "/usr/bin/xfreerdp"
-            rdp_bin = plugin_vars['rdp-path']['Value']
-        cmd = "{} /v:{} /u:{} /p:{} /client-hostname:{} /cert-ignore +auth-only".format(rdp_bin,target,username,password,target,target)
-        
-        if proxy_ip is not None:
-            append = "/proxy:{}://{}:{}".format(proxy_proto,proxy_ip,proxy_port)
-            cmd = cmd + " " + append
-            if verbose:
-                print("cmd: " + cmd)
-        result = subprocess.run(cmd.split(), capture_output=True)
+
+    failure_lst = ["LOGON_FAILURE", "AUTHENTICATION_FAILED"]
+    if rdp_path is None or "xfreerdp" not in rdp_path:
+        plugin_vars['rdp-path']['Value'] = "/usr/bin/xfreerdp"
+        rdp_bin = plugin_vars['rdp-path']['Value']
+    cmd = "{} /v:{} /u:{} /p:{} /client-hostname:{} /cert-ignore +auth-only /log-level:trace +sec-ext".format(rdp_bin,target,username,password,target)
+    
+    if proxy_ip is not None:
+        append = "/proxy:{}://{}:{}".format(proxy_proto,proxy_ip,proxy_port)
+        cmd = cmd + " " + append
         if verbose:
-            print(result)
-            #print("sterr: " + result.stderr.decode())
-            #print("stdout: " + result.stdout.decode())
-        if "exit status 1" in str(result):
-            success = False
-            # print_fails is True:
-            #     colors.PrintColor("INFO", "Failed Authentication --> {}".format(attempt))                
-            if verbose is True:
-                if "proxy: failed" in str(result):
-                    success = False
-                    colors.PrintColor("FAIL", "Proxy Connection Error!")
-                if "Host unreachable" in str(result):
-                    colors.PrintColor("FAIL", "Host is unreachable!")
-                    success = False
-        elif "exit status 0" in str(result):
-            success = True
-        else:
-            success = False
-            colors.PrintColor("WARN", "Unknown Result --> {}".format(attempt))
+            print("cmd: " + cmd)
+    result = subprocess.run(cmd.split(), capture_output=True)
+    if verbose:
+        print(result)
+        #print("sterr: " + result.stderr.decode())
+        #print("stdout: " + result.stdout.decode())
+    if "SSL_NOT_ALLOWED_BY_SERVER" in str(result) and "Negotiated RDP security" in str(result):
+        if verbose:
+            print_warn("Server Uses RDP Security, Unable to determine authentication status")
+        skipped.append(target)
+    elif "exit status 1" in str(result):
+        success = False
+        # print_fails is True:
+        #     colors.PrintColor("INFO", "Failed Authentication --> {}".format(attempt))                
+        if verbose is True:
+            if "proxy: failed" in str(result):
+                success = False
+                colors.PrintColor("FAIL", "Proxy Connection Error!")
+            if "Host unreachable" in str(result):
+                colors.PrintColor("FAIL", "Host is unreachable!")
+                success = False
+    elif "exit status 0" in str(result):
+        success = True
+    else:
+        success = False
+        colors.PrintColor("WARN", "Unknown Result --> {}".format(attempt))
 
     return success
