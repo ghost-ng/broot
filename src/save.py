@@ -1,7 +1,7 @@
 import os
 import sys
 sys.path.append(os.path.join(os.getcwd(), "..", "misc"))
-import colors
+from printlib import *
 import var
 from prettytable import PrettyTable
 import datetime

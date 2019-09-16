@@ -5,19 +5,19 @@ import requires
 import importlib
 from time import sleep
 sys.path.append(os.path.join(os.getcwd(), "..", "misc"))
-import colors
+from printlib import *
 
 
 try:
     from prettytable import PrettyTable
 except ModuleNotFoundError:
-    colors.PrintColor("WARN", "Unable to find 'Prettytable', install?")
+    print_warn("Unable to find 'Prettytable', install?")
     ans = input("[Y/N] ")
     if ans.lower() == "y":
         requires.install('prettytable')
         from prettytable import PrettyTable
     else:
-        colors.PrintColor("FAIL", "'Prettytable' is a dependency")
+        print_fail("'Prettytable' is a dependency")
         input()
 
 #GLOBALS
@@ -206,11 +206,10 @@ def gen_random(command):
 
 def file_exists(filename):
     exists = os.path.isfile(filename)  # initial check 
-    #colors.PrintColor("FAIL","File does not exist, try again")    
     try:
         if filename is not None:
             while exists is False:
-                colors.PrintColor("FAIL", "File does not exist, try again")
+                print_fail("File does not exist, try again")
                 file = input("[New File]: ")
                 return file_exists(file)
     except KeyboardInterrupt:
@@ -283,7 +282,7 @@ def count_plugins():
 
 def show_plugins():
     plugin_list = []
-    colors.PrintColor("INFO", "Available Plugins:")
+    print_info("Available Plugins:")
     count = 0
     for plugin in system_vars['Available-Plugins'].keys():
         if count < 5:
@@ -293,7 +292,7 @@ def show_plugins():
         count += 1
     print()
     msg = "Total: {}".format(count_plugins())
-    colors.PrintColor("INFO", msg)
+    print_info(msg)
 
 def opts_to_table(var_type):
     table = PrettyTable(['Name', 'Value', 'Example'])
@@ -306,7 +305,7 @@ def opts_to_table(var_type):
         v = loaded_plugin.plugin_vars
     for d in v:
         table.add_row([v[d]['Name'], v[d]['Value'], v[d]['Example']])
-    colors.PrintColor("Success", "{} Variables:".format(var_type.capitalize()))
+    print_good("{} Variables:".format(var_type.capitalize()))
     print(table)
 
 
@@ -323,7 +322,7 @@ def print_enum_dict(tree, m, d=0):
             if (isinstance(val, dict)):
                 print()
                 msg = "\t" * d + key
-                colors.PrintColor("STATUS", msg)
+                print_stat(msg)
                 print_enum_dict(val, d+1)
             else:
                 msg = "\t" * d + str(key) + marker
@@ -351,9 +350,9 @@ def reload_loaded_plugin():
     m = system_vars['Loaded-Plugin']['Object']
     try:
         importlib.reload(m)
-        colors.PrintColor("SUCCESS", "Successfully reloaded plugin")
+        print_good("Successfully reloaded plugin")
     except:
-        colors.PrintColor("FAIL", "Unable to load plugin")
+        print_fail("Unable to load plugin")
         print(sys.exc_info())
 
 def unload_plugin():
@@ -425,22 +424,22 @@ def get_help(cmds):
             if global_vars['verbose']['Value']:
                 print(sys.exc_info())
     else:
-        colors.PrintColor("INFO", "Printing Global Variables:")
+        print_info("Printing Global Variables:")
         sleep(.5)
         print_enum_dict(global_vars, m="vars")
         print()
-        colors.PrintColor("INFO", "Printing Global Commands:")
+        print_info("Printing Global Commands:")
         sleep(.5)
         print_enum_dict(global_cmds, m="vars")
         print()
         if check_plugin_loaded():
             loaded_plugin = get_loaded_plugin_object()
             print()
-            colors.PrintColor("INFO", "Printing Plugin Variables:")
+            print_info("Printing Plugin Variables:")
             sleep(.5)
             print_enum_dict(loaded_plugin.plugin_vars, m="vars")
             print()
-            colors.PrintColor("INFO", "Printing Plugin Commands:")
+            print_info("Printing Plugin Commands:")
             sleep(.5)
             print_enum_dict(loaded_plugin.plugin_cmds, m="vars")
 

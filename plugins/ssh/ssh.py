@@ -1,7 +1,7 @@
 import sys
 import os
 sys.path.append(os.path.join(os.getcwd(), "..", "..", "misc"))
-import colors
+from printlib import *
 sys.path.append(os.path.join(os.getcwd(), "..", "..", "src"))
 import requires
 from var import global_vars
@@ -9,13 +9,13 @@ from var import global_vars
 try:
     import paramiko
 except ModuleNotFoundError:
-    colors.PrintColor("WARN", "Unable to find 'paramiko', install?")
+    print_warn("Unable to find 'paramiko', install?")
     ans = input("[Y/N] ")
     if ans.lower() == "y":
         requires.install('paramiko')
         import paramiko
     else:
-        colors.PrintColor("FAIL", "'Paramiko' is a dependency!")
+        print_fail("'Paramiko' is a dependency!")
         input()
     
 ###################
@@ -116,19 +116,19 @@ def run(username, password, target):
         if plugin_vars['allow-hosts']['Value']:  
             client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         if verbose:
-            colors.PrintColor("INFO", "Trying " + attempt)
+            print_info("Trying " + attempt)
         client.connect(target, username=username, password=password, timeout=timeout, banner_timeout=banner_timeout, port=port)
         client.close()
         success = True
     except paramiko.AuthenticationException:
         if verbose:
-            colors.PrintColor("INFO", "Failed Authentication --> {}".format(attempt))
+            print_info("Failed Authentication --> {}".format(attempt))
     except paramiko.SSHException as sshException:
         if verbose:    
-            colors.PrintColor("FAIL", "Fail --> {} Could not establish SSH connection".format(attempt))
+            print_fail("Fail --> {} Could not establish SSH connection".format(attempt))
     except Exception as e:
         if verbose:
-            colors.PrintColor("FAIL", "Fail --> {} Error! {}".format(attempt, e))
+            print_fail("Fail --> {} Error! {}".format(attempt, e))
     finally:
         return success
         

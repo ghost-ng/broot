@@ -6,4 +6,3 @@
 
 code fixes:
 - update code to reflect new print function in 'colors.py'
-- fix the issue that cause 'rdp' to show as 'rd'

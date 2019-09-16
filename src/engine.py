@@ -2,7 +2,7 @@ import sys, os
 import var
 import multiprocessing
 sys.path.append(os.path.join(os.getcwd(), "..", "misc"))
-import colors
+from printlib import *
 import threading
 from time import sleep
 import queue
@@ -33,10 +33,9 @@ def clear_screen():
     pass
 
 def file_exists(filename):
-    exists = os.path.isfile(filename)  # initial check 
-    #colors.PrintColor("FAIL","File does not exist, try again")    
+    exists = os.path.isfile(filename)  # initial check   
     while exists is False:
-        colors.PrintColor("FAIL", "File does not exist, try again")
+        print_fail("File does not exist, try again")
         file = input("[New File]: ")
         return file_exists(file)
     return exists
@@ -84,10 +83,10 @@ def check_status(status, creds):
     plugin_name = var.get_loaded_plugin_name()
     attempt = "Plugin:{} Target:{} Username:{} Password:{}".format(plugin_name, target, username, password)
     if status is True:
-        colors.PrintColor("SUCCESS", "Success --> {}".format(attempt))
+        print_good("Success --> {}".format(attempt))
         var.save_creds(creds)
     elif status is False and var.global_vars['print-failures']['Value'] is True:
-        colors.PrintColor("FAIL", "Failed --> {}".format(attempt))
+        print_fail("Failed --> {}".format(attempt))
 
 class brootThread (threading.Thread):
 
@@ -154,7 +153,7 @@ def broot(q, loaded_plugin):
                     if verbose:
                         print(e)
                         print(sys.exc_info)
-                    colors.PrintColor("FAIL", "Unable to find 'run' function")
+                    print_fail("Unable to find 'run' function")
                     return
                 check_status(status, creds)
                 attempt_number += 1
@@ -175,7 +174,7 @@ def broot(q, loaded_plugin):
                             try:
                                 status = loaded_plugin.run(username, password, target)
                             except NameError:
-                                colors.PrintColor("FAIL", "Unable to find 'run' function")
+                                print_fail("Unable to find 'run' function")
                                 return
                             check_status(status, creds)
                             attempt_number += 1
@@ -228,9 +227,9 @@ def initialize():
         #Load the queue
         #queueLock.acquire()
         for target in target_list:
-            #colors.PrintColor("INFO", "Current Target: " + target)
+            #print_info("Current Target: " + target)
             for username in username_list:
-                #colors.PrintColor("INFO", "Current Username: " + username)
+                #print_info("Current Username: " + username)
                 #if type(username_list) is not list:
                     #username_list.seek(0)
                 for password in password_list:

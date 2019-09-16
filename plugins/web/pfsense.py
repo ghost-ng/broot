@@ -1,7 +1,7 @@
 import sys
 import os
 sys.path.append(os.path.join(os.getcwd(), "..", "..", "misc"))
-import colors
+from printlib import *
 sys.path.append(os.path.join(os.getcwd(), "..", "..", "src"))
 import requires
 import requests
@@ -11,13 +11,13 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 try:
     from bs4 import BeautifulSoup
 except ModuleNotFoundError:
-    colors.PrintColor("WARN", "Unable to find 'bs4', install?")
+    print_warn("Unable to find 'bs4', install?")
     ans = input("[Y/N] ")
     if ans.lower() == "y":
         requires.install('bs4')
         from bs4 import BeautifulSoup
     else:
-        colors.PrintColor("FAIL", "'bs4' is a dependency!")
+        print_fail("'bs4' is a dependency!")
         input()
 
 ###################

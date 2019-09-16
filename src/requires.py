@@ -2,13 +2,13 @@ import os
 import sys
 from pip._internal import main as pipmain
 sys.path.append(os.path.join(os.getcwd(), "..", "misc"))
-import colors
+from printlib import *
 
 def install(package):
     try:
         pipmain(['install', package, '--user'])
-        colors.PrintColor("SUCCESS", "Installed Successfully")
+        print_good("Installed Successfully")
     except Exception as e:
-        colors.PrintColor("FAIL", "Unable to install")
+        print_fail("Unable to install")
         print(e)
         input()

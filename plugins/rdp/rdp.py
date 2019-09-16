@@ -7,7 +7,7 @@ import sys
 import os
 import subprocess
 sys.path.append(os.path.join(os.getcwd(), "..", "..", "misc"))
-from colors import print_good, print_fail, print_dbug, print_info, print_warn, print_stat
+from printlib import *
 sys.path.append(os.path.join(os.getcwd(), "..", "..", "src"))
 import requires
 from var import global_vars
@@ -18,13 +18,13 @@ from var import global_vars
 # try:
 #     import rdpy    #HERE
 # except ModuleNotFoundError:
-#     colors.PrintColor("WARN", "Unable to find 'rdpy', install?")   #HERE
+#     print_warn("Unable to find 'rdpy', install?")   #HERE
 #     ans = input("[Y/N] ")
 #     if ans.lower() == "y":
 #         requires.install('rdpy')   #HERE
 #         import rdpy
 #     else:
-#         colors.PrintColor("FAIL", "'<new_module_here>' is a dependency!")   #HERE
+#         print_fail("'<new_module_here>' is a dependency!")   #HERE
 #         input()
 
 ###########################
@@ -115,7 +115,7 @@ plugin_vars = {
         "Type": 'String',
         "Default": None,
         "Help": "This is auto filled with a common binary/exe path.  You may still change it.",
-        "Example": r"C:\Users\root\Documents\RDP\freerdp.exe"
+        "Example": r"C:\Users\root\Documents\RDP\wfreerdp.exe"
     },
     'proxy-ip': {
         "Name": "Proxy-IP",
@@ -156,7 +156,7 @@ def run(username, password, target):
     skipped = []        #list of rdp servers with rdp security
     verbose = global_vars['verbose']['Value']
     if verbose:
-        colors.PrintColor("INFO", "Running RDP Plugin")
+        print_info("Running RDP Plugin")
     print_fails = global_vars['print-failures']['Value']
     attempt = "Target:{} Username:{} Password:{}".format(target, username, password)
     failed = False
@@ -193,18 +193,18 @@ def run(username, password, target):
     elif "exit status 1" in str(result):
         success = False
         # print_fails is True:
-        #     colors.PrintColor("INFO", "Failed Authentication --> {}".format(attempt))                
+        #     print_info("Failed Authentication --> {}".format(attempt))                
         if verbose is True:
             if "proxy: failed" in str(result):
                 success = False
-                colors.PrintColor("FAIL", "Proxy Connection Error!")
+                print_fail("Proxy Connection Error!")
             if "Host unreachable" in str(result):
-                colors.PrintColor("FAIL", "Host is unreachable!")
+                print_fail("Host is unreachable!")
                 success = False
     elif "exit status 0" in str(result):
         success = True
     else:
         success = False
-        colors.PrintColor("WARN", "Unknown Result --> {}".format(attempt))
+        print_warn("Unknown Result --> {}".format(attempt))
 
     return success

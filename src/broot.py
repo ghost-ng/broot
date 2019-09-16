@@ -4,7 +4,7 @@ from time import sleep
 import var
 import engine
 sys.path.append(os.path.join(os.getcwd(), "..", "misc"))
-import colors
+from printlib import *
 import importlib
 import art
 import save
@@ -46,7 +46,7 @@ def parse_cmds(cmds):
     try:
         if cmds[0] in avail_cmds:
             if cmds[0] in exit_cmds:
-                colors.PrintColor("INFO", "Exiting")
+                print_info("Exiting")
                 engine.exitFlag = True
                 sys.exit()
             elif cmds[0] == "reset":
@@ -58,10 +58,10 @@ def parse_cmds(cmds):
                         creds['Targets'] = []
                 else:
                     var.reset_all_vars()
-                    colors.PrintColor("INFO","Reset complete")
+                    print_info("Reset complete")
             elif cmds[0] == "validate":
                 if validate_options() is True:
-                    colors.PrintColor("INFO", "Everything seems ok!")
+                    print_info("Everything seems ok!")
             elif cmds[0] in ['clear', 'cls']:
                 clear_screen()
             elif cmds[0] == "version":
@@ -72,7 +72,7 @@ def parse_cmds(cmds):
                 var.get_help(cmds)
             elif cmds[0] == "run" or cmds[0] == "broot":
                 if validate_options() is True:
-                    colors.PrintColor("INFO", "Executing...")
+                    print_info("Executing...")
                     if var.check_plugin_loaded():
                         engine.initialize()
                     importlib.reload(engine)
@@ -113,7 +113,7 @@ def parse_cmds(cmds):
                     if var.check_plugin_loaded():
                         loaded_plugin_name = var.get_loaded_plugin_name()
                         loaded_plugin_object = var.get_loaded_plugin_object()
-                        print("New Available Commands for '{}' Plugin:".format(loaded_plugin_name))
+                        print_info("New Available Commands for '{}' Plugin:\n".format(loaded_plugin_name))
                         var.print_cmds(loaded_plugin_object.plugin_cmds)
                 if cmds[1] == "sub-cmds":
                     if len(cmds) == 3:
@@ -145,13 +145,13 @@ def parse_cmds(cmds):
                 else:
                     try:
                         var.import_plugin(cmds[1])
-                        colors.PrintColor("SUCCESS", "Loaded {} plugin successfully".format(cmds[1]))
+                        print_good("Loaded {} plugin successfully".format(cmds[1]))
                         plugin = plugin + "/" + cmds[1]
                         var.update_cmds()
                     except ModuleNotFoundError as e:
-                        colors.PrintColor("FAIL", "Plugin not found")
+                        print_fail("Plugin not found")
                     except:
-                        colors.PrintColor("FAIL", "Unable to load plugin")
+                        print_fail("Unable to load plugin")
                         print(sys.exc_info())
                         print("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
                 
@@ -178,7 +178,7 @@ def parse_cmds(cmds):
                     except IndexError:
                         pass
                     except Exception as e:
-                        colors.PrintColor("FAIL", "Unable to set variable (is the right plugin loaded?)")
+                        print_fail("Unable to set variable (is the right plugin loaded?)")
                         if verbose:
                             print(e)
                             print("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
@@ -195,7 +195,7 @@ def parse_cmds(cmds):
                         reset_value = variable['Default']
                         variable['Value'] = format_variable(variable, reset_value)
                 except Exception as e:
-                    colors.PrintColor("FAIL", "Unable to reset the variable (are you sure that's the right variable?)")
+                    print_fail("Unable to reset the variable (are you sure that's the right variable?)")
                     if verbose:
                         print(e)
                         print("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
@@ -206,7 +206,7 @@ def parse_cmds(cmds):
         else:
             print("Unrecognized Command -->", str(cmds))
     except IndexError:
-        colors.PrintColor("FAIL", "Incomplete Command")
+        print_fail("Incomplete Command")
 
 def validate_options():
     validated = True
@@ -224,7 +224,7 @@ def validate_options():
     else:
         user = 1
     if user_file + users + user == 0:
-        colors.PrintColor("FAIL", "Please specify a username, usernames, or username file")
+        print_fail("Please specify a username, usernames, or username file")
         validated = False
 #CHECK PASSWORD OPTIONS
     if var.global_vars['password-file']['Value'] is None:
@@ -236,7 +236,7 @@ def validate_options():
     else:
         password = 1
     if pass_file + password == 0:
-        colors.PrintColor("FAIL", "Please specify a password or password file")
+        print_fail("Please specify a password or password file")
         validated = False
 #CHECK TARGET OPTIONS
     if var.global_vars['target-file']['Value'] is None:
@@ -252,11 +252,11 @@ def validate_options():
     else:
         target = 1
     if target_file + targets + target == 0:
-        colors.PrintColor("FAIL", "Please specify a target, targets, or target file")
+        print_fail("Please specify a target, targets, or target file")
         validated = False
 #CHECK IF MODULE IS LOADED
     if var.check_plugin_loaded() is False:
-        colors.PrintColor("FAIL", "Please load a plugin")
+        print_fail("Please load a plugin")
         validated = False
 #VALIDATE MODULE STUFF
     else:
@@ -277,7 +277,7 @@ def format_variable(variable, setting=None):
             temp = int(setting)
             return temp
         except:
-            colors.PrintColor("FAIL", "Incorrect variable type")
+            print_fail("Incorrect variable type")
     elif variable['Type'] == 'List':
         exit_loop = False
         input_list = []
@@ -303,7 +303,7 @@ def handle_random_input(variable, cmds):
         else:
             variable['Value'] = format_variable(variable, cmds[2])
     else:
-        colors.PrintColor("WARN", "Cannot set a random value to a non-interger type")
+        print_warn("Cannot set a random value to a non-interger type")
 
 def initialize():
     clear_screen()

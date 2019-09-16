@@ -7,7 +7,7 @@
 import sys
 import os
 sys.path.append(os.path.join(os.getcwd(), "..", "..", "misc"))
-import colors
+from printlib import *
 sys.path.append(os.path.join(os.getcwd(), "..", "..", "src"))
 import requires
 from var import global_vars
@@ -19,13 +19,13 @@ from var import global_vars
 try:
     import <new_module_here>    #HERE
 except ModuleNotFoundError:
-    colors.PrintColor("WARN", "Unable to find '<new_module_here>', install?")   #HERE
+    print_warn("WARN", "Unable to find '<new_module_here>', install?")   #HERE
     ans = input("[Y/N] ")
     if ans.lower() == "y":
         requires.install('<new_module_here>')   #HERE
         import <new_module_here>
     else:
-        colors.PrintColor("FAIL", "'<new_module_here>' is a dependency!")   #HERE
+        print_fail("'<new_module_here>' is a dependency!")   #HERE
         input()
 
 ###########################
