@@ -231,12 +231,16 @@ def validate_options():
         pass_file = 0
     else:
         pass_file = 1
+    if var.global_vars['password-list']['Value'] is None:
+        password_list = 0
+    else:
+        password_list = 1
     if var.global_vars['password']['Value'] is None:
         password = 0
     else:
         password = 1
-    if pass_file + password == 0:
-        print_fail("Please specify a password or password file")
+    if pass_file + password_list + password == 0:
+        print_fail("Please specify a password, password list, or password file")
         validated = False
 #CHECK TARGET OPTIONS
     if var.global_vars['target-file']['Value'] is None:

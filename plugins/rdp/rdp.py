@@ -13,7 +13,7 @@ import requires
 from var import global_vars
 
 ###########################
-#SECTION 1 - IMPORTS
+#SECTION 1 - PLUGIN IMPORTS
 ###########################
 # try:
 #     import rdpy    #HERE
@@ -26,7 +26,7 @@ from var import global_vars
 #     else:
 #         print_fail("'<new_module_here>' is a dependency!")   #HERE
 #         input()
-
+from time import sleep
 ###########################
 #SECTION 2 - ABOUT
 ###########################
@@ -34,8 +34,6 @@ name = ""
 description = '''
 The rdp plugin helps with probing the rdp service to determine valid credentials.\
 This is a simple plugin that comes with the default 'broot' framework.
-
-Note: Unable to checks creds for RDP Security!
 '''
 author = "midnightseer"
 version = "1.0"
@@ -64,6 +62,8 @@ banner = '''
 Author:  {}
 Version: {}'''.format(art,name,author,version)
 print(banner)
+print_warn("At this time the RDP security protocol is not supported to determine authentication success")
+sleep(2)
 
 #############################
 #SECTION 3 - PLUGIN COMMANDS
@@ -88,6 +88,20 @@ def parse_plugin_cmds(commands):
     pass
 
 #############################
+#SECTION 4 - PLUGIN FUNCTIONS
+#############################
+
+def attempt_autodetect():
+    if os.name == "posix":
+        cmd = "whereis xfreerdp"
+        result = subprocess.run(cmd.split(), capture_output=True)
+        try:
+            return result.stdout.split()[1].decode()
+        except:
+            pass
+    else:
+        pass
+#############################
 #SECTION 4 - PLUGIN VARIABLES
 #############################
 
@@ -101,53 +115,51 @@ plugin_vars = {
         "Help": "This option will try to determine if sticky keys or other backdoors will open a command prompt",
         "Example": "True"
     },
-    'rdp-bin': {
-        "Name": "RDP-Bin",
-        "Value": "xfreerdp",
+    'bin-path': {
+        "Name": "Bin-Path",
+        "Value": attempt_autodetect(),
         "Type": 'String',
         "Default": None,
         "Help": "Currently only works with freerdp",
         "Example": "xfreerdp"
     },
-    'rdp-path': {
-        "Name": "RDP-Path",
+    'domain': {
+        "Name": "Domain",
         "Value": None,
         "Type": 'String',
         "Default": None,
-        "Help": "This is auto filled with a common binary/exe path.  You may still change it.",
-        "Example": r"C:\Users\root\Documents\RDP\wfreerdp.exe"
+        "Help": "The domain to authenticate to",
+        "Example": "constoso.local"
     },
-    'proxy-ip': {
-        "Name": "Proxy-IP",
+    'proxy': {
+        "Name": "Proxy",
         "Value": None,
         "Type": 'String',
         "Default": None,
-        "Help": "The IP of your proxy server",
-        "Example": "10.0.0.4"
-    },
-    'proxy-protocol': {
-        "Name": "Proxy-Protocol",
-        "Value": None,
-        "Type": 'String',
-        "Default": None,
-        "Help": "The options here are socks4 socks5 http",
-        "Example": "socks5"
-    },
-    'proxy-port': {
-        "Name": "Proxy-Port",
-        "Value": None,
-        "Type": 'Integer',
-        "Default": None,
-        "Help": "The listening port for the proxy service",
-        "Example": "9050"
+        "Help": "Proxy settings in the form <protocol>://<ip>:<port>",
+        "Example": "socks4://10.0.0.4:9050"
     }
 
 }
 
 def validate():
-    if plugin_vars['proxy-protocol']['Value'] not in ['socks4', 'socks5', 'http', None]:
-        print_fail("Proxy protocol must be socks4, socks5, or http")
-        return False
+    validated = True
+    if plugin_vars['proxy']['Value'] is not None:
+        proxy_setting = plugin_vars['proxy']['Value']
+        try:
+            temp = proxy_setting.split(":")
+            if len(temp) != 3:
+                validated = False
+                print_fail("Unrecognized Proxy Setting.  Format should be: socks4://10.0.0.4:9050")
+            if temp[0] not in ['socks4', 'socks5', 'http']:
+                validated = False
+                print_fail("Unrecognized Proxy Protocol.  Allowed Protocols are socks4 socks5 http.")
+        except:
+            print_fail("Unrecognized Proxy Setting.  Format should be: socks4://10.0.0.4:9050")
+    if os.name == "nt" and plugin_vars['rdp-path']['Value'] is None:
+        print_fail("You must set a path for freerdp on Windows")
+        validated = False
+    return validated
 #############################
 #SECTION 5 - MAIN
 #############################
@@ -161,26 +173,23 @@ def run(username, password, target):
     attempt = "Target:{} Username:{} Password:{}".format(target, username, password)
     failed = False
     success = False
-    if os.name == 'nt':
-        colors.PrintColor("WARN","Windows is not supported at this time!")
-        return
-    rdp_bin = plugin_vars['rdp-bin']['Value']
-    rdp_path = plugin_vars['rdp-path']['Value']
-    proxy_proto = plugin_vars['proxy-protocol']['Value']
-    proxy_port = plugin_vars['proxy-port']['Value']
-    proxy_ip = plugin_vars['proxy-ip']['Value']
-
+    
+    rdp_bin = plugin_vars['bin-path']['Value']
     failure_lst = ["LOGON_FAILURE", "AUTHENTICATION_FAILED"]
-    if rdp_path is None or "xfreerdp" not in rdp_path:
-        plugin_vars['rdp-path']['Value'] = "/usr/bin/xfreerdp"
-        rdp_bin = plugin_vars['rdp-path']['Value']
+    
     cmd = "{} /v:{} /u:{} /p:{} /client-hostname:{} /cert-ignore +auth-only /log-level:trace +sec-ext".format(rdp_bin,target,username,password,target)
     
-    if proxy_ip is not None:
-        append = "/proxy:{}://{}:{}".format(proxy_proto,proxy_ip,proxy_port)
-        cmd = cmd + " " + append
+    if plugin_vars['proxy']['Value'] is not None:
+        proxy_setting = plugin_vars['proxy']['Value']
+        cmd = cmd + " " + "/proxy:" + proxy_setting
         if verbose:
             print("cmd: " + cmd)
+    if plugin_vars['domain']['Value'] is not None:
+        domain = plugin_vars['domain']['Value']
+        cmd = cmd + " " + "/domain " + domain
+    if os.name == 'nt':
+        win_log = " > ../plugins/rdp/log.txt 2>&1"
+        cmd = cmd + win_log
     result = subprocess.run(cmd.split(), capture_output=True)
     if verbose:
         print(result)
