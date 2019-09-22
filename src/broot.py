@@ -44,14 +44,14 @@ def parse_cmds(cmds):
     #print(exit_cmds)
     verbose = var.global_vars['verbose']['Value']
     try:
-        if cmds[0] in avail_cmds:
-            if cmds[0] in exit_cmds:
+        if cmds[0].lower() in avail_cmds:
+            if cmds[0].lower() in exit_cmds:
                 print_info("Exiting")
                 engine.exitFlag = True
                 sys.exit()
-            elif cmds[0] == "reset":
+            elif cmds[0].lower() == "reset":
                 if len(cmds) > 1:
-                    if cmds[1] == "creds":
+                    if cmds[1].lower() == "creds":
                         creds = var.system_vars['valid-creds']
                         creds['Credentials'] = []
                         creds['Usernames'] = []
@@ -59,54 +59,58 @@ def parse_cmds(cmds):
                 else:
                     var.reset_all_vars()
                     print_info("Reset complete")
-            elif cmds[0] == "validate":
+            elif cmds[0].lower() == "validate":
                 if validate_options() is True:
                     print_info("Everything seems ok!")
-            elif cmds[0] in ['clear', 'cls']:
+                else:
+                    print_fail("Validation Failed!")
+            elif cmds[0].lower() in ['clear', 'cls']:
                 clear_screen()
-            elif cmds[0] == "version":
+            elif cmds[0].lower() == "version":
                 print(version)
-            elif cmds[0] == "about":
+            elif cmds[0].lower() == "about":
                 print(about)
-            elif cmds[0] == "help" or cmds[0] == "?":
+            elif cmds[0].lower() == "help" or cmds[0] == "?":
                 var.get_help(cmds)
-            elif cmds[0] == "run" or cmds[0] == "broot":
+            elif cmds[0].lower() == "run" or cmds[0].lower() == "broot":
                 if validate_options() is True:
                     print_info("Executing...")
                     if var.check_plugin_loaded():
                         engine.initialize()
                     importlib.reload(engine)
-            elif cmds[0] == "back":
+                else:
+                    print_fail("Validation Failed!")
+            elif cmds[0].lower() == "back":
                 plugin = "/broot"
                 var.unload_plugin()
                 var.wipe_loaded_plugin_info()
-            elif cmds[0] == "reload":
-                if cmds[1] == var.get_loaded_plugin_name():
+            elif cmds[0].lower() == "reload":
+                if cmds[1].lower() == var.get_loaded_plugin_name():
                     var.reload_loaded_plugin()
-                if cmds[1] == "plugins":
+                if cmds[1].lower() == "plugins":
                     var.refresh_plugins()
                     var.show_plugins()
                     var.count_plugins()
                     var.update_cmds()
-                #if cmds[1] == "self":
+                #if cmds[1].lower() == "self":
                 #    importlib.reload(engine)
                 #    importlib.reload(var)
-            elif cmds[0] == "save":
-                if cmds[1] == "config":
+            elif cmds[0].lower() == "save":
+                if cmds[1].lower() == "config":
                     save.export_sequence()
-            elif cmds[0] == "show":
-                if cmds[1] == 'config':
+            elif cmds[0].lower() == "show":
+                if cmds[1].lower() == 'config':
                     seq = save.get_current_sequence()
                     print(seq)
-                if cmds[1] == 'saved-configs':
+                if cmds[1].lower() == 'saved-configs':
                     save.show_sequences()
-                if cmds[1] == "creds":
+                if cmds[1].lower() == "creds":
                     var.print_successes()
-                if cmds[1] == "plugins":
+                if cmds[1].lower() == "plugins":
                     #var.refresh_plugins()
                     var.show_plugins()
                     #var.count_plugins()
-                if cmds[1] == "commands":
+                if cmds[1].lower() == "commands":
                     var.refresh_plugins()
                     var.print_cmds(var.global_cmds)
                     #var.print_enum_dict(var.global_cmds, m="tree")
@@ -115,25 +119,25 @@ def parse_cmds(cmds):
                         loaded_plugin_object = var.get_loaded_plugin_object()
                         print_info("New Available Commands for '{}' Plugin:\n".format(loaded_plugin_name))
                         var.print_cmds(loaded_plugin_object.plugin_cmds)
-                if cmds[1] == "sub-cmds":
+                if cmds[1].lower() == "sub-cmds":
                     if len(cmds) == 3:
                         sub_cmds = var.get_sub_cmds(cmds[2])
                         try:
                             for x in sub_cmds: print(x)
                         except TypeError:
                             pass
-                if cmds[1] == "loaded-plugin":
+                if cmds[1].lower() == "loaded-plugin":
                     if len(cmds) > 2:
                         if cmds[2] == "name":
                             print(var.get_loaded_plugin_name())
                         if cmds[2] == "object":
                             print(var.get_loaded_plugin_object())
-                if cmds[1] == "options":
+                if cmds[1].lower() == "options":
                     var.opts_to_table("global")
                     if var.check_plugin_loaded():
                         var.opts_to_table("plugin")
-            elif cmds[0] == "use" or cmds[0] == "load":
-                if cmds[1] == "config":
+            elif cmds[0].lower() == "use" or cmds[0].lower() == "load":
+                if cmds[1].lower() == "config":
                     try:
                         resp = input("[?] [m]erge/[r]eset: ")
                         if resp.lower() == "r":
@@ -144,9 +148,10 @@ def parse_cmds(cmds):
                         pass
                 else:
                     try:
-                        var.import_plugin(cmds[1])
-                        print_good("Loaded {} plugin successfully".format(cmds[1]))
-                        plugin = plugin + "/" + cmds[1]
+                        var.import_plugin(cmds[1].lower())
+                        print_good("Loaded {} plugin successfully".format(cmds[1].lower()))
+                        if cmds[1].lower() not in plugin:
+                            plugin = plugin + "/" + cmds[1].lower()
                         var.update_cmds()
                     except ModuleNotFoundError as e:
                         print_fail("Plugin not found")
@@ -155,24 +160,24 @@ def parse_cmds(cmds):
                         print(sys.exc_info())
                         print("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
                 
-            elif cmds[0] == "set":
-                if cmds[1] not in var.global_cmds['set']['Sub-Cmds']:
+            elif cmds[0].lower() == "set":
+                if cmds[1].lower() not in var.global_cmds['set']['Sub-Cmds']:
                     print("Command '" + cmds[1] + "' does not exist")
                 else:
                     try:
                         loaded_plugin = var.get_loaded_plugin_object()
-                        if cmds[1] in var.global_vars:
+                        if cmds[1].lower() in var.global_vars:
                             variable = var.global_vars[cmds[1].lower()]
-                            if cmds[2] == 'random':
+                            if cmds[2].lower() == 'random':
                                 handle_random_input(variable, cmds)
-                            elif "file" in cmds[1]:
+                            elif "file" in cmds[1].lower():
                                 filename = var.file_exists(cmds[2])
                                 variable['Value'] = filename
-                            elif "list" in cmds[1]:
+                            elif "list" in cmds[1].lower():
                                 variable['Value'] = format_variable(variable)
                             else:
                                 variable['Value'] = format_variable(variable, cmds[2])
-                        elif cmds[1] in loaded_plugin.plugin_vars:
+                        elif cmds[1].lower() in loaded_plugin.plugin_vars:
                             variable = loaded_plugin.plugin_vars[cmds[1].lower()]
                             variable['Value'] = format_variable(variable, cmds[2])
                     except IndexError:
@@ -182,16 +187,16 @@ def parse_cmds(cmds):
                         if verbose:
                             print(e)
                             print("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
-            elif cmds[0] == "unset":
+            elif cmds[0].lower() == "unset":
                 if var.check_plugin_loaded():
                     loaded_plugin = var.get_loaded_plugin_object()
                 try:
-                    if cmds[1] in var.global_vars:
-                        variable = var.global_vars[cmds[1]]
+                    if cmds[1].lower() in var.global_vars:
+                        variable = var.global_vars[cmds[1].lower()]
                         reset_value = variable['Default']
                         variable['Value'] = format_variable(variable, reset_value)
-                    elif cmds[1] in loaded_plugin.plugin_vars:
-                        variable = loaded_plugin.plugin_vars[cmds[1]]
+                    elif cmds[1].lower() in loaded_plugin.plugin_vars:
+                        variable = loaded_plugin.plugin_vars[cmds[1].lower()]
                         reset_value = variable['Default']
                         variable['Value'] = format_variable(variable, reset_value)
                 except Exception as e:
@@ -201,7 +206,7 @@ def parse_cmds(cmds):
                         print("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
             if var.check_plugin_loaded():
                 loaded_plugin = var.get_loaded_plugin_object()
-                if cmds[0] in loaded_plugin.plugin_cmds:
+                if cmds[0].lower() in loaded_plugin.plugin_cmds:
                     loaded_plugin.parse_plugin_cmds(cmds)
         else:
             print("Unrecognized Command -->", str(cmds))
@@ -265,7 +270,8 @@ def validate_options():
 #VALIDATE MODULE STUFF
     else:
         loaded_plugin = var.get_loaded_plugin_object()
-        validated = loaded_plugin.validate()
+        if loaded_plugin.validate() is False:
+            validated = False
     return validated
 
 def format_variable(variable, setting=None):
@@ -329,7 +335,7 @@ def main():
     initialize()
     while not end_prgm_flag:
         prompt = plugin + "/>> "
-        response = input(prompt).lower()
+        response = input(prompt)
         commands = response
         if "seq=" in response:
             parse_seq(response)    

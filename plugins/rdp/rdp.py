@@ -62,7 +62,7 @@ banner = '''
 Author:  {}
 Version: {}'''.format(art,name,author,version)
 print(banner)
-print_warn("At this time the RDP security protocol is not supported to determine authentication success")
+print_warn("At this time this plugin is unable to determine authentication if the RDP server only uses RDP security")
 sleep(2)
 
 #############################
@@ -121,7 +121,7 @@ plugin_vars = {
         "Type": 'String',
         "Default": None,
         "Help": "Currently only works with freerdp",
-        "Example": "xfreerdp"
+        "Example": r"c:\users\miguel\documents\rdp\wfreerdp.exe"
     },
     'domain': {
         "Name": "Domain",
@@ -138,8 +138,15 @@ plugin_vars = {
         "Default": None,
         "Help": "Proxy settings in the form <protocol>://<ip>:<port>",
         "Example": "socks4://10.0.0.4:9050"
+    },
+    'debug': {
+        "Name": "Debug",
+        "Value": False,
+        "Type": 'Boolean',
+        "Default": False,
+        "Help": "Prints the debug output",
+        "Example": "set debug true"
     }
-
 }
 
 def validate():
@@ -156,16 +163,22 @@ def validate():
                 print_fail("Unrecognized Proxy Protocol.  Allowed Protocols are socks4 socks5 http.")
         except:
             print_fail("Unrecognized Proxy Setting.  Format should be: socks4://10.0.0.4:9050")
-    if os.name == "nt" and plugin_vars['rdp-path']['Value'] is None:
+    if os.name == "nt" and plugin_vars['bin-path']['Value'] is None:
         print_fail("You must set a path for freerdp on Windows")
         validated = False
+    if plugin_vars['bin-path']['Value'] is not None:
+        if os.path.isfile(plugin_vars['bin-path']['Value']) is False:
+            print_fail("Unable to find",plugin_vars['bin-path']['Value'])
+            validated = False
+        if "freerdp" not in plugin_vars['bin-path']['Value']:
+            print_warn("freerdp is not in the binary path, continuing in case you re-named it...s")
     return validated
 #############################
 #SECTION 5 - MAIN
 #############################
 #This function does the main exection of the brutefore method and MUST BE HERE
 def run(username, password, target):
-    skipped = []        #list of rdp servers with rdp security
+    rdp_sec = []        #list of rdp servers with rdp security
     verbose = global_vars['verbose']['Value']
     if verbose:
         print_info("Running RDP Plugin")
@@ -177,28 +190,49 @@ def run(username, password, target):
     rdp_bin = plugin_vars['bin-path']['Value']
     failure_lst = ["LOGON_FAILURE", "AUTHENTICATION_FAILED"]
     
-    cmd = "{} /v:{} /u:{} /p:{} /client-hostname:{} /cert-ignore +auth-only /log-level:trace +sec-ext".format(rdp_bin,target,username,password,target)
+    cmd = "{} /v:{} /u:{} /p:{} /client-hostname:{} /cert-ignore +auth-only /log-level:trace".format(rdp_bin,target,username,password,target)
     
     if plugin_vars['proxy']['Value'] is not None:
         proxy_setting = plugin_vars['proxy']['Value']
         cmd = cmd + " " + "/proxy:" + proxy_setting
-        if verbose:
-            print("cmd: " + cmd)
     if plugin_vars['domain']['Value'] is not None:
         domain = plugin_vars['domain']['Value']
-        cmd = cmd + " " + "/domain " + domain
+        cmd = cmd + " " + "/d:" + domain
+    print(os.getcwd())
     if os.name == 'nt':
-        win_log = " > ../plugins/rdp/log.txt 2>&1"
-        cmd = cmd + win_log
-    result = subprocess.run(cmd.split(), capture_output=True)
+        win_log = r" > ..\plugins\rdp\output\log.txt 2>&1"
+        
+        #cmd = cmd + win_log
     if verbose:
-        print(result)
+        print("cmd: " + cmd)
+    try:
+        result = subprocess.run(cmd.split(), capture_output=True)
+    except Exception as e:
+        print_fail("Unable to execute successfully")
+        if verbose:
+            print(e)
+            print(sys.exc_info)
+    if plugin_vars['debug']['Value'] is True:
+        print_dbug(str(result))
+    # if verbose:
+    #     print(result)
         #print("sterr: " + result.stderr.decode())
         #print("stdout: " + result.stdout.decode())
+    # if os.name == "nt":
+    #     try:
+    #         sleep(2)
+    #         log = open(r'..\plugins\rdp\output\log.txt')
+    #         result = log.read()
+    #         log.close()
+    #     except Exception as e:
+    #         print_fail("Unable to read wfreerdp output, check your read/write permissions")
+    #         if verbose:
+    #             print(e)
+    #             print(sys.exc_info)
     if "SSL_NOT_ALLOWED_BY_SERVER" in str(result) and "Negotiated RDP security" in str(result):
         if verbose:
             print_warn("Server Uses RDP Security, Unable to determine authentication status")
-        skipped.append(target)
+        rdp_sec.append(target)
     elif "exit status 1" in str(result):
         success = False
         # print_fails is True:
@@ -210,6 +244,10 @@ def run(username, password, target):
             if "Host unreachable" in str(result):
                 print_fail("Host is unreachable!")
                 success = False
+            if "ERRCONNECT_CONNECT_FAILED" in str(result):
+                print_fail("Connection Failed! Is that IP alive?")
+            if "ERRCONNECT_AUTHENTICATION_FAILED" in str(result):
+                print_fail("Credentials failed!")
     elif "exit status 0" in str(result):
         success = True
     else:

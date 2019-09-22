@@ -34,7 +34,7 @@ def export_sequence():
         dt = str(dt).rstrip(':00')
         file.write(dt + "||" + seq)
         file.write('\n')
-    colors.PrintColor("SUCCESS","Saved Current Sequence")
+    print_good("Saved Current Sequence")
 
 def show_sequences():
     import_file = "../saves/saves.txt"

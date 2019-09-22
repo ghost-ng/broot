@@ -14,6 +14,8 @@ task_queue = queue.Queue(10)
 attempt_number = 1
 threads = []
 
+verbose = var.global_vars['verbose']['Value']
+
 #Order of checks
 # passwords
 #     a. password file
@@ -85,8 +87,9 @@ def check_status(status, creds):
     if status is True:
         print_good("Success --> {}".format(attempt))
         var.save_creds(creds)
-    elif status is False and var.global_vars['print-failures']['Value'] is True:
-        print_fail("Failed --> {}".format(attempt))
+    elif status is False:
+        if var.global_vars['print-failures']['Value'] is True or verbose is True:
+            print_fail("Failed --> {}".format(attempt))
 
 class brootThread (threading.Thread):
 
@@ -97,7 +100,7 @@ class brootThread (threading.Thread):
         self.loaded_plugin = loaded_plugin
 
     def run(self):
-        if var.global_vars['verbose']['Value']:
+        if verbose:
             print("running thread", self.thread_id)
         broot(self.q, self.loaded_plugin)
 
@@ -106,7 +109,6 @@ def broot(q, loaded_plugin):
     global attempt_number
     global exitFlag
 
-    verbose = var.global_vars['verbose']['Value']
     wait_interval = var.global_vars['wait-interval']['Value']
     if wait_interval == 0:
         wait_interval = 1
@@ -136,7 +138,7 @@ def broot(q, loaded_plugin):
             creds = q.get()
             target, username, password = creds
             attempt = "Target:{} Username:{} Password:{}".format(target, username, password)
-            colors.PrintColor("INFO","Trying --> {}".format(attempt))
+            print_info("Trying --> {}".format(attempt))
             if attempt_number % wait_interval == 0 and attempt_number > 0:
                 if verbose:
                     print("[wait-interval] Sleeping for {} sec".format(wait_time))
@@ -178,6 +180,7 @@ def broot(q, loaded_plugin):
                                 return
                             check_status(status, creds)
                             attempt_number += 1
+                
             else:
                 if verbose:
                     print("Skipping...")
