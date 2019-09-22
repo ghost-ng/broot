@@ -223,7 +223,7 @@ def run(username, password, target):
             if "Host unreachable" in str(result):
                 print_fail("Host is unreachable!")
                 success = False
-            if "ERRCONNECT_CONNECT_FAILED" in str(result) or if "Broken pipe" in str(result):
+            if "ERRCONNECT_CONNECT_FAILED" in str(result) or "Broken pipe" in str(result):
                 print_fail("Connection Failed! Is that IP alive?")
             if "ERRCONNECT_AUTHENTICATION_FAILED" in str(result):
                 print_fail("Credentials failed!")
