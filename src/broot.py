@@ -60,10 +60,16 @@ def parse_cmds(cmds):
                     var.reset_all_vars()
                     print_info("Reset complete")
             elif cmds[0].lower() == "validate":
-                if validate_options() is True:
-                    print_info("Everything seems ok!")
-                else:
-                    print_fail("Validation Failed!")
+                try:
+                    if validate_options() is True:
+                        print_info("Everything seems ok!")
+                    else:
+                        print_fail("Validation Failed!")
+                except Exception as e:
+                    print_fail("Error")
+                    if verbose:
+                        print(e)
+                        print(sys.exc_info)
             elif cmds[0].lower() in ['clear', 'cls']:
                 clear_screen()
             elif cmds[0].lower() == "version":

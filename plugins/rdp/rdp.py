@@ -168,7 +168,7 @@ def validate():
         validated = False
     if plugin_vars['bin-path']['Value'] is not None:
         if os.path.isfile(plugin_vars['bin-path']['Value']) is False:
-            print_fail("Unable to find",plugin_vars['bin-path']['Value'])
+            print_fail("Unable to find {}".format(plugin_vars['bin-path']['Value']))
             validated = False
         if "freerdp" not in plugin_vars['bin-path']['Value']:
             print_warn("freerdp is not in the binary path, continuing in case you re-named it...s")
