@@ -182,7 +182,6 @@ def run(username, password, target):
     verbose = global_vars['verbose']['Value']
     if verbose:
         print_info("Running RDP Plugin")
-    print_fails = global_vars['print-failures']['Value']
     attempt = "Target:{} Username:{} Password:{}".format(target, username, password)
     failed = False
     success = False
@@ -198,11 +197,6 @@ def run(username, password, target):
     if plugin_vars['domain']['Value'] is not None:
         domain = plugin_vars['domain']['Value']
         cmd = cmd + " " + "/d:" + domain
-    print(os.getcwd())
-    if os.name == 'nt':
-        win_log = r" > ..\plugins\rdp\output\log.txt 2>&1"
-        
-        #cmd = cmd + win_log
     if verbose:
         print("cmd: " + cmd)
     try:
@@ -214,21 +208,6 @@ def run(username, password, target):
             print(sys.exc_info)
     if plugin_vars['debug']['Value'] is True:
         print_dbug(str(result))
-    # if verbose:
-    #     print(result)
-        #print("sterr: " + result.stderr.decode())
-        #print("stdout: " + result.stdout.decode())
-    # if os.name == "nt":
-    #     try:
-    #         sleep(2)
-    #         log = open(r'..\plugins\rdp\output\log.txt')
-    #         result = log.read()
-    #         log.close()
-    #     except Exception as e:
-    #         print_fail("Unable to read wfreerdp output, check your read/write permissions")
-    #         if verbose:
-    #             print(e)
-    #             print(sys.exc_info)
     if "SSL_NOT_ALLOWED_BY_SERVER" in str(result) and "Negotiated RDP security" in str(result):
         if verbose:
             print_warn("Server Uses RDP Security, Unable to determine authentication status")
