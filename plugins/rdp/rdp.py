@@ -197,8 +197,8 @@ def run(username, password, target):
     if plugin_vars['domain']['Value'] is not None:
         domain = plugin_vars['domain']['Value']
         cmd = cmd + " " + "/d:" + domain
-    if verbose:
-        print("cmd: " + cmd)
+    if plugin_vars['debug']['Value']:
+        print_dbug("cmd: " + cmd)
     try:
         result = subprocess.run(cmd.split(), capture_output=True)
     except Exception as e:
@@ -223,7 +223,7 @@ def run(username, password, target):
             if "Host unreachable" in str(result):
                 print_fail("Host is unreachable!")
                 success = False
-            if "ERRCONNECT_CONNECT_FAILED" in str(result):
+            if "ERRCONNECT_CONNECT_FAILED" in str(result) or if "Broken pipe" in str(result):
                 print_fail("Connection Failed! Is that IP alive?")
             if "ERRCONNECT_AUTHENTICATION_FAILED" in str(result):
                 print_fail("Credentials failed!")
