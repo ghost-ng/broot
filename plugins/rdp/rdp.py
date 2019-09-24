@@ -208,10 +208,11 @@ def run(username, password, target):
             print(sys.exc_info)
     if plugin_vars['debug']['Value'] is True:
         print_dbug(str(result))
-    if "SSL_NOT_ALLOWED_BY_SERVER" in str(result) and "Negotiated RDP security" in str(result):
+    if "Negotiated RDP security" in str(result):
         if verbose:
             print_warn("Server Uses RDP Security, Unable to determine authentication status")
         rdp_sec.append(target)
+        success = False
     elif "exit status 1" in str(result):
         success = False
         # print_fails is True:
