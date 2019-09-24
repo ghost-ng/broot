@@ -8,12 +8,14 @@ import datetime
 
 def init():
     config_file = os.path.join(os.getcwd(), "..", "saves", "configs.txt")
-    save_file = os.path.join(os.getcwd(), "..", "saves", "creds.txt")
+    cred_file = os.path.join(os.getcwd(), "..", "saves", "creds.txt")
     if os.path.isfile(config_file) is False:
+        print_info("Creating a place to save configurations...")
         with open(config_file, 'a', encoding='utf-8'):
             pass
-    if os.path.isfile(save_file) is False:
-        with open(save_file, 'a', encoding='utf-8'):
+    if os.path.isfile(cred_file) is False:
+        print_info("Creating a place to save credentials...")
+        with open(cred_file, 'a', encoding='utf-8'):
             pass
 
 def get_current_sequence():
