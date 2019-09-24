@@ -1,4 +1,4 @@
-from os import system
+from os import system,name
 BLUE = '\033[94m'
 GREY = '\033[90m'
 GREEN = '\033[92m'
@@ -10,7 +10,7 @@ BGRED = '\033[41m'
 WHITE = '\033[37m'
 UNDERLINE = '\033[4m'
 RSTCOLORS = '\033[0m'
-if os.name == "nt":
+if name == "nt":
     result = system('color') ## Allows the script to use colors in windows
 
 
