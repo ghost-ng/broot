@@ -13,7 +13,7 @@ def init():
         with open(config_file, 'a', encoding='utf-8'):
             pass
     if os.path.isfile(save_file) is False:
-        with open(config_file, 'a', encoding='utf-8'):
+        with open(save_file, 'a', encoding='utf-8'):
             pass
 
 def get_current_sequence():
