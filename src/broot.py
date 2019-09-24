@@ -12,7 +12,7 @@ import save
 plugin = "/broot"
 prompt = plugin + "/>> "
 end_prgm_flag = False
-version = "broot v" + str(.90)
+version = "broot v" + str(.95)
 about = """
 Author: midnightseer
 About: 
@@ -322,7 +322,7 @@ def initialize():
     print_info("Initializing saved-flat files")
     sleep(.5)
     update_paths()
-    clear_screen()
+    #clear_screen()
     print(art.banner)
     print(about)
     print(version)
