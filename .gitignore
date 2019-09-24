@@ -1,2 +1,4 @@
 .vscode/
 saves/
+*.pyc
+__pycache__/
