@@ -322,7 +322,6 @@ def handle_random_input(variable, cmds):
         print_warn("Cannot set a random value to a non-interger type")
 
 def initialize():
-    clear_screen()
     var.refresh_plugins()
     var.update_cmds()
     print_info("Found available plugins")
@@ -331,6 +330,7 @@ def initialize():
     print_info("Initializing saved-flat files")
     sleep(.5)
     update_paths()
+    clear_screen()
     print(art.banner)
     print(about)
     print(version)
