@@ -10,7 +10,8 @@ BGRED = '\033[41m'
 WHITE = '\033[37m'
 UNDERLINE = '\033[4m'
 RSTCOLORS = '\033[0m'
-result = system('color') ## Allows the script to use colors
+if os.name == "nt":
+    result = system('color') ## Allows the script to use colors in windows
 
 
 def PrintColor(status, msg):
