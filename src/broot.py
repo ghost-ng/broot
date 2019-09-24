@@ -1,5 +1,5 @@
 print("Loading...")
-import os, sys, signal
+import os, sys
 from time import sleep
 import var
 import engine
@@ -22,14 +22,6 @@ def update_paths():
     dir_list = next(os.walk(os.path.join(os.getcwd(), "..", "plugins")))[1]
     for path in dir_list:
         sys.path.append(os.path.join(os.path.join(os.getcwd(), "..", "plugins"), path))
-
-def signal_handler(signal, frame):
-    global end_prgm_flag
-    print("punt!")
-    end_prgm_flag = True
-    sys.exit(0)
-
-#signal.signal(signal.SIGINT, signal_handler)
 
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
