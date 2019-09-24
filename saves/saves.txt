@@ -1,5 +1,0 @@
-2019-09-18 21:41||seq=set password test;set username testvm;set target 10.0.0.50;load rdp;set bin-path c:\users\miguel\documents\rdp\wfreerdp.exe;
-2019-09-18 21:42||seq=set password test;set username testvm;set target 10.0.0.50;load rdp;set bin-path c:\users\miguel\documents\rdp\wfreerdp.exe;
-2019-09-21 08:46||seq=set password adminpassword!!1234;set username Administrator;set target 10.0.0.50;set print-failures True;load rdp;set bin-path c:\users\miguel\documents\rdp\wfreerdp.exe;
-2019-09-21 08:46||seq=set password adminpassword!!1234;set username Administrator;set target 10.0.0.50;set print-failures True;load rdp;set bin-path c:\users\miguel\documents\rdp\wfreerdp.exe;set domain meranet;
-2019-09-22 08:13||seq=set password adminpassword!!1234;set username Administrator;set target 10.0.0.30;set print-failures True;load rdp;set bin-path c:\users\miguel\documents\rdp\wfreerdp.exe;set domain meranet;set debug True;

@@ -1,8 +1,5 @@
-- add option to send bogus authentication requests from bogus IPs
 - add ability to save query in local memory
 - add ability to save full configuration
-- add ability to load a query
-- add ability to load a configuration
 
 code fixes:
-- update code to reflect new print function in 'colors.py'
+- add ability to simple port scan and wait for response before starting

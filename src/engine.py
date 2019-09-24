@@ -1,5 +1,5 @@
 import sys, os
-import var
+import var, save
 import multiprocessing
 sys.path.append(os.path.join(os.getcwd(), "..", "misc"))
 from printlib import *
@@ -87,6 +87,7 @@ def check_status(status, creds):
     if status is True:
         print_good("Success --> {}".format(attempt))
         var.save_creds(creds)
+        save.save_credentials(attempt)
     elif status is False:
         if var.global_vars['print-failures']['Value'] is True or verbose is True:
             print_fail("Failed --> {}".format(attempt))
@@ -155,7 +156,8 @@ def broot(q, loaded_plugin):
                     if verbose:
                         print(e)
                         print(sys.exc_info)
-                    print_fail("Unable to find 'run' function")
+                    if "run" in str(e):
+                        print_fail("Unable to find the mandatory 'run' function")
                     return
                 check_status(status, creds)
                 attempt_number += 1

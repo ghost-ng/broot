@@ -121,7 +121,7 @@ plugin_vars = {
         "Type": 'String',
         "Default": None,
         "Help": "Currently only works with freerdp",
-        "Example": r"c:\users\miguel\documents\rdp\wfreerdp.exe"
+        "Example": r"c:\users\r00t\documents\rdp\wfreerdp.exe"
     },
     'domain': {
         "Name": "Domain",

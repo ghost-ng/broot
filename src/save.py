@@ -26,8 +26,8 @@ def get_current_sequence():
                 sequence = sequence + command
     return sequence
 
-def export_sequence():
-    save_file = "../saves/saves.txt"
+def export_sequence(filename):
+    save_file = "../saves/configs.txt"
     with open(save_file, 'a') as file:
         seq = get_current_sequence()
         dt = datetime.datetime.today().replace(second=0, microsecond=0)
@@ -36,10 +36,28 @@ def export_sequence():
         file.write('\n')
     print_good("Saved Current Sequence")
 
+def save_credentials(creds, filename="../saves/creds.txt"):
+    verbose = var.global_vars['verbose']['Value']
+    try:
+        with open(filename, 'a') as file:
+            dt = datetime.datetime.today().replace(second=0, microsecond=0)
+            dt = str(dt).rstrip(':00')
+            line = "[{t}]:[{p}]::{c}".format(t=dt, p=var.get_loaded_plugin_name(), c=creds)
+            file.write(line)
+            file.write('\n')
+        if verbose is True:
+            print_good("Saved Credentials")
+    except Exception as e:
+        print_warn("Unable to save credentials")
+        if var.global_vars['verbose']['Value'] is True:
+            print(e)
+            print(sys.exc_info())
+
+
 def show_sequences():
-    import_file = "../saves/saves.txt"
+    import_file = "../saves/configs.txt"
     table = PrettyTable(['ID', 'Date', 'Sequence'])
-    table.title = "Saved Sequences"
+    table.title = "Saved Configs"
     with open(import_file, 'r') as file:
         temp = []
         count = 0
@@ -51,7 +69,7 @@ def show_sequences():
 
 def load_sequences(selection):
     selection = int(selection)
-    import_file = "../saves/saves.txt"
+    import_file = "../saves/configs.txt"
     with open(import_file, 'r+',encoding='utf-8') as file:
         temp = []
         count = 1
