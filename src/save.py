@@ -10,10 +10,10 @@ def init():
     config_file = os.path.join(os.getcwd(), "..", "saves", "configs.txt")
     save_file = os.path.join(os.getcwd(), "..", "saves", "creds.txt")
     if os.path.isfile(config_file) is False:
-        with open(config_file, 'a', encoding='utf-8') as file:
+        with open(config_file, 'a', encoding='utf-8'):
             pass
     if os.path.isfile(save_file) is False:
-        with open(save_file, 'a', encoding='utf-8')as file:
+        with open(save_file, 'a', encoding='utf-8'):
             pass
 
 def get_current_sequence():
