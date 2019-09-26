@@ -38,9 +38,8 @@ def get_current_sequence():
                 sequence = sequence + command
     return sequence
 
-def export_sequence(filename):
-    save_file = "../saves/configs.txt"
-    with open(save_file, 'a') as file:
+def export_sequence(filename="../saves/configs.txt"):
+    with open(filename, 'a') as file:
         seq = get_current_sequence()
         dt = datetime.datetime.today().replace(second=0, microsecond=0)
         dt = str(dt).rstrip(':00')
@@ -90,3 +89,5 @@ def load_sequences(selection):
             if selection == count:
                 return temp[1]
             count += 1
+        if selection > count:
+            print_fail("Unable to load config; selection # does not exist")

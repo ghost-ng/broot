@@ -84,8 +84,10 @@ def clean_up(obj):
 
 def check_status(status, creds):
     target, username, password = creds
+    target = get_target(target)
+    port = get_port(target)
     plugin_name = var.get_loaded_plugin_name()
-    attempt = "Plugin:{} Target:{} Username:{} Password:{}".format(plugin_name, target, username, password)
+    attempt = "Plugin:{} Target:{}:{} Username:{} Password:{}".format(plugin_name, target, port, username, password)
     if status is True:
         print_good("Success --> {}".format(attempt))
         var.save_creds(creds)
@@ -140,7 +142,9 @@ def broot(q, loaded_plugin):
         if not task_queue.empty():
             creds = q.get()
             target, username, password = creds
-            attempt = "Target:{} Username:{} Password:{}".format(target, username, password)
+            target = get_target(target)
+            port = get_port(target)
+            attempt = "Target:{}:{} Username:{} Password:{}".format(target, port, username, password)
             print_info("Trying --> {}".format(attempt))
             if attempt_number % wait_interval == 0 and attempt_number > 0:
                 if verbose:
@@ -148,27 +152,31 @@ def broot(q, loaded_plugin):
                 sleep(wait_time)
             if "username" in str(stop) and username in str(var.system_vars['valid-creds']['Usernames']):
                 skip = True
+                if verbose:
+                    print_info("Creds already found for this username, skipping...")
             if "target" in str(stop) and target in str(var.system_vars['valid-creds']['Targets']):
                 skip = True
+                if verbose:
+                    print_info("Creds already found for this target, skipping...")
 
             if skip is False:
                 try:
                     if var.global_vars['probe-first']['Value'] is True and target not in offline_hosts:
-                        if ":" in target:
-                            port = get_port(target)
-                        else:
-                            port = var.global_vars['target-port']['Value']
                         if scan.scan_port(port, target) is False:
                             if verbose:
                                 print_warn("Target service did not respond!")
                             offline_hosts.append(target)
+                        else:
+                            print_good("Target service is up!")
                 except Exception as e:
                     if verbose:
                         print(e)
                         print(sys.exc_info)
                 try:
-                    if target not in offline_hosts:
+                    if var.global_vars['probe-first']['Value'] is True and target not in offline_hosts:
                         status = loaded_plugin.run(username, password, target, port)
+                    elif target in offline_hosts:
+                        status = False
                 except NameError as e:
                     if verbose:
                         print(e)
@@ -218,6 +226,12 @@ def get_port(text):
     else:
         return var.global_vars['target-port']['Value']
 
+def get_target(text):
+    temp = text.split(":")
+    if len(temp) > 1:
+        return temp[0]
+    else:
+        return text
 
 def kill_threads(threads):
     global exitFlag

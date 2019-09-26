@@ -107,14 +107,6 @@ def attempt_autodetect():
 
 #This is an example, variables must have a unique name
 plugin_vars = {
-    'target-port': {
-        "Name": "Target-Port",
-        "Value": 3389,
-        "Type": 'Integer',
-        "Default": 3389,
-        "Help": "The targeted port with the target service",
-        "Example": 3389
-    },
     'bin-path': {
         "Name": "Bin-Path",
         "Value": attempt_autodetect(),
@@ -178,7 +170,7 @@ def validate():
 #############################
 
 #Default Port
-var.global_vars['target-port']['Value'] = 3389
+global_vars['target-port']['Value'] = 3389
 
 #This function does the main exection of the brutefore method and MUST BE HERE
 def run(username, password, target, port):

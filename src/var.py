@@ -142,7 +142,7 @@ global_vars = {
         "Type": 'Integer',
         "Default": None,
         "Help": "This is the target port running the targeted service",
-        "Example": "get target-port 22"
+        "Example": "set target-port 22"
     },
     "verbose": {
         "Name": "Verbose",
@@ -174,7 +174,7 @@ global_vars = {
         "Type": 'Boolean',
         "Default": False,
         "Help": "Send an initial SYN probe priot to attempting authentication.  If the SYN probie fails, the target is skipped.",
-        "Example": "set probie-first True"
+        "Example": "set probe-first True"
     },
 
     # 'credentials': {
