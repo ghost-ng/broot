@@ -270,6 +270,13 @@ def validate_options():
         loaded_plugin = var.get_loaded_plugin_object()
         if loaded_plugin.validate() is False:
             validated = False
+        try:
+            if loaded_plugin.plugin_vars['target-port']['Value'] is not int:
+                print_false("You need to specify a target-port")
+                validated = False
+        except:
+            print_fail("Unable to find a 'target-port' variable")
+            validate = False
     return validated
 
 def format_variable(variable, setting=None):

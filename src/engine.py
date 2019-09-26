@@ -6,6 +6,7 @@ from printlib import *
 import threading
 from time import sleep
 import queue
+import scan
 
 loaded_plugin = var.get_loaded_plugin_object()
 exitFlag = False
@@ -13,6 +14,7 @@ queueLock = threading.Lock()
 task_queue = queue.Queue(10)
 attempt_number = 1
 threads = []
+offline_hosts = []
 
 verbose = var.global_vars['verbose']['Value']
 
@@ -107,7 +109,7 @@ class brootThread (threading.Thread):
 
 def broot(q, loaded_plugin):
     global attempt_number
-    global attempt_number
+    global offline_hosts
     global exitFlag
 
     wait_interval = var.global_vars['wait-interval']['Value']
@@ -151,7 +153,22 @@ def broot(q, loaded_plugin):
 
             if skip is False:
                 try:
-                    status = loaded_plugin.run(username, password, target)
+                    if var.global_vars['probe-first']['Value'] is True and target not in offline_hosts:
+                        if ":" in target:
+                            port = get_port(target)
+                        else:
+                            port = var.global_vars['target-port']['Value']
+                        if scan.scan_port(port, target) is False:
+                            if verbose:
+                                print_warn("Target service did not respond!")
+                            offline_hosts.append(target)
+                except Exception as e:
+                    if verbose:
+                        print(e)
+                        print(sys.exc_info)
+                try:
+                    if target not in offline_hosts:
+                        status = loaded_plugin.run(username, password, target, port)
                 except NameError as e:
                     if verbose:
                         print(e)
@@ -176,7 +193,7 @@ def broot(q, loaded_plugin):
                                     print("[re-try,wait-interval] Sleeping for {} sec".format(wait_time))
                                 sleep(wait_time)
                             try:
-                                status = loaded_plugin.run(username, password, target)
+                                status = loaded_plugin.run(username, password, target, port)
                             except NameError:
                                 print_fail("Unable to find 'run' function")
                                 return
@@ -193,6 +210,14 @@ def broot(q, loaded_plugin):
             #queueLock.release()
             #exitFlag = True
             sleep(.5)
+
+def get_port(text):
+    temp = text.split(":")
+    if len(temp) > 1:
+        return temp[1]
+    else:
+        return var.global_vars['target-port']['Value']
+
 
 def kill_threads(threads):
     global exitFlag

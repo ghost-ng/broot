@@ -136,6 +136,14 @@ global_vars = {
         "Help": "Single IP or Fully Qualified Domain Name.",
         "Example": "root.target.net"
     },
+    "target-port": {
+        "Name": "Target-Port",
+        "Value": None,
+        "Type": 'Integer',
+        "Default": None,
+        "Help": "This is the target port running the targeted service",
+        "Example": "get target-port 22"
+    },
     "verbose": {
         "Name": "Verbose",
         "Value": False,
@@ -159,7 +167,15 @@ global_vars = {
         "Default": 'target',
         "Help": "If set to True, then stop testing creds against a given object (target,username) after a successful authentication",
         "Example": "set stop-on-success target,username"
-    }
+    },
+    "probe-first": {
+        "Name": "Probe-First",
+        "Value": False,
+        "Type": 'Boolean',
+        "Default": False,
+        "Help": "Send an initial SYN probe priot to attempting authentication.  If the SYN probie fails, the target is skipped.",
+        "Example": "set probie-first True"
+    },
 
     # 'credentials': {
     #     "Name": "Credentials",

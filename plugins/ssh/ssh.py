@@ -47,6 +47,7 @@ banner = '''
 Author:  {}
 Version: {}'''.format(art, name, author, version)
 print(banner)
+
 ###################
 
 #This is an example, you do not necessarily need extra commands
@@ -66,15 +67,7 @@ def parse_plugin_cmds(cmds):
     pass
 
 #This is an example, variables must have a unique name
-plugin_vars = {
-    "port": {
-        "Name": "Port",
-        "Value": 22,
-        "Type": 'Integer',
-        "Default": 22,
-        "Help": "This is the target port running the ssh service",
-        "Example": "Port 22"
-    },
+plugin_vars = {    
     "timeout": {
         "Name": "Timeout",
         "Value": 3,
@@ -103,13 +96,17 @@ plugin_vars = {
 
 
 #This function does the main exection of the brutefore method
-def run(username, password, target):
+
+#Default Port
+var.global_vars['target-port']['Value'] = 22
+
+def run(username, password, target, port):
     success = False
     verbose = global_vars['verbose']['Value']
     timeout = plugin_vars['timeout']['Value']
-    port = plugin_vars['port']['Value']
+    port = var.global_vars['target-port']['Value']
     banner_timeout = plugin_vars['banner-timeout']['Value']
-    attempt = "Target:{} Username:{} Password:{}".format(target, username, password)
+    attempt = "Target:{}:{} Username:{} Password:{}".format(target, port, username, password)
 
     try:
         client = paramiko.SSHClient()

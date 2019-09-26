@@ -97,10 +97,10 @@ def run(username, password, target):
     attempt = "Target:{} Username:{} Password:{}".format(target, username, password)
     verbose = plugin_vars['verbose']['Value']
 
-    if plugin_vars['ssl']['Value'] is True and plugin_vars['port']['Value'] is None:
+    if plugin_vars['ssl']['Value'] is True and var.global_vars['target-port']['Value'] is None:
         port = 443
-    elif plugin_vars['port']['Value'] is not None:
-        port = plugin_vars['port']['Value']
+    elif var.global_vars['target-port']['Value'] is not None:
+        port = var.global_vars['target-port']['Value']
 
     if plugin_vars['ssl']['Value'] is True:
         preface = 'https'

@@ -107,13 +107,13 @@ def attempt_autodetect():
 
 #This is an example, variables must have a unique name
 plugin_vars = {
-    'try-backdoor': {
-        "Name": "Try-Backdoor",
-        "Value": False,
-        "Type": 'Boolean',
-        "Default": False,
-        "Help": "This option will try to determine if sticky keys or other backdoors will open a command prompt",
-        "Example": "True"
+    'target-port': {
+        "Name": "Target-Port",
+        "Value": 3389,
+        "Type": 'Integer',
+        "Default": 3389,
+        "Help": "The targeted port with the target service",
+        "Example": 3389
     },
     'bin-path': {
         "Name": "Bin-Path",
@@ -176,20 +176,24 @@ def validate():
 #############################
 #SECTION 5 - MAIN
 #############################
+
+#Default Port
+var.global_vars['target-port']['Value'] = 3389
+
 #This function does the main exection of the brutefore method and MUST BE HERE
-def run(username, password, target):
+def run(username, password, target, port):
     rdp_sec = []        #list of rdp servers with rdp security
     verbose = global_vars['verbose']['Value']
     if verbose:
         print_info("Running RDP Plugin")
-    attempt = "Target:{} Username:{} Password:{}".format(target, username, password)
+    attempt = "Target:{}:{} Username:{} Password:{}".format(target, port, username, password)
     failed = False
     success = False
     
     rdp_bin = plugin_vars['bin-path']['Value']
     failure_lst = ["LOGON_FAILURE", "AUTHENTICATION_FAILED"]
     
-    cmd = "{} /v:{} /u:{} /p:{} /client-hostname:{} /cert-ignore +auth-only /log-level:trace".format(rdp_bin,target,username,password,target)
+    cmd = "{} /v:{}:{} /u:{} /p:{} /client-hostname:{} /cert-ignore +auth-only /log-level:trace".format(rdp_bin,target,port,username,password,target)
     
     if plugin_vars['proxy']['Value'] is not None:
         proxy_setting = plugin_vars['proxy']['Value']
