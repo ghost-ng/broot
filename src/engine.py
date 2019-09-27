@@ -15,6 +15,7 @@ task_queue = queue.Queue(10)
 attempt_number = 1
 threads = []
 offline_hosts = []
+online_hosts = []
 
 verbose = var.global_vars['verbose']['Value']
 
@@ -93,8 +94,9 @@ def check_status(status, creds):
         var.save_creds(creds)
         save.save_credentials(attempt)
     elif status is False:
-        if var.global_vars['print-failures']['Value'] is True or verbose is True:
-            print_fail("Failed --> {}".format(attempt))
+        if target not in offline_hosts:
+            if var.global_vars['print-failures']['Value'] is True or verbose is True:
+                print_fail("Failed --> {}".format(attempt))
 
 class brootThread (threading.Thread):
 
@@ -112,6 +114,7 @@ class brootThread (threading.Thread):
 def broot(q, loaded_plugin):
     global attempt_number
     global offline_hosts
+    global online_hosts
     global exitFlag
 
     wait_interval = var.global_vars['wait-interval']['Value']
@@ -145,7 +148,7 @@ def broot(q, loaded_plugin):
             target = get_target(target)
             port = get_port(target)
             attempt = "Target:{}:{} Username:{} Password:{}".format(target, port, username, password)
-            print_info("Trying --> {}".format(attempt))
+            
             if attempt_number % wait_interval == 0 and attempt_number > 0:
                 if verbose:
                     print("[wait-interval] Sleeping for {} sec".format(wait_time))
@@ -162,21 +165,30 @@ def broot(q, loaded_plugin):
             if skip is False:
                 try:
                     if var.global_vars['probe-first']['Value'] is True and target not in offline_hosts:
-                        if scan.scan_port(port, target) is False:
+                        if target not in online_hosts:
+                            probe_status = scan.scan_port(port, target)
+                            if probe_status is True:
+                                online_hosts.append(target)
+                        
+                        if probe_status is True:
+                            if verbose:
+                                print_good("Target service is responsive!")
+                        else:
+                            offline_hosts.append(target)
                             if verbose:
                                 print_warn("Target service did not respond!")
-                            offline_hosts.append(target)
-                        else:
-                            print_good("Target service is up!")
                 except Exception as e:
                     if verbose:
                         print(e)
                         print(sys.exc_info)
                 try:
-                    if var.global_vars['probe-first']['Value'] is True and target not in offline_hosts:
+                    if target not in offline_hosts:
+                        print_info("Trying --> {}".format(attempt))
                         status = loaded_plugin.run(username, password, target, port)
                     elif target in offline_hosts:
                         status = False
+                        if verbose:
+                            print_info("Target previously observed offline")
                 except NameError as e:
                     if verbose:
                         print(e)

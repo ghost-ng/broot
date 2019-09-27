@@ -22,11 +22,12 @@ RSTACK = 0x14
 
 def scan_port(port, target): # Function to scan a given port
     verbose = global_vars['verbose']['Value']
+    attempt = "Target:{}:{}".format(target, port)
     try:
         srcport = RandShort() # Generate Port Number
         conf.verb = 0 # Hide output
         if verbose:
-            print_info("Sending SYN Probe...")
+            print_info("Sending SYN Probe --> {}".format(attempt))
         SYNACKpkt = sr1(IP(dst = target)/TCP(sport = srcport, dport = port, flags = "S"), timeout=3) # Send SYN and recieve RST-ACK or SYN-ACK
         try:
             pktflags = SYNACKpkt.getlayer(TCP).flags # Extract flags of recived packet
@@ -37,7 +38,7 @@ def scan_port(port, target): # Function to scan a given port
                 print_info("Received SYN-ACK, target service appears up")
             return True # If open, return true
         else:
-            print_fail("It's too quiet, target service appears down")
+            print_fail("It's too quiet, target service appears down ({})".format(target))
             return False # If closed, return false
         RSTpkt = IP(dst = target)/TCP(sport = srcport, dport = port, flags = "R") # Construct RST packet
         send(RSTpkt) # Send RST packet

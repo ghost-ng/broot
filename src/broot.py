@@ -197,8 +197,7 @@ def parse_cmds(cmds):
                 try:
                     if cmds[1].lower() in var.global_vars:
                         variable = var.global_vars[cmds[1].lower()]
-                        reset_value = variable['Default']
-                        variable['Value'] = format_variable(variable, reset_value)
+                        variable['Value'] = variable['Default']
                     elif cmds[1].lower() in loaded_plugin.plugin_vars:
                         variable = loaded_plugin.plugin_vars[cmds[1].lower()]
                         reset_value = variable['Default']
