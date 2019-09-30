@@ -160,6 +160,22 @@ global_vars = {
         "Help": "Print failures as well as successes.  By default broot only prints successes.",
         "Example": "set print-failures true"
     },
+    "print-attempts": {
+        "Name": "Print-Attempts",
+        "Value": False,
+        "Type": 'Boolean',
+        "Default": False,
+        "Help": "Print all attempts as they are executed.  By default broot only prints successes.",
+        "Example": "set print-attempts true"
+    },
+    "print-successes": {
+        "Name": "Print-Successes",
+        "Value": True,
+        "Type": 'Boolean',
+        "Default": True,
+        "Help": "Print all successful authentications.  By default broot only prints successes.",
+        "Example": "set print-successes true"
+    },
     'proxy-probe': {
         "Name": "Proxy-Probe",
         "Value": None,

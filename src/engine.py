@@ -83,13 +83,15 @@ def clean_up(obj):
 
 
 def check_status(status, creds):
+    verbose = var.global_vars['verbose']['Value']
     target, username, password = creds
     target = get_target(target)
     port = get_port(target)
     plugin_name = var.get_loaded_plugin_name()
     attempt = "Plugin:{} Target:{}:{} Username:{} Password:{}".format(plugin_name, target, port, username, password)
     if status is True:
-        print_good("Success --> {}".format(attempt))
+        var.global_vars['print-successes']['Value'] or verbose:
+            print_good("Success --> {}".format(attempt))
         var.save_creds(creds)
         save.save_credentials(attempt)
     elif status is False:
@@ -197,7 +199,7 @@ def broot(q, loaded_plugin):
                             print_warn("Target service did not respond!")
         
                     if (target,port) not in offline_hosts:
-                        if verbose:
+                        if verbose or var.global_vars['print-attempts']['Value']:
                             print_info("Trying --> {}".format(attempt))
                         try:
                             status = loaded_plugin.run(username, password, target, port)
@@ -212,7 +214,7 @@ def broot(q, loaded_plugin):
                             print_info("Skipping, {}:{} observed offline".format(target, port))
                             offline = True
                 else:
-                    if verbose:
+                    if verbose or var.global_vars['print-attempts']['Value']:
                         print_info("Trying --> {}".format(attempt))
                     try:
                         status = loaded_plugin.run(username, password, target, port)
