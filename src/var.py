@@ -160,39 +160,38 @@ global_vars = {
         "Help": "Print failures as well as successes.  By default broot only prints successes.",
         "Example": "set print-failures true"
     },
-    "stop-on-success": {
-        "Name": "Stop-on-Success",
-        "Value": 'target',
+    'proxy-probe': {
+        "Name": "Proxy-Probe",
+        "Value": None,
         "Type": 'String',
-        "Default": 'target',
-        "Help": "If set to True, then stop testing creds against a given object (target,username) after a successful authentication",
-        "Example": "set stop-on-success target,username"
+        "Default": None,
+        "Help": "Send the TCP connect through a proxy; settings in the form <protocol>://<ip>:<port> ",
+        "Example": "set proxy-probe socks5://10.0.0.4:9050"
     },
-    "probe-first": {
-        "Name": "Probe-First",
+    "tcp-probe": {
+        "Name": "TCP-Probe",
         "Value": False,
         "Type": 'Boolean',
         "Default": False,
-        "Help": "Send an initial SYN probe priot to attempting authentication.  If the SYN probie fails, the target is skipped.",
-        "Example": "set probe-first True"
+        "Help": "Send an initial TCP CONNECT probe priot to attempting authentication.  If the TCP handshake probe fails, the target is skipped.  This probe-type works with a proxy.",
+        "Example": "set syn-probe True"
     },
-
-    # 'credentials': {
-    #     "Name": "Credentials",
-    #     "Value": None,
-    #     "Type": 'String',
-    #     "Default": "[empty]",
-    #     "Help": "Sequence of Usernames and Passwords, seperated by a colon and comma.",
-    #     "Example": "username:password,root:toor"
-    # },
-    # 'credentials-file': {
-    #     "Name": "Credentials-File",
-    #     "Value": None,
-    #     "Type": 'String',
-    #     "Default": "[empty]",
-    #     "Help": "Sequence of Usernames and Passwords, seperated by a colon, per line.",
-    #     "Example": r"C:\Users\MidnightSeer\Documents\creds.lst"
-    # }
+    "syn-probe": {
+        "Name": "SYN-Probe",
+        "Value": False,
+        "Type": 'Boolean',
+        "Default": False,
+        "Help": "Send an initial SYN probe priot to attempting authentication.  If the SYN probie fails, the target is skipped.  Unable to proxy this probe.",
+        "Example": "set syn-probe True"
+    },
+    "stop-on-success": {
+    "Name": "Stop-on-Success",
+    "Value": 'target',
+    "Type": 'String',
+    "Default": 'target',
+    "Help": "If set to True, then stop testing creds against a given object (target,username) after a successful authentication",
+    "Example": "set stop-on-success target,username"
+    }
 }
 
 system_vars = {
@@ -209,6 +208,20 @@ system_vars = {
     },
     "Available-Plugins": {}
 }
+
+def parse_proxy_settings(variable="probe"):
+    #http://10.0.0.1:9050
+    proxy_setting = global_vars['proxy-probe']['Value']
+    temp = proxy_setting.split(":")
+    proxy_protocol = temp[0]
+    proxy_host = temp[1].strip("/")
+    proxy_port = temp[2]
+    proxy = {
+        "protocol": proxy_protocol,
+        "host": proxy_host,
+        "port": proxy_port
+    }
+    return proxy
 
 def gen_random(command):
     #command will be in the form of 'random 1-10' or 'random'
@@ -584,7 +597,7 @@ def update_cmds():
         "reset": {
             "Command": "reset",
             "Help": "Reset all global variables to their defaults",
-            "Sub-Cmds": 'creds',
+            "Sub-Cmds": ['creds', 'online-hosts', 'offline-hosts', 'hosts'],
             "Usage": "reset",
             "Alias": None
         },

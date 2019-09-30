@@ -3,7 +3,7 @@ import sys, os
 import requires
 sys.path.append(os.path.join(os.getcwd(), "..", "misc"))
 from printlib import *
-from var import global_vars
+import var
 
 try:
     from scapy.all import *    #HERE
@@ -16,12 +16,23 @@ except ModuleNotFoundError:
     else:
         print_fail("'scapy' is a dependency!")   #HERE
         input()
+try:
+    import socks    #HERE
+except ModuleNotFoundError:
+    print_warn("Unable to find 'socks', install?")   #HERE
+    ans = input("[Y/N] ")
+    if ans.lower() == "y":
+        requires.install('socks')   #HERE
+        from scapy.all import *
+    else:
+        print_fail("'scapy' is a dependency!")   #HERE
+        input()
 
 SYNACK = 0x12 # Set flag values for later reference
 RSTACK = 0x14
 
-def scan_port(port, target): # Function to scan a given port
-    verbose = global_vars['verbose']['Value']
+def send_syn_probe(port, target): # Function to scan a given port
+    verbose = var.global_vars['verbose']['Value']
     attempt = "Target:{}:{}".format(target, port)
     try:
         srcport = RandShort() # Generate Port Number
@@ -38,13 +49,43 @@ def scan_port(port, target): # Function to scan a given port
                 print_info("Received SYN-ACK, target service appears up")
             return True # If open, return true
         else:
-            print_fail("It's too quiet, target service appears down ({})".format(target))
+            print_warn("It's too quiet, target service appears down ({})".format(target))
             return False # If closed, return false
-        RSTpkt = IP(dst = target)/TCP(sport = srcport, dport = port, flags = "R") # Construct RST packet
-        send(RSTpkt) # Send RST packet
 
     except KeyboardInterrupt: # In case the user needs to quit
             RSTpkt = IP(dst = target)/TCP(sport = srcport, dport = port, flags = "R") # Built RST packet
             send(RSTpkt) # Send RST packet to whatever port is currently being scanned
             print_info("Detected CTRL-C...")
             return
+
+def send_tcp_probe(target_port, target_host):
+    verbose = var.global_vars['verbose']['Value']
+    attempt = "Target:{}:{}".format(target_host, target_port)
+    
+    if var.global_vars['proxy-probe']['Value'] is not None:
+        proxy = var.parse_proxy_settings("probe")
+        proxy_proto = {
+            "http": socks.HTTP,
+            "socks4": socks.SOCKS4,
+            "socks5": socks.SOCKS5
+        }
+    
+        proxy_host = proxy['host']
+        proxy_port = proxy['port']
+        proxy_type = proxy_proto[proxy['protocol']]
+        s = socks.socksocket()
+        s.set_proxy(proxy_type, proxy_host, int(proxy_port))
+    else:
+        s = socket.socket()
+   
+    s.settimeout(3)
+    
+    try:
+        if verbose:
+            print_info("Sending TCP Probe --> {}".format(attempt))
+        addr = (target_host,target_port)
+        s.connect(addr)
+        s.close()
+        return True
+    except socks.GeneralProxyError:
+        return False

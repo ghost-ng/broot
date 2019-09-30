@@ -51,6 +51,16 @@ def parse_cmds(cmds):
                         creds['Targets'] = []
                         if verbose:
                             print_good("Removed all credentials")
+                    elif cmds[1].lower() == "offline-hosts":
+                        engine.offline_hosts = []
+                        print_good("Successfully reset offline hosts tracker")
+                    elif cmds[1].lower() == "online-hosts":
+                        engine.online_hosts = []
+                        print_good("Successfully reset online hosts tracker")
+                    elif cmds[1].lower() == "hosts":
+                        engine.offline_hosts = []
+                        engine.online_hosts = []
+                        print_good("Successfully reset offline and online hosts trackers")
                 else:
                     var.reset_all_vars()
                     print_info("Reset complete")
@@ -258,15 +268,16 @@ def handle_random_input(variable, cmds):
         print_warn("Cannot set a random value to a non-interger type")
 
 def initialize():
+    print_info("Searching for available plugins")
     var.refresh_plugins()
     var.update_cmds()
+    update_paths()
     print_info("Found available plugins")
     sleep(.5)
+    print_info("Initializing save functions")
     save.init()
-    print_info("Initializing saved-flat files")
     sleep(.5)
-    update_paths()
-    #clear_screen()
+
     print(art.banner)
     print(about)
     print(version)

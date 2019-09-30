@@ -17,8 +17,6 @@ threads = []
 offline_hosts = []
 online_hosts = []
 
-verbose = var.global_vars['verbose']['Value']
-
 #Order of checks
 # passwords
 #     a. password file
@@ -83,6 +81,7 @@ def clean_up(obj):
     if type(obj) is not list:
         obj.close()
 
+
 def check_status(status, creds):
     target, username, password = creds
     target = get_target(target)
@@ -99,7 +98,7 @@ def check_status(status, creds):
                 print_fail("Failed --> {}".format(attempt))
 
 class brootThread (threading.Thread):
-
+        
     def __init__(self, thread_id, q, loaded_plugin):
         threading.Thread.__init__(self)
         self.thread_id = thread_id
@@ -107,11 +106,13 @@ class brootThread (threading.Thread):
         self.loaded_plugin = loaded_plugin
 
     def run(self):
+        verbose = var.global_vars['verbose']['Value']
         if verbose:
             print("running thread", self.thread_id)
         broot(self.q, self.loaded_plugin)
 
 def broot(q, loaded_plugin):
+    
     global attempt_number
     global offline_hosts
     global online_hosts
@@ -124,6 +125,10 @@ def broot(q, loaded_plugin):
     wait_failure = var.global_vars['wait-on-failure']['Value']
     re_try = var.global_vars['re-try']['Value']
     stop = var.global_vars['stop-on-success']['Value']
+    syn_probe = var.global_vars['syn-probe']['Value']
+    tcp_probe = var.global_vars['tcp-probe']['Value']
+    verbose = var.global_vars['verbose']['Value']
+    offline = False
     skip = False
 
     exitFlag = False
@@ -163,40 +168,64 @@ def broot(q, loaded_plugin):
                     print_info("Creds already found for this target, skipping...")
 
             if skip is False:
-                try:
-                    if var.global_vars['probe-first']['Value'] is True and target not in offline_hosts:
-                        if target not in online_hosts:
-                            probe_status = scan.scan_port(port, target)
-                            if probe_status is True:
-                                online_hosts.append(target)
-                        
-                        if probe_status is True:
+                if var.global_vars['syn-probe']['Value'] is True or var.global_vars['tcp-probe']['Value'] is True:
+                    probe = True
+                if probe is True and ((target,port) not in online_hosts and (target,port) not in offline_hosts):        #check it wasnt previously scanned
+                    if var.global_vars['syn-probe']['Value'] is True:
+                        #try:
+                        probe_status = scan.send_syn_probe(port, target)
+                        # except Exception as e:
+                        #     if verbose:
+                        #         print(e)
+                        #         print(sys.exc_info)
+                        #         print("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
+                    elif var.global_vars['tcp-probe']['Value'] is True:
+                        #try:
+                        probe_status = scan.send_tcp_probe(port, target)
+                        # except Exception as e:
+                        #     if verbose:
+                        #         print(e)
+                        #         print(sys.exc_info)
+                        #         print("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
+                    if probe_status is True:
+                        online_hosts.append((target,port))
+                        if verbose:
+                            print_good("Target service is responsive!")                            
+                    else:
+                        offline_hosts.append((target,port))
+                        if verbose:
+                            print_warn("Target service did not respond!")
+        
+                    if (target,port) not in offline_hosts:
+                        if verbose:
+                            print_info("Trying --> {}".format(attempt))
+                        try:
+                            status = loaded_plugin.run(username, password, target, port)
+                        except Exception as e:
                             if verbose:
-                                print_good("Target service is responsive!")
-                        else:
-                            offline_hosts.append(target)
-                            if verbose:
-                                print_warn("Target service did not respond!")
-                except Exception as e:
-                    if verbose:
-                        print(e)
-                        print(sys.exc_info)
-                try:
-                    if target not in offline_hosts:
-                        print_info("Trying --> {}".format(attempt))
-                        status = loaded_plugin.run(username, password, target, port)
-                    elif target in offline_hosts:
+                                print(e)
+                                print(sys.exc_info)
+                                print("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
+                    elif (target,port) in offline_hosts:
                         status = False
                         if verbose:
-                            print_info("Target previously observed offline")
-                except NameError as e:
+                            print_info("Skipping, {}:{} observed offline".format(target, port))
+                            offline = True
+                else:
                     if verbose:
-                        print(e)
-                        print(sys.exc_info)
-                    if "run" in str(e):
-                        print_fail("Unable to find the mandatory 'run' function")
-                    return
-                check_status(status, creds)
+                        print_info("Trying --> {}".format(attempt))
+                    try:
+                        status = loaded_plugin.run(username, password, target, port)
+                    except Exception as e:
+                        if verbose:
+                            print(e)
+                            print(sys.exc_info)
+                            print("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
+                        if "run" in str(e):
+                            print_fail("Unable to find the mandatory 'run' function")
+                        return
+                if offline is False:
+                    check_status(status, creds)
                 attempt_number += 1
 
                 if status is False and wait_failure > 0:
@@ -217,6 +246,10 @@ def broot(q, loaded_plugin):
                             except NameError:
                                 print_fail("Unable to find 'run' function")
                                 return
+                            except Exception as e:
+                                if verbose:
+                                    print(e)
+                                    print(sys.exc_info())
                             check_status(status, creds)
                             attempt_number += 1
                 
@@ -256,6 +289,8 @@ def kill_threads(threads):
 def initialize():
     global exitFlag
     global threads
+    verbose = var.global_vars['verbose']['Value']
+
     threads_input = var.global_vars['threads']['Value']
     if "random" in str(threads_input):
         num_threads = var.gen_random(threads_input)
@@ -311,6 +346,7 @@ def initialize():
         if verbose:
             print(e)
             print(sys.exc_info)
+            print("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
     try:
         # Wait for queue to empty
         while not task_queue.empty():

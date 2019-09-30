@@ -59,7 +59,23 @@ def validate_options():
     if not isinstance(var.global_vars['target-port']['Value'], int):
         print_warn("You may need to specify a target-port")
         validated = False
-
+#CHECK FOR TCP PROBE TYPE
+    if var.global_vars['syn-probe']['Value'] and var.global_vars['tcp-probe']['Value']:
+        print_fail("You cannot specify two probe types at once!")
+        validated = False
+#CHECK FOR PROBE PROXY SETTING FORMAT
+    if var.global_vars['proxy-probe']['Value'] is not None:
+        proxy_setting = var.global_vars['proxy-probe']['Value']
+        try:
+            temp = proxy_setting.split(":")
+            if len(temp) != 3:
+                validated = False
+                print_fail("Unrecognized Proxy Setting.  Format should be: socks4://10.0.0.4:9050")
+            if temp[0] not in ['socks4', 'socks5', 'http']:
+                validated = False
+                print_fail("Unrecognized Proxy Protocol.  Allowed Protocols are socks4 socks5 http.")
+        except:
+            print_fail("Unrecognized Proxy Setting.  Format should be: socks4://10.0.0.4:9050")
 #CHECK IF MODULE IS LOADED
     if var.check_plugin_loaded() is False:
         print_fail("Please load a plugin")
