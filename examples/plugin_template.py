@@ -104,15 +104,16 @@ plugin_vars = {
 #is required. 
 
 def validate():
-    pass
+    validated = True        # Do not change
+    return validated
 
 #############################
 #SECTION 6 - MAIN
 #############################
 #This function does the main exection of the brutefore method and MUST BE HERE
 
-#Default Port
-var.global_vars['target-port']['Value'] = ###
+#Default Port - if you have a default port to auto fill some variable, enter it here.
+global_vars['target-port']['Value'] = ###
 
 def run(username, password, target, port):
     attempt = "Target:{}:{} Username:{} Password:{}".format(target, port, username, password)

@@ -4,10 +4,12 @@ sys.path.append(os.path.join(os.getcwd(), "..", "..", "misc"))
 from printlib import *
 sys.path.append(os.path.join(os.getcwd(), "..", "..", "src"))
 import requires
+
+
+
 import requests
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
 try:
     from bs4 import BeautifulSoup
 except ModuleNotFoundError:

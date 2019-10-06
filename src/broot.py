@@ -1,4 +1,5 @@
 print("Loading...")
+print("Collecting resources...")
 import os, sys
 from time import sleep
 import var

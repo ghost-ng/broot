@@ -44,6 +44,12 @@ The role of this function is to parse the input commands and dictate subsequent 
 ### Section 4 - Plugin Variables
 Use this section to define plugin-specific variables that will help execute or fine-tune your new plugin.  A user can "set" these variables in the main broot framework, but your "run" method will reference these variables to help with your authentication function. The **plugin-vars** variable MUST retain the dictionary structure in the tempalte example. 
 
+## Section 5 - Validate
+This section accomplished all your validation steps prior to running the plugin.  You can opt to not fill this section out, but that is highly discouraged.  If a validate options fails here, you should set validated = False.  Also your last statement will be a return statement of 'return validated.'  
+
+If you find yourself needing other functions in the "var" library, you can change the import function to 'import var' but then you'd need to ensure to update your 'global_vars' references to 'var.global_vars.'
+
+
 ### Section 5 - Main
 This section MUST be present or the broot framework with throw an error.  The main engine will call the *run* function to execute the plugin.  The broot framework will iterate over the list of usernames, targets, and password and pass each combination to the *run* method.  
 

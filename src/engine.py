@@ -90,7 +90,7 @@ def check_status(status, creds):
     plugin_name = var.get_loaded_plugin_name()
     attempt = "Plugin:{} Target:{}:{} Username:{} Password:{}".format(plugin_name, target, port, username, password)
     if status is True:
-        var.global_vars['print-successes']['Value'] or verbose:
+        if var.global_vars['print-successes']['Value'] or verbose:
             print_good("Success --> {}".format(attempt))
         var.save_creds(creds)
         save.save_credentials(attempt)
