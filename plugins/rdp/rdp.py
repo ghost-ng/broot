@@ -5,7 +5,6 @@
 #############################################
 import sys
 import os
-import subprocess
 sys.path.append(os.path.join(os.getcwd(), "..", "..", "misc"))
 from printlib import *
 sys.path.append(os.path.join(os.getcwd(), "..", "..", "src"))
@@ -27,6 +26,7 @@ from var import global_vars
 #         print_fail("'<new_module_here>' is a dependency!")   #HERE
 #         input()
 from time import sleep
+import subprocess
 ###########################
 #SECTION 2 - ABOUT
 ###########################

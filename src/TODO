@@ -1,2 +1,1 @@
-- add ability to simple port scan and wait for response before starting
-- handle return codes from plugins to engine.  ie. return (False, "UNREACHABLE", target)
+Add a recovery file ability

@@ -1,4 +1,4 @@
-#TEMPLATE VERSION 1.0
+#TEMPLATE VERSION 1.4
 
 ##############################################
 #SECTION 0 - DEFAULT IMPORTS (DO NOT CHANGE)
@@ -96,7 +96,18 @@ plugin_vars = {
 }
 
 #############################
-#SECTION 5 - MAIN
+#SECTION 5 - VALIDATE
+#############################
+#This function is used to validate your plugin variables prior to execution.  
+#'Broot" calles this function immediately after 'run' and upon 'validate.'
+#This function does not need to be filled out but the skeleton structure here
+#is required. 
+
+def validate():
+    pass
+
+#############################
+#SECTION 6 - MAIN
 #############################
 #This function does the main exection of the brutefore method and MUST BE HERE
 
