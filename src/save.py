@@ -4,6 +4,7 @@ sys.path.append(os.path.join(os.getcwd(), "..", "misc"))
 from printlib import *
 import var
 from prettytable import PrettyTable
+from prettytable import PLAIN_COLUMNS
 import datetime
 
 def init():
@@ -67,16 +68,17 @@ def save_credentials(creds, filename="../saves/creds.txt"):
 
 def show_sequences():
     import_file = "../saves/configs.txt"
-    table = PrettyTable(['ID', 'Date', 'Sequence'])
-    table.title = "Saved Configs"
     with open(import_file, 'r') as file:
         temp = []
         count = 0
         for line in file:
             temp = line.split("||")
             count += 1
-            table.add_row([count, temp[0], temp[1]])
-    print(table)
+            print("### SAVED-CONFIGS ###")
+            print("ID: {}".format(count))
+            print("SAVED ON: {}".format(temp[0]))
+            print("SEQUENCE:")
+            print(temp[1])
 
 def load_sequences(selection):
     selection = int(selection)
