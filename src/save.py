@@ -3,8 +3,6 @@ import sys
 sys.path.append(os.path.join(os.getcwd(), "..", "misc"))
 from printlib import *
 import var
-from prettytable import PrettyTable
-from prettytable import PLAIN_COLUMNS
 import datetime
 
 def init():
