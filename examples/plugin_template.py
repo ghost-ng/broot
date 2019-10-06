@@ -116,6 +116,7 @@ def validate():
 global_vars['target-port']['Value'] = ###
 
 def run(username, password, target, port):
-    attempt = "Target:{}:{} Username:{} Password:{}".format(target, port, username, password)
+    attempt = "Target:{}:{} Username:{} Password:{}".format(target, port, username, password) # for printing messages if you want to
     verbose = global_vars['verbose']['Value']
     pass
+    #return True or False  -- must return True if the authentication attempt was successful and false if it failed
