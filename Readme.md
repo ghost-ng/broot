@@ -11,7 +11,7 @@ broot is a bruteforce framework.  The structure and wrappers provided here dicta
 ## Getting Started
 
 This code is written exclusively for python3 with no plans to port it to python2 or a different language.  
-Check out the [Contrubuting](https://github.com/MidnightSeer/broot/blob/master/Contributing.md) section for more information on how to add your own plugins.
+You can either use the plugins already provided in the framework or request me to add one of your own!
 
 ### Prerequisites
 
@@ -50,7 +50,7 @@ Many of the commands are accompanied with an alias or two, best way to see this 
 
 ## Contributing
 
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
+Check out the [Contributing](https://github.com/MidnightSeer/broot/blob/master/contributing.md) section for more information on how to add your own plugins.
 
 ## Contributors
 
