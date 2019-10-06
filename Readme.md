@@ -6,11 +6,12 @@ Time to "be root," **broot**
 
 ## What is this?
 
-broot is a bruteforce framework.  The structure and wrappers provided here dictate the logic that wraps arounds authentication methods.  That is to say, byom, bring your own plugin.  If you code, simply create a method to authenticate to a service, give it some specific methods, and hit run...broot will do the rest.
+broot is a bruteforce framework.  The structure and wrappers provided here dictate the logic that wraps arounds authentication methods.  That is to say, byom, bring your own plugin.  Simply create a method to authenticate to a service, give it some specific methods, and hit run...broot will do the rest.
 
 ## Getting Started
 
 This code is written exclusively for python3 with no plans to port it to python2 or a different language.  
+Check out the [Contrubuting](https://github.com/MidnightSeer/broot/blob/master/Contributing.md) section for more information on how to add your own plugins.
 
 ### Prerequisites
 

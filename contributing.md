@@ -51,7 +51,7 @@ If you find yourself needing other functions in the "var" library, you can chang
 
 
 ### Section 5 - Main
-This section MUST be present or the broot framework with throw an error.  The main engine will call the *run* function to execute the plugin.  The broot framework will iterate over the list of usernames, targets, and password and pass each combination to the *run* method.  
+This section MUST be present or the broot framework with throw an error.  The main engine will call the *run* function to execute the plugin.  The broot framework will iterate over the list of usernames, targets, and password and pass each combination to the *run* method.  This method will then run through the authenticaiton logic for your plugin and should return 'True' for a successful authentication attempt and 'False' for a failure.
 
 ## Dynamic Refresh
 To help with troubleshooting and overall ease of use, as you modify your plugin or add new plugins to the framework, you can execute a "reload plugins" commands to refresh the plugins list.  
