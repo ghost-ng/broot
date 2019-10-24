@@ -87,5 +87,6 @@ def send_tcp_probe(target_port, target_host):
         s.connect(addr)
         s.close()
         return True
-    except socks.GeneralProxyError:
+    except:
         return False
+    
