@@ -21,7 +21,7 @@ This plugin is used to bruteforce a simple HTTP POST request.  You'll
 need the html for the username and password fields.
 
 Extra Help: Use only the Target Fields for your url
-Example: set target http://10.0.0.1:8443
+Example: set target http://10.0.0.1:8443/Login.htm
 '''
 author = "midnightseer"
 version = "1.0"
@@ -79,7 +79,7 @@ def parse_plugin_cmds(commands):
 #This is an example, variables must have a unique name
 plugin_vars = {
     'Password-Field-ID': {
-        "Name": "Password",
+        "Name": "Password-Field-ID",
         "Value": None,
         "Type": 'String',
         "Default": None,
@@ -87,7 +87,7 @@ plugin_vars = {
         "Example": "|<input id=password-id>| {password-id} is the value."
     },
     'Username-Field-ID': {
-        "Name": "Username",
+        "Name": "Username-Field-ID",
         "Value": None,
         "Type": 'String',
         "Default": None,
@@ -122,7 +122,6 @@ plugin_vars = {
 
 def validate():
     validated = True        # Technically, field values can have numbers, letters, and special chars, no validation needed
-    score = 0
     if plugin_vars['POST-Password']['Value'] is None:
         validated = False
         print_fail("POST-Password is a required field")
