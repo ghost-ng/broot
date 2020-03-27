@@ -5,9 +5,8 @@
 #############################################
 import sys
 import os
-sys.path.append(os.path.join(os.getcwd(), "..", "..", "misc"))
-from printlib import *
 sys.path.append(os.path.join(os.getcwd(), "..", "..", "src"))
+from printlib import *
 import requires
 from var import global_vars
 

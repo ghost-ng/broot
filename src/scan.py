@@ -1,7 +1,6 @@
 #ADAPTED AND TAKEN FROM: https://pastebin.com/YCR3vp9B
 import sys, os
 import requires
-sys.path.append(os.path.join(os.getcwd(), "..", "misc"))
 from printlib import *
 import var
 

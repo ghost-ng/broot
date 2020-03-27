@@ -1,7 +1,6 @@
 import sys, os
 import var, save
 import multiprocessing
-sys.path.append(os.path.join(os.getcwd(), "..", "misc"))
 from printlib import *
 import threading
 from time import sleep

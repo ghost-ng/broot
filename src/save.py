@@ -1,6 +1,5 @@
 import os
 import sys
-sys.path.append(os.path.join(os.getcwd(), "..", "misc"))
 from printlib import *
 import var
 import datetime

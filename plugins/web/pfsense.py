@@ -1,10 +1,8 @@
 import sys
 import os
-sys.path.append(os.path.join(os.getcwd(), "..", "..", "misc"))
 from printlib import *
 sys.path.append(os.path.join(os.getcwd(), "..", "..", "src"))
 import requires
-
 
 
 import requests

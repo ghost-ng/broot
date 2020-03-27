@@ -1,42 +1,29 @@
-#TEMPLATE VERSION 1.4
-
-##############################################
-#SECTION 0 - DEFAULT IMPORTS (DO NOT CHANGE)
-#############################################
-
 import sys
 import os
-
 from printlib import *
 sys.path.append(os.path.join(os.getcwd(), "..", "..", "src"))
 import requires
+
+import requests
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
 from var import global_vars
 
 
-###########################
-#SECTION 1 - IMPORTS
-###########################
-try:
-    import <new_module_here>    #HERE
-except ModuleNotFoundError:
-    print_warn("WARN", "Unable to find '<new_module_here>', install?")   #HERE
-    ans = input("[Y/N] ")
-    if ans.lower() == "y":
-        requires.install('<new_module_here>')   #HERE
-        import <new_module_here>
-    else:
-        print_fail("'<new_module_here>' is a dependency!")   #HERE
-        input()
 
 ###########################
 #SECTION 2 - ABOUT
 ###########################
-name = ""
+name = "html-post"
 description = '''
-The <example> plugin helps with probing the ssh authentication service to determine valid credentials.\
-This is a simple plugin that comes with the default 'broot' framework.
+This plugin is used to bruteforce a simple HTTP POST request.  You'll
+need the html for the username and password fields.
+
+Extra Help: Use only the Target Fields for your url
+Example: set target http://10.0.0.1:8443
 '''
-author = ""
+author = "midnightseer"
 version = "1.0"
 art = """
 
@@ -77,21 +64,21 @@ def parse_plugin_cmds(commands):
 
 #This is an example, variables must have a unique name
 plugin_vars = {
-    'Threads': {
-        "Name": "Threads",
-        "Value": 1,
-        "Type": 'Integer',
-        "Default": 1,
-        "Help": "Amount of concurrent threads to run.  High values may slow down your computer.",
-        "Example": "10 (threads)"
+    'POST-Password': {
+        "Name": "Password",
+        "Value": None,
+        "Type": 'String',
+        "Default": None,
+        "Help": "This value is the password id value from the html form.",
+        "Example": "|<input id=password-id>| {password-id} is the value."
     },
-    'Wait-Period': {
-        "Name": "Wait-Period",
-        "Value": 0,
-        "Type": 'Integer',
-        "Default": 0,
-        "Help": "Amount of time in seconds to wait in between attempts.",
-        "Example": "Wait 0 seconds in between attempts" 
+    'POST-Username': {
+        "Name": "Username",
+        "Value": None,
+        "Type": 'String',
+        "Default": None,
+        "Help": "This value is the password id value from the html form.",
+        "Example": "|<input id=username-id>| {password-id} is the value." 
     }
 }
 
@@ -104,7 +91,20 @@ plugin_vars = {
 #is required. 
 
 def validate():
-    validated = True        # Do not change
+    validated = True        # Technically, field values can have numbers, letters, and special chars, no validation needed
+    score = 0
+    if plugin_vars['POST-Password']['Value'] is None:
+        validated = False
+        print_fail("POST-Password is a required field")
+    if plugin_vars['POST-Username']['Value'] is None:
+        validated = False
+        print_fail("POST-Username is a required field")
+    if "<" in plugin_vars['POST-Password']['Value'] or ">" in plugin_vars['POST-Password']['Value']:
+        validated = False
+        print_fail("POST-Password should not contain html brackets")
+    if "<" in plugin_vars['POST-Username']['Value'] or ">" in plugin_vars['POST-Username']['Value']:
+        validated = False
+        print_fail("POST-Username should not contain html brackets")
     return validated
 
 #############################
@@ -118,5 +118,15 @@ global_vars['target-port']['Value'] = ###
 def run(username, password, target, port):
     attempt = "Target:{}:{} Username:{} Password:{}".format(target, port, username, password) # for printing messages if you want to
     verbose = global_vars['verbose']['Value']
-    pass
+    post_payload = {
+        plugin_vars['POST-Username']['Name']: plugin_vars['POST-Username']['Value'],
+        plugin_vars['POST-Password']['Name']: plugin_vars['POST-Password']['Value']
+    }
+    try:
+        html = requests.post(target, data = post_payload)
+        print(html.text)
+    except Exception as e:
+        if verbose:
+            print_fail(e)
+    print
     #return True or False  -- must return True if the authentication attempt was successful and false if it failed

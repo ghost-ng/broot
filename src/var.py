@@ -4,7 +4,6 @@ import sys
 import requires
 import importlib
 from time import sleep
-sys.path.append(os.path.join(os.getcwd(), "..", "misc"))
 from printlib import *
 
 

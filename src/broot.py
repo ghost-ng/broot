@@ -4,7 +4,6 @@ import os, sys
 from time import sleep
 import var
 import engine
-sys.path.append(os.path.join(os.getcwd(), "..", "misc"))
 from printlib import *
 import importlib
 import art
