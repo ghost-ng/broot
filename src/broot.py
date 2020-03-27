@@ -73,8 +73,9 @@ def parse_cmds(cmds):
                 except Exception as e:
                     print_fail("Error")
                     if verbose:
-                        print(e)
-                        print(sys.exc_info)
+                        print_fail(e)
+                        print_fail("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
+                        print_info("Error in Module - {}".format(sys.path[0]))
             elif cmds[0].lower() in ['clear', 'cls']:
                 clear_screen()
             elif cmds[0].lower() == "version":
@@ -170,9 +171,10 @@ def parse_cmds(cmds):
                     except ModuleNotFoundError as e:
                         print_fail("Plugin not found")
                     except:
-                        print_fail("Unable to load plugin")
-                        print(sys.exc_info())
-                        print("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
+                        if verbose:
+                            print_fail(e)
+                            print_fail("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
+                            print_info("Error in Module - {}".format(sys.path[0]))
                 
             elif cmds[0].lower() == "set":
                 if cmds[1].lower() not in var.global_cmds['set']['Sub-Cmds']:
@@ -199,8 +201,9 @@ def parse_cmds(cmds):
                     except Exception as e:
                         print_fail("Unable to set variable (is the right plugin loaded?)")
                         if verbose:
-                            print(e)
-                            print("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
+                            print_fail(e)
+                            print_fail("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
+                            print_info("Error in Module - {}".format(sys.path[0]))
             elif cmds[0].lower() == "unset":
                 if var.check_plugin_loaded():
                     loaded_plugin = var.get_loaded_plugin_object()
@@ -215,8 +218,9 @@ def parse_cmds(cmds):
                 except Exception as e:
                     print_fail("Unable to reset the variable (are you sure that's the right variable?)")
                     if verbose:
-                        print(e)
-                        print("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
+                            print_fail(e)
+                            print_fail("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
+                            print_info("Error in Module - {}".format(sys.path[0]))
             if var.check_plugin_loaded():
                 loaded_plugin = var.get_loaded_plugin_object()
                 if cmds[0].lower() in loaded_plugin.plugin_cmds:

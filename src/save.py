@@ -58,9 +58,10 @@ def save_credentials(creds, filename="../saves/creds.txt"):
             print_good("Saved Credentials")
     except Exception as e:
         print_warn("Unable to save credentials")
-        if var.global_vars['verbose']['Value'] is True:
-            print(e)
-            print(sys.exc_info())
+        if verbose:
+            print_fail(e)
+            print_fail("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
+            print_info("Error in Module - {}".format(sys.path[0]))
 
 
 def show_sequences():

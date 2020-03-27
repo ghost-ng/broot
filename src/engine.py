@@ -204,9 +204,9 @@ def broot(q, loaded_plugin):
                             status = loaded_plugin.run(username, password, target, port)
                         except Exception as e:
                             if verbose:
-                                print(e)
-                                print(sys.exc_info)
-                                print("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
+                                print_fail(e)
+                                print_fail("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
+                                print_info("Error in Module - {}".format(sys.path[0]))
                     elif (target,port) in offline_hosts:
                         status = False
                         if verbose:
@@ -219,9 +219,9 @@ def broot(q, loaded_plugin):
                         status = loaded_plugin.run(username, password, target, port)
                     except Exception as e:
                         if verbose:
-                            print(e)
-                            print(sys.exc_info)
-                            print("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
+                            print_fail(e)
+                            print_fail("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
+                            print_info("Error in Module - {}".format(sys.path[0]))
                         if "run" in str(e):
                             print_fail("Unable to find the mandatory 'run' function")
                         return
@@ -249,8 +249,9 @@ def broot(q, loaded_plugin):
                                 return
                             except Exception as e:
                                 if verbose:
-                                    print(e)
-                                    print(sys.exc_info())
+                                    print_fail(e)
+                                    print_fail("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
+                                    print_info("Error in Module - {}".format(sys.path[0]))
                             check_status(status, creds)
                             attempt_number += 1
                 
@@ -312,8 +313,10 @@ def initialize():
     except KeyboardInterrupt:
         print("punch!")
     except Exception as e:
-        print(e)
-        print("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
+        if verbose:
+            print_fail(e)
+            print_fail("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
+            print_info("Error in Module - {}".format(sys.path[0]))
 
     try:
         #Load the queue
@@ -334,8 +337,10 @@ def initialize():
     except KeyboardInterrupt:
         print("punch!")
     except Exception as e:
-        print(e)
-        print("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
+        if verbose:
+            print_fail(e)
+            print_fail("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
+            print_info("Error in Module - {}".format(sys.path[0]))
     
     try:
         clean_up(target_list)
@@ -345,9 +350,9 @@ def initialize():
         print("punch!")
     except UnboundLocalError as e:
         if verbose:
-            print(e)
-            print(sys.exc_info)
-            print("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
+            print_fail(e)
+            print_fail("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
+            print_info("Error in Module - {}".format(sys.path[0])))
     try:
         # Wait for queue to empty
         while not task_queue.empty():
@@ -362,8 +367,10 @@ def initialize():
         exitFlag = True
         print("punch!")
     except Exception as e:
-        print(e)
-        print("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
+        if verbose:
+            print_fail(e)
+            print_fail("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
+            print_info("Error in Module - {}".format(sys.path[0]))
 
 if __name__ == "__main__":
     initialize()
