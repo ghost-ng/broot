@@ -3,12 +3,12 @@
 ##############################################
 #SECTION 0 - DEFAULT IMPORTS (DO NOT CHANGE)
 #############################################
-
+sys.path.append(os.path.join(os.getcwd(), "..", "..", "src"))
 import sys
 import os
 
 from printlib import *
-sys.path.append(os.path.join(os.getcwd(), "..", "..", "src"))
+
 import requires
 from var import global_vars
 
