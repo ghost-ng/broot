@@ -156,9 +156,12 @@ def run(username, password, target, port):
     try:
         s = requests.session()
         html = s.post(target, data = payload)
-        print(html.text)
+        if plugin_vars['Password-Field-ID']['Value'] in html.text:
+            return False
+        else:
+            return True
     except Exception as e:
         if verbose:
             print_fail(e)
-    print
-    #return True or False  -- must return True if the authentication attempt was successful and false if it failed
+        return False
+    
