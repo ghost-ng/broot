@@ -349,7 +349,10 @@ def opts_to_table(var_type):
         v = loaded_plugin.plugin_vars
     for d in v:
         table.add_row([v[d]['Name'], v[d]['Value'], v[d]['Example']])
-    print_good("{} Variables:".format(var_type.capitalize()))
+    if var_type.lower() == "plugin":
+        print_good("{} {} Variables:".format(system_vars['Loaded-Plugin']['Name'], var_type.capitalize()))
+    else:
+        print_good("{} Variables:".format(var_type.capitalize()))
     print(table)
 
 
