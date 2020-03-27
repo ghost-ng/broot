@@ -170,7 +170,7 @@ def parse_cmds(cmds):
                         var.update_cmds()
                     except ModuleNotFoundError as e:
                         print_fail("Plugin not found")
-                    except:
+                    except Exception as e:
                         if verbose:
                             print_fail(e)
                             print_fail("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))

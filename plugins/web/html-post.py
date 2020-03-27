@@ -47,7 +47,7 @@ banner = '''
 Author:  {}
 Version: {}
 
-Description: {}'''.format(art,name,author,version), description
+Description: {}'''.format(art,name,author,version,description)
 print(banner)
 
 #############################
@@ -161,7 +161,8 @@ def run(username, password, target, port):
         else:
             return True
     except Exception as e:
-        #
         if verbose:
             print_fail(e)
+            print_fail("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
+            print_info("Error in Module - {}".format(sys.path[0]))
         return False
