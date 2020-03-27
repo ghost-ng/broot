@@ -352,7 +352,7 @@ def initialize():
         if verbose:
             print_fail(e)
             print_fail("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
-            print_info("Error in Module - {}".format(sys.path[0])))
+            print_info("Error in Module - {}".format(sys.path[0]))
     try:
         # Wait for queue to empty
         while not task_queue.empty():
