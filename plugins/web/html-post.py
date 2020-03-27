@@ -161,7 +161,7 @@ def run(username, password, target, port):
         else:
             return True
     except Exception as e:
+        #
         if verbose:
             print_fail(e)
         return False
-    
