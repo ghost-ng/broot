@@ -25,15 +25,29 @@ Example: set target http://10.0.0.1:8443
 '''
 author = "midnightseer"
 version = "1.0"
-art = """
-
-
+art = r"""
+     ____
+    |    |
+    | .--'
+,.--| |-------------.
+|:\ | |   __       _ \
+|#| | |              |
+|#| |o|  THE BROOTS  |
+|#| '-'              |
+|#|                  |
+ \|__________________|
+   [_______________]
+          \ \   | |
+           \ \  | |
+           '/~\ | |
 """
 banner = '''
 {}
 {}
 Author:  {}
-Version: {}'''.format(art,name,author,version)
+Version: {}
+
+Description: {}'''.format(art,name,author,version), description
 print(banner)
 
 #############################
@@ -64,7 +78,7 @@ def parse_plugin_cmds(commands):
 
 #This is an example, variables must have a unique name
 plugin_vars = {
-    'POST-Password': {
+    'Password-Field-ID': {
         "Name": "Password",
         "Value": None,
         "Type": 'String',
@@ -72,13 +86,29 @@ plugin_vars = {
         "Help": "This value is the password id value from the html form.",
         "Example": "|<input id=password-id>| {password-id} is the value."
     },
-    'POST-Username': {
+    'Username-Field-ID': {
         "Name": "Username",
         "Value": None,
         "Type": 'String',
         "Default": None,
         "Help": "This value is the password id value from the html form.",
-        "Example": "|<input id=username-id>| {password-id} is the value." 
+        "Example": "|<input id=username-id>| {username-id} is the value." 
+    },
+    'Submit-Field-ID': {
+        "Name": "Submit-Field-ID",
+        "Value": None,
+        "Type": 'String',
+        "Default": "submit",
+        "Help": "This value is the password id value from the html form.",
+        "Example": "|<input id='submit' value='Login'>| >>submit<< is Field-ID." 
+    },
+    'Submit-Field-Value': {
+        "Name": "Submit-Field-Value",
+        "Value": None,
+        "Type": 'String',
+        "Default": "Login",
+        "Help": "This value is the password id value from the html form.",
+        "Example": "|<input id='submit' value='Login'>| >>Login<< is Field-Value." 
     }
 }
 
@@ -118,12 +148,14 @@ def validate():
 def run(username, password, target, port):
     attempt = "Target:{}:{} Username:{} Password:{}".format(target, port, username, password) # for printing messages if you want to
     verbose = global_vars['verbose']['Value']
-    post_payload = {
-        plugin_vars['POST-Username']['Name']: plugin_vars['POST-Username']['Value'],
-        plugin_vars['POST-Password']['Name']: plugin_vars['POST-Password']['Value']
+    payload = {
+        plugin_vars['Password-Field-ID']['Value']: password,
+        plugin_vars['Username-Field-ID']['Value']: username,
+        plugin_vars['Submit-Field-ID']['Value']: plugin_vars['Submit-Field-Value']['Value']
     }
     try:
-        html = requests.post(target, data = post_payload)
+        s = requests.session()
+        html = s.post(target, data = payload)
         print(html.text)
     except Exception as e:
         if verbose:
