@@ -295,6 +295,8 @@ def print_successes():
     for cred in system_vars['valid-creds']['Credentials']:
         count += 1
         print(cred)
+    if count == 0:
+        print_info("You don't have any creds to show!")
 
 def import_plugin(name):
     loaded_plugin = importlib.import_module(name, package=None)
