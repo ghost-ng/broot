@@ -275,11 +275,14 @@ def broot(q, loaded_plugin):
             sleep(.5)
 
 def get_port(text):
-    temp = text.split(":")
-    if len(temp) > 1:
-        return temp[1]
+    if var.global_vars['target-port']['Value'] is not None:    
+        temp = text.split(":")
+        if len(temp) > 1:
+            return temp[1]
+        else:
+            return var.global_vars['target-port']['Value']
     else:
-        return var.global_vars['target-port']['Value']
+        return None
 
 def get_target(text):
     if "http" not in text:

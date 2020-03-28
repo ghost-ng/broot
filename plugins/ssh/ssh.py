@@ -1,5 +1,5 @@
-sys.path.append(os.path.join(os.getcwd(), "..", "..", "src"))
 import sys
+sys.path.append(os.path.join(os.getcwd(), "..", "..", "src"))
 import os
 from printlib import *
 import requires
