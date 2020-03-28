@@ -220,10 +220,11 @@ def run(username, password, target, port):
         plugin_vars['username-field-id']['Value']: username,
         plugin_vars['submit-field-id']['Value']: plugin_vars['submit-field-value']['Value']
     }
+    post_header = plugin_vars['request-header']['Value']
     try:
         if verbose:
             print(attempt)
-        if plugin_vars['request-header']['Value'] is not None:
+        if post_header is not None:
             r = requests.post(target, data=post_payload, header=post_header)
         else:
             r = requests.post(target, data=post_payload)
