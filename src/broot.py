@@ -89,7 +89,7 @@ def parse_cmds(cmds):
                     sleep(1)
                     print("Starting in [2]", end="\r", flush=True)
                     sleep(1)
-                    print("Starting in [1]")
+                    print("Starting in [1]", end="\r", flush=True)
                     sleep(1)
                     print_info("Broot'ing...")
                     if var.check_plugin_loaded():

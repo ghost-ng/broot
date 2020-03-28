@@ -167,9 +167,9 @@ def run(username, password, target, port):
             print(attempt)
         from requests.compat import urlparse
         parsed = urlparse(target)
-        print(parsed)
-        print(target.encode('unicode-escape').decode())
         r = requests.post(target, data = payload)
+        print(r.status_code)
+        print(r.text)
         if plugin_vars['password-field-id']['Value'] in r.text:
             return False
         else:
