@@ -82,7 +82,7 @@ plugin_vars = {
         "Name": "Password-Field-ID",
         "Value": None,
         "Type": 'String',
-        "Default": None,
+        "Default": 'password',
         "Help": "This value is the password id value from the html form.",
         "Example": "|<input id=password-id>| >>password-id<< is the value."
     },
@@ -90,7 +90,7 @@ plugin_vars = {
         "Name": "Username-Field-ID",
         "Value": None,
         "Type": 'String',
-        "Default": None,
+        "Default": 'username',
         "Help": "This value is the password id value from the html form.",
         "Example": "|<input id=username-id>| >>username-id<< is the value." 
     },
@@ -106,7 +106,7 @@ plugin_vars = {
         "Name": "Submit-Field-Value",
         "Value": None,
         "Type": 'String',
-        "Default": "Login",
+        "Default": "submit",
         "Help": "This value is the password id value from the html form.",
         "Example": "|<input id='submit' value='Login'>| >>Login<< is Field-Value." 
     }
@@ -122,29 +122,29 @@ plugin_vars = {
 
 def validate():
     validated = True        # Technically, field values can have numbers, letters, and special chars, no validation needed
-    if plugin_vars['Password-Field-ID']['Value'] is None:
+    if plugin_vars['password-field-id']['Value'] is None:
         validated = False
-        print_fail("Password-Field-ID is a required field")
+        print_fail("password-field-id is a required field")
 
-    if plugin_vars['Username-Field-ID']['Value'] is None:
+    if plugin_vars['username-field-id']['Value'] is None:
         validated = False
-        print_fail("Username-Field-ID is a required field")
+        print_fail("username-field-id is a required field")
 
-    if plugin_vars['Submit-Field-ID']['Value'] is None:
+    if plugin_vars['submit-field-id']['Value'] is None:
         validated = False
-        print_fail("Submit-Field-ID is a required field")
+        print_fail("submit-field-id is a required field")
 
-    if plugin_vars['Submit-Field-Value']['Value'] is None:
+    if plugin_vars['submit-field-value']['Value'] is None:
         validated = False
-        print_fail("Submit-Field-Value is a required field")
+        print_fail("submit-field-value is a required field")
 
-    if "<" in plugin_vars['Password-Field-ID']['Value'] or ">" in plugin_vars['Password-Field-ID']['Value']:
+    if "<" in plugin_vars['password-field-id']['Value'] or ">" in plugin_vars['password-field-id']['Value']:
         validated = False
-        print_fail("Password-Field-ID should not contain html brackets")
+        print_fail("password-field-id should not contain html brackets")
 
-    if "<" in plugin_vars['Username-Field-ID']['Value'] or ">" in plugin_vars['Username-Field-ID']['Value']:
+    if "<" in plugin_vars['username-field-id']['Value'] or ">" in plugin_vars['username-field-id']['Value']:
         validated = False
-        print_fail("Username-Field-ID should not contain html brackets")
+        print_fail("username-field-id should not contain html brackets")
 
     return validated
 
@@ -160,14 +160,14 @@ def run(username, password, target, port):
     attempt = "Target:{}:{} Username:{} Password:{}".format(target, port, username, password) # for printing messages if you want to
     verbose = global_vars['verbose']['Value']
     payload = {
-        plugin_vars['Password-Field-ID']['Value']: password,
-        plugin_vars['Username-Field-ID']['Value']: username,
-        plugin_vars['Submit-Field-ID']['Value']: plugin_vars['Submit-Field-Value']['Value']
+        plugin_vars['password-field-id']['Value']: password,
+        plugin_vars['username-field-id']['Value']: username,
+        plugin_vars['submit-field-id']['Value']: plugin_vars['submit-field-value']['Value']
     }
     try:
         s = requests.session()
         html = s.post(target, data = payload)
-        if plugin_vars['Password-Field-ID']['Value'] in html.text:
+        if plugin_vars['password-field-id']['Value'] in html.text:
             return False
         else:
             return True
