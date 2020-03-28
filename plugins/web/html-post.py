@@ -174,6 +174,21 @@ def validate():
 #Default Port - if you have a default port to auto fill some variable, enter it here.
 #global_vars['target-port']['Value'] = 80
 
+def format_variable(variable, setting=None):
+    if variable['Name'] == 'Request-Header':
+        print("Enter input, separate each item with ENTER [1st BLANK line ends the input session]")
+        lines = []
+        while True:
+            line = input()
+            if line:
+                lines.append(line)
+            else:
+                break
+        text = '\n'.join(lines)
+        return parse_header(text)
+    else:
+        return False
+
 def parse_header(header_glob):
     header = {}
     temp_list = header_glob.split("\n")

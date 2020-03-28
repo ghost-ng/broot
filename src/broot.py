@@ -123,15 +123,15 @@ def parse_cmds(cmds):
                 if cmds[1].lower() == 'config':
                     seq = save.get_current_sequence()
                     print(seq)
-                if cmds[1].lower() == 'saved-configs':
+                elif cmds[1].lower() == 'saved-configs':
                     save.show_sequences()
-                if cmds[1].lower() == "creds":
+                elif cmds[1].lower() == "creds":
                     var.print_successes()
-                if cmds[1].lower() == "plugins":
+                elif cmds[1].lower() == "plugins":
                     #var.refresh_plugins()
                     var.show_plugins()
                     #var.count_plugins()
-                if cmds[1].lower() == "commands":
+                elif cmds[1].lower() == "commands":
                     var.refresh_plugins()
                     var.print_cmds(var.global_cmds)
                     #var.print_enum_dict(var.global_cmds, m="tree")
@@ -140,20 +140,20 @@ def parse_cmds(cmds):
                         loaded_plugin_object = var.get_loaded_plugin_object()
                         print_info("New Available Commands for '{}' Plugin:\n".format(loaded_plugin_name))
                         var.print_cmds(loaded_plugin_object.plugin_cmds)
-                if cmds[1].lower() == "sub-cmds":
+                elif cmds[1].lower() == "sub-cmds":
                     if len(cmds) == 3:
                         sub_cmds = var.get_sub_cmds(cmds[2])
                         try:
                             for x in sub_cmds: print(x)
                         except TypeError:
                             pass
-                if cmds[1].lower() == "loaded-plugin":
+                elif cmds[1].lower() == "loaded-plugin":
                     if len(cmds) > 2:
                         if cmds[2] == "name":
                             print(var.get_loaded_plugin_name())
                         if cmds[2] == "object":
                             print(var.get_loaded_plugin_object())
-                if cmds[1].lower() == "options":
+                elif cmds[1].lower() == "options":
                     var.opts_to_table("global")
                     if var.check_plugin_loaded():
                         var.opts_to_table("plugin")
@@ -165,7 +165,7 @@ def parse_cmds(cmds):
                     try:
                         if var.check_plugin_loaded():
                             loaded_plugin_name = var.get_loaded_plugin_object()
-                            var.opts_to_table(loaded_plugin_name.plugin_vars)
+                            var.opts_to_table(loaded_plugin_name.plugin_vars[cmds[1]])
                     except KeyError:
                         pass
             elif cmds[0].lower() == "use" or cmds[0].lower() == "load":
@@ -217,7 +217,12 @@ def parse_cmds(cmds):
                                 variable['Value'] = format_variable(variable, cmds[2])
                         elif cmds[1].lower() in loaded_plugin.plugin_vars:
                             variable = loaded_plugin.plugin_vars[cmds[1].lower()]
-                            variable['Value'] = format_variable(variable, cmds[2])
+                            if hasattr(loaded_plugin, "format_variable") and callable(loaded_plugin.format_variable):
+                                temp = loaded_plugin.format_variable(variable, cmds[2])
+                                if temp != False:
+                                    variable['Value'] = temp
+                            else: 
+                                variable['Value'] = format_variable(variable, cmds[2])
                     except IndexError:
                         pass
                     except Exception as e:
