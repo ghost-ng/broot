@@ -491,6 +491,10 @@ def get_help(cmds):
             sleep(.5)
             print_enum_dict(loaded_plugin.plugin_cmds, m="vars")
 
+
+
+
+
 def print_cmds(cmds):
     count = 1
     for d in cmds:
