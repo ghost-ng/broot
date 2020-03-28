@@ -21,18 +21,18 @@ def get_current_sequence():
     for item in var.global_vars:
         if var.global_vars[item]['Value'] != var.global_vars[item]['Default']:
             value = var.global_vars[item]['Value']
-            command = "set " + item + " " + str(value) + ";"
+            command = "set " + item + " " + str(value) + "<|>"
             sequence = sequence + command
     
     if var.check_plugin_loaded():
         mod_name = var.get_loaded_plugin_name()
-        command = "load " + mod_name + ";"
+        command = "load " + mod_name + "<|>"
         sequence = sequence + command
         loaded_plugin = var.get_loaded_plugin_object()
         for item in loaded_plugin.plugin_vars:
             if loaded_plugin.plugin_vars[item]['Value'] != loaded_plugin.plugin_vars[item]['Default']:
                 value = loaded_plugin.plugin_vars[item]['Value']
-                command = "set " + item + " " + str(value) + ";"
+                command = "set " + item + " " + str(value) + "<|>"
                 sequence = sequence + command
     return sequence
 
