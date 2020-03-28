@@ -223,6 +223,16 @@ def parse_cmds(cmds):
                                 temp = loaded_plugin.format_variable(variable, cmds[2])
                                 if temp != False:
                                     variable['Value'] = temp
+                                else:
+                                    if cmds[2].lower() == 'random':
+                                        handle_random_input(variable, cmds)
+                                    elif "file" in cmds[1].lower():
+                                        filename = var.file_exists(cmds[2])
+                                        variable['Value'] = filename
+                                    elif "list" in cmds[1].lower():
+                                        variable['Value'] = format_variable(variable)
+                                    else:
+                                        variable['Value'] = format_variable(variable, cmds[2])
                             else: 
                                 variable['Value'] = format_variable(variable, cmds[2])
                     except IndexError:
