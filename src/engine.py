@@ -82,6 +82,7 @@ def clean_up(obj):
 
 
 def check_status(status, creds):
+    global exitFlag
     verbose = var.global_vars['verbose']['Value']
     target, username, password = creds
     target = get_target(target)
@@ -91,6 +92,8 @@ def check_status(status, creds):
     if status is True:
         if var.global_vars['print-successes']['Value'] or verbose:
             print_good("Success --> {}".format(attempt))
+        if var.global_vars["stop-on-success"]['Value'] is True:
+            exitFlag = True
         var.save_creds(creds)
         save.save_credentials(attempt)
     elif status is False:
