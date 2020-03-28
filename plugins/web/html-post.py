@@ -166,10 +166,10 @@ def run(username, password, target, port):
         if verbose:
             print(attempt)
         from requests.compat import urlparse
-        parsed = urlparse(target)
         r = requests.post(target, data = payload)
-        print(r.status_code)
-        print(r.text)
+        if print(r.status_code) != 200 and verbose is True:
+            print_fail("Uh oh, something is wrong...received server reponse {}".r.status_code)
+
         if plugin_vars['password-field-id']['Value'] in r.text:
             return False
         else:
