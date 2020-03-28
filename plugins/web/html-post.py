@@ -185,6 +185,7 @@ def run(username, password, target, port):
         if plugin_vars['check-login']['Value'] in r.text:
             return False
         else:
+            print(r.text)
             return True
     except Exception as e:
         if verbose:
