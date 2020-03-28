@@ -163,11 +163,13 @@ def run(username, password, target, port):
         plugin_vars['submit-field-id']['Value']: plugin_vars['submit-field-value']['Value']
     }
     try:
-        s = requests.session()
         if verbose:
             print(attempt)
-        html = s.post(url = target, data = payload)
-        if plugin_vars['password-field-id']['Value'] in html.text:
+        from requests.compat import urlparse
+        parsed = urlparse(target)
+        print(parsed)
+        r = requests.post(target, data = payload)
+        if plugin_vars['password-field-id']['Value'] in r.text:
             return False
         else:
             return True
