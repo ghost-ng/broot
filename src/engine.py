@@ -109,7 +109,7 @@ class brootThread (threading.Thread):
     def run(self):
         verbose = var.global_vars['verbose']['Value']
         if verbose:
-            print("running thread", self.thread_id)
+            print_info("Running Thread", self.thread_id)
         broot(self.q, self.loaded_plugin)
 
 def broot(q, loaded_plugin):
@@ -203,12 +203,6 @@ def broot(q, loaded_plugin):
                         if verbose or var.global_vars['print-attempts']['Value']:
                             print_info("Trying --> {}".format(attempt))
                         try:
-                            print("Staring in [3]", end="")
-                            sleep(1)
-                            print("Staring in [2]", end="")
-                            sleep(1)
-                            print("Staring in [1]", end="")
-                            sleep(1)
                             status = loaded_plugin.run(username, password, target, port)
                         except Exception as e:
                             if verbose:

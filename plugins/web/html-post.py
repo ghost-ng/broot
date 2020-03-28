@@ -3,11 +3,9 @@ import os
 sys.path.append(os.path.join(os.getcwd(), "..", "..", "src"))
 from printlib import *
 import requires
-
 import requests
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
 from var import global_vars
 
 
@@ -168,7 +166,7 @@ def run(username, password, target, port):
         s = requests.session()
         if verbose:
             print(attempt)
-        html = s.post(target, data = payload)
+        html = s.post(url = target, data = payload)
         if plugin_vars['password-field-id']['Value'] in html.text:
             return False
         else:

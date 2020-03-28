@@ -85,6 +85,12 @@ def parse_cmds(cmds):
                 var.get_help(cmds)
             elif cmds[0].lower() == "run" or cmds[0].lower() == "broot":
                 if validate.validate_options() is True:
+                    print("Starting in [3]", end="")
+                    sleep(1)
+                    print("Starting in [2]", end="")
+                    sleep(1)
+                    print("Starting in [1]", end="")
+                    sleep(1)
                     print_info("Executing...")
                     if var.check_plugin_loaded():
                         engine.initialize()
