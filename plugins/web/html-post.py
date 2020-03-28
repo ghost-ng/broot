@@ -110,7 +110,7 @@ plugin_vars = {
         "Example": "|<input id='submit' value='Login'>| >>Login<< is Field-Value." 
     },
     'skip-submit-field': {
-        "Name": "Request-Header",
+        "Name": "Skip-Submit-Field",
         "Value": False,
         "Type": 'Boolean',
         "Default": False,
