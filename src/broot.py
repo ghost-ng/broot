@@ -243,7 +243,7 @@ def parse_cmds(cmds):
                     elif cmds[1].lower() in loaded_plugin.plugin_vars:
                         variable = loaded_plugin.plugin_vars[cmds[1].lower()]
                         reset_value = variable['Default']
-                        variable['Value'] = format_variable(variable, reset_value)
+                        variable['Value'] = format_variable(variable, reset_value, mode="unset")
                 except Exception as e:
                     print_fail("Unable to reset the variable (are you sure that's the right variable?)")
                     if verbose:
@@ -259,7 +259,7 @@ def parse_cmds(cmds):
     except IndexError:
         print_fail("Incomplete Command")
 
-def format_variable(variable, setting=None):
+def format_variable(variable, setting=None, mode="set"):
     bool_true = ["yes", "true", "1", "t", "y"]
     bool_false = ["no", "false", "0", "n", "f"]
     if variable['Type'] == "Boolean":
@@ -278,6 +278,8 @@ def format_variable(variable, setting=None):
             return return_value
         except:
             print_fail("Incorrect variable type")
+    elif str(setting).lower() == "none":
+        return None
     elif variable['Type'] == 'List':
         exit_loop = False
         input_list = []
@@ -290,19 +292,19 @@ def format_variable(variable, setting=None):
                 exit_loop = True
         return input_list
     elif variable['Type'] == 'Multi-Line':
-        print("Enter input, separate each item with ENTER [1st BLANK line ends the input session]")
-        lines = []
-        while True:
-            line = input()
-            if line:
-                lines.append(line)
-            else:
-                break
-        text = '\n'.join(lines)
-        return text
-
-    elif str(setting).lower() == "none":
-        return None
+        if mode == "set":
+            print("Enter input, separate each item with ENTER [1st BLANK line ends the input session]")
+            lines = []
+            while True:
+                line = input()
+                if line:
+                    lines.append(line)
+                else:
+                    break
+            text = '\n'.join(lines)
+            return text
+        elif mode == "unset":
+            return variable['Default']
     else:
         if var.global_vars['verbose']['Value'] is True:
             print_info("Variable did not need to be formatted --> {}".format(setting))

@@ -77,6 +77,8 @@ def show_sequences():
             print("SAVED ON: {}".format(temp[0]))
             print("SEQUENCE:")
             print(temp[1])
+        if count == 0:
+            print_info("There a no saved configs!")
 
 def load_sequences(selection):
     selection = int(selection)
