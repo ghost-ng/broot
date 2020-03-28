@@ -203,6 +203,12 @@ def broot(q, loaded_plugin):
                         if verbose or var.global_vars['print-attempts']['Value']:
                             print_info("Trying --> {}".format(attempt))
                         try:
+                            print("Staring in [3]", end="")
+                            sleep(1)
+                            print("Staring in [2]", end="")
+                            sleep(1)
+                            print("Staring in [1]", end="")
+                            sleep(1)
                             status = loaded_plugin.run(username, password, target, port)
                         except Exception as e:
                             if verbose:
@@ -276,7 +282,8 @@ def get_port(text):
         return var.global_vars['target-port']['Value']
 
 def get_target(text):
-    temp = text.split(":")
+    if "http" not in text:
+        temp = text.split(":")
     if len(temp) > 1:
         return temp[0]
     else:
