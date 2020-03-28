@@ -80,7 +80,7 @@ def parse_plugin_cmds(commands):
 plugin_vars = {
     'password-field-id': {
         "Name": "Password-Field-ID",
-        "Value": None,
+        "Value": 'password',
         "Type": 'String',
         "Default": 'password',
         "Help": "This value is the password id value from the html form.",
@@ -88,7 +88,7 @@ plugin_vars = {
     },
     'username-field-id': {
         "Name": "Username-Field-ID",
-        "Value": None,
+        "Value": 'username',
         "Type": 'String',
         "Default": 'username',
         "Help": "This value is the password id value from the html form.",
@@ -96,7 +96,7 @@ plugin_vars = {
     },
     'submit-field-id': {
         "Name": "Submit-Field-ID",
-        "Value": None,
+        "Value": 'submit',
         "Type": 'String',
         "Default": "submit",
         "Help": "This value is the password id value from the html form.",
@@ -104,7 +104,7 @@ plugin_vars = {
     },
     'submit-field-value': {
         "Name": "Submit-Field-Value",
-        "Value": None,
+        "Value": 'submit',
         "Type": 'String',
         "Default": "submit",
         "Help": "This value is the password id value from the html form.",

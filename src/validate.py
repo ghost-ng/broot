@@ -57,7 +57,7 @@ def validate_options():
 #CHECK IF TARGET-PORT IS SET
     if not isinstance(var.global_vars['target-port']['Value'], int):
         print_warn("You may need to specify a target-port")
-        validated = False
+        validated = True
 #CHECK FOR TCP PROBE TYPE
     if var.global_vars['syn-probe']['Value'] and var.global_vars['tcp-probe']['Value']:
         print_fail("You cannot specify two probe types at once!")

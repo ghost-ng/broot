@@ -171,6 +171,8 @@ def broot(q, loaded_plugin):
             if skip is False:
                 if var.global_vars['syn-probe']['Value'] is True or var.global_vars['tcp-probe']['Value'] is True:
                     probe = True
+                else:
+                    probe = False
                 if probe is True and ((target,port) not in online_hosts and (target,port) not in offline_hosts):        #check it wasnt previously scanned
                     if var.global_vars['syn-probe']['Value'] is True:
                         #try:
