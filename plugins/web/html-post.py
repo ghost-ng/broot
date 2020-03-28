@@ -184,6 +184,7 @@ def format_variable(variable, setting=None):
             verbose = global_vars['verbose']['Value']
             #print_fail("Unable to set variable (is the right plugin loaded?)")
             if verbose:
+                print("Setting:\n",setting)
                 print_fail(str(e))
                 print_fail("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
                 print_info("Error in Module - {}".format(sys.path[0]))
