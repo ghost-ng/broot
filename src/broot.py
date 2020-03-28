@@ -337,7 +337,7 @@ def parse_seq(cmd):
     temp = cmd.replace("seq=", '')
     commands = temp.rstrip(";").split(";")
     for cmd in commands:
-        temp = cmd.split(" ")
+        temp = cmd.split(" ",2)
         parse_cmds(temp) 
 
 def main():
