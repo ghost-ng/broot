@@ -4,6 +4,7 @@ sys.path.append(os.path.join(os.getcwd(), "..", "..", "src"))
 from printlib import *
 import requires
 import requests
+import json
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 from var import global_vars
@@ -175,8 +176,13 @@ def validate():
 #global_vars['target-port']['Value'] = 80
 
 def format_variable(variable, setting=None):
+    temp_dict = ""
     if variable['Name'] == 'Request-Header':
-        if setting is not dict:
+        try:
+            temp_dict = json.loads(setting.replace("'",'"'))
+        except:
+            pass
+        if type(temp_dict) is not dict:
             print("Enter input, separate each item with ENTER [1st BLANK line ends the input session]")
             lines = []
             while True:

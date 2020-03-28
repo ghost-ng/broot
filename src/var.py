@@ -145,11 +145,11 @@ global_vars = {
     },
     "verbose": {
         "Name": "Verbose",
-        "Value": False,
+        "Value": True,
         "Type": 'Boolean',
-        "Default": False,
+        "Default": True,
         "Help": "Will print verbose messages.",
-        "Example": "set verbose true"
+        "Example": "set verbose false"
     },
     "print-failures": {
         "Name": "Print-Failures",

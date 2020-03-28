@@ -162,14 +162,14 @@ def parse_cmds(cmds):
                         print(var.global_vars[cmds[1]]['Value'])
                     except KeyError:
                         if verbose:
-                            print_info("Entry does not exist in the GLOBAL variable list")
+                            print_info("Entry does not exist in the {}GLOBAL{} variable list".format(RED,RSTCOLORS))
                     try:
                         if var.check_plugin_loaded():
                             loaded_plugin_name = var.get_loaded_plugin_object()
                             print(loaded_plugin_name.plugin_vars[cmds[1]]['Value']) 
                     except KeyError:
                         if verbose:
-                            print_info("Entry does not exist in the GLOBAL variable list")
+                            print_info("Entry does not exist in the {}PLUGIN{} variable list".format(RED,RSTCOLORS))
             elif cmds[0].lower() == "use" or cmds[0].lower() == "load":
                 if cmds[1].lower() == "config":
                     try:
