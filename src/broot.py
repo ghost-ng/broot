@@ -13,7 +13,7 @@ import validate
 plugin = "/broot"
 prompt = plugin + "/>> "
 end_prgm_flag = False
-version = "broot v" + str(.95)
+version = "broot v" + str(1.00)
 about = """
 Author: midnightseer
 About: 
@@ -166,13 +166,12 @@ def parse_cmds(cmds):
                         pass
                 else:
                     try:
-                        plugin = "/broot"
                         var.unload_plugin()
                         var.wipe_loaded_plugin_info()
                         var.import_plugin(cmds[1].lower())
                         print_good("Loaded {} plugin successfully".format(cmds[1].lower()))
                         if cmds[1].lower() not in plugin:
-                            plugin = plugin + "/" + cmds[1].lower()
+                            plugin = "/broot/" + cmds[1].lower()
                         var.update_cmds()
                     except ModuleNotFoundError as e:
                         print_fail("Plugin not found")
