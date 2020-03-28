@@ -157,6 +157,17 @@ def parse_cmds(cmds):
                     var.opts_to_table("global")
                     if var.check_plugin_loaded():
                         var.opts_to_table("plugin")
+                else:
+                    try:
+                        var.opts_to_table(var.global_vars[cmds[1]])
+                    except KeyError:
+                        pass
+                    try:
+                        if var.check_plugin_loaded():
+                            loaded_plugin_name = var.get_loaded_plugin_object()
+                            var.opts_to_table(loaded_plugin_name.plugin_vars)
+                    except KeyError:
+                        pass
             elif cmds[0].lower() == "use" or cmds[0].lower() == "load":
                 if cmds[1].lower() == "config":
                     try:
