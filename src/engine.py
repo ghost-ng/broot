@@ -109,7 +109,7 @@ class brootThread (threading.Thread):
     def run(self):
         verbose = var.global_vars['verbose']['Value']
         if verbose:
-            print_info("Running Thread", self.thread_id)
+            print_info("Running Thread {}".format(self.thread_id))
         broot(self.q, self.loaded_plugin)
 
 def broot(q, loaded_plugin):

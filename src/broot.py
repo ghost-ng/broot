@@ -10,6 +10,16 @@ import art
 import save
 import validate
 
+import colorama
+colorama.init()
+ 
+def move_cursor(x,y):
+    print ("\x1b[{};{}H".format(y+1,x+1))
+ 
+def clear():
+    print ("\x1b[2J")
+
+
 plugin = "/broot"
 prompt = plugin + "/>> "
 end_prgm_flag = False
@@ -87,9 +97,11 @@ def parse_cmds(cmds):
                 if validate.validate_options() is True:
                     print("Starting in [3]", end="")
                     sleep(1)
+                    move_cursor(0,0)
                     print("Starting in [2]", end="")
                     sleep(1)
-                    print("Starting in [1]", end="")
+                    move_cursor(0,0)
+                    print("Starting in [1]")
                     sleep(1)
                     print_info("Executing...")
                     if var.check_plugin_loaded():
