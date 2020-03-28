@@ -225,7 +225,7 @@ def run(username, password, target, port):
         if verbose:
             print(attempt)
         if post_header is not None:
-            r = requests.post(target, data=post_payload, header=post_header)
+            r = requests.post(target, data=post_payload, headers=post_header)
         else:
             r = requests.post(target, data=post_payload)
         if r.status_code != 200 and verbose is True:
