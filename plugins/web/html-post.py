@@ -166,6 +166,8 @@ def run(username, password, target, port):
     }
     try:
         s = requests.session()
+        if verbose:
+            print(attempt)
         html = s.post(target, data = payload)
         if plugin_vars['password-field-id']['Value'] in html.text:
             return False
