@@ -154,6 +154,9 @@ def broot(q, loaded_plugin):
         if not task_queue.empty():
             creds = q.get()
             target, username, password = creds
+            target = target.rstrip()
+            username = username.rstrip()
+            password = password.rstrip()
             target = get_target(target)
             port = get_port(target)
             attempt = "Target:{}:{} Username:{} Password:{}".format(target, port, username, password)
