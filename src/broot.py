@@ -240,13 +240,18 @@ def format_variable(variable, setting=None):
     bool_false = ["no", "false", "0", "n", "f"]
     if variable['Type'] == "Boolean":
         if str(setting).lower() in bool_true:
-            return True
+            return_value = True
         elif str(setting).lower() in bool_false:
-            return False
+            return_value = False
+        if var.global_vars['verbose']['Value'] is True:
+            print_info("Variable formatted: {} --> {}".format(setting,return_value))
+        return return_value
     elif variable['Type'] == 'Integer' and not "random" in str(setting):
         try:
-            temp = int(setting)
-            return temp
+            return_value = int(setting)
+            if var.global_vars['verbose']['Value'] is True:
+                print_info("Variable formatted: {} --> {}".format(setting,return_value))
+            return return_value
         except:
             print_fail("Incorrect variable type")
     elif variable['Type'] == 'List':
