@@ -180,8 +180,13 @@ def format_variable(variable, setting=None):
     if variable['Name'] == 'Request-Header':
         try:
             temp_dict = json.loads(setting.replace("'",'"'))
-        except:
-            pass
+        except Exception as e:
+            verbose = global_vars['verbose']['Value']
+            #print_fail("Unable to set variable (is the right plugin loaded?)")
+            if verbose:
+                print_fail(e)
+                print_fail("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
+                print_info("Error in Module - {}".format(sys.path[0]))
         if type(temp_dict) is not dict:
             print("Enter input, separate each item with ENTER [1st BLANK line ends the input session]")
             lines = []
