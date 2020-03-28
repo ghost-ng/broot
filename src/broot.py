@@ -267,10 +267,21 @@ def format_variable(variable, setting=None):
         while exit_loop is False:
             try:
                 res = input()
-                input_list.append(res)
+                input_list.append(res.rstrip())
             except KeyboardInterrupt:
                 exit_loop = True
         return input_list
+    elif variable['Type'] == 'Multi-Line':
+        print("Enter input, separate each item with ENTER [1st BLANK line ends the input session]")
+        lines = []
+        while True:
+            line = input()
+            if line:
+                lines.append(line)
+            else:
+                break
+        text = '\n'.join(lines)
+        return text
 
     elif str(setting).lower() == "none":
         return None

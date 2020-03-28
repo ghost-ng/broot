@@ -132,7 +132,7 @@ global_vars = {
         "Value": None,
         "Type": 'String',
         "Default": None,
-        "Help": "Single IP or Fully Qualified Domain Name.",
+        "Help": "Single IP or Fully Qualified Domain Name.  Plugins may have its own expected format.",
         "Example": "root.target.net"
     },
     "target-port": {

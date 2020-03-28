@@ -115,6 +115,14 @@ plugin_vars = {
         "Default": None,
         "Help": "If this value is NOT in the response html text, then the login succeeded",
         "Example": "password" 
+    },
+    'request-header': {
+        "Name": "Request-Header",
+        "Value": None,
+        "Type": 'Multi-Line',
+        "Default": None,
+        "Help": "None --> proceed with default headers; cusotm --> proceed with custom headers",
+        "Example": "password" 
     }
 }
 
@@ -166,10 +174,18 @@ def validate():
 #Default Port - if you have a default port to auto fill some variable, enter it here.
 #global_vars['target-port']['Value'] = 80
 
+def parse_header(header_glob):
+    header = {}
+    temp_list = header_glob.split("\n")
+    for item in temp_list:
+        if item != "":
+            header[item.split(":", 1)[0]] = item.split(":", 1)[1][1:]
+    return header
+
 def run(username, password, target, port):
     attempt = "Target:{}:{} Username:{} Password:{}".format(target, port, username, password) # for printing messages if you want to
     verbose = global_vars['verbose']['Value']
-    payload = {
+    post_payload = {
         plugin_vars['password-field-id']['Value']: password,
         plugin_vars['username-field-id']['Value']: username,
         plugin_vars['submit-field-id']['Value']: plugin_vars['submit-field-value']['Value']
@@ -177,8 +193,11 @@ def run(username, password, target, port):
     try:
         if verbose:
             print(attempt)
-        from requests.compat import urlparse
-        r = requests.post(target, data = payload)
+        if plugin_vars['request-headers']['Value'] is not None:
+            post_header = parse_header(plugin_vars['request-headers']['Value'])
+            r = requests.post(target, data=post_payload, header=post_header)
+        else:
+            r = requests.post(target, data=post_payload)
         if r.status_code != 200 and verbose is True:
             print_fail("Uh oh, something is wrong...received server response {}".format(str(r.status_code)))
 
