@@ -165,7 +165,7 @@ def parse_cmds(cmds):
                     try:
                         if var.check_plugin_loaded():
                             loaded_plugin_name = var.get_loaded_plugin_object()
-                            print(loaded_plugin_name.global_vars[cmds[1]])['Value'])
+                            print(loaded_plugin_name.global_vars[cmds[1]]['Value'])
                             
                     except KeyError:
                         pass
