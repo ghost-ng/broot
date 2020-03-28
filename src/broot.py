@@ -337,7 +337,7 @@ def parse_seq(cmd):
     temp = cmd.replace("seq=", '')
     commands = temp.rstrip(";").split(";")
     for cmd in commands:
-        temp = cmd.split(" ",2)
+        temp = cmd.split(" ", 2)
         parse_cmds(temp) 
 
 def main():
@@ -349,7 +349,7 @@ def main():
         if "seq=" in response:
             parse_seq(response)    
         elif commands != "":
-            cmds = commands.split(" ")
+            cmds = commands.split(" ", 2)
             parse_cmds(cmds)
         
 if __name__ == "__main__":
