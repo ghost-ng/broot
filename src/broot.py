@@ -71,7 +71,6 @@ def parse_cmds(cmds):
                     else:
                         print_fail("Validation Failed!")
                 except Exception as e:
-                    print_fail("Error")
                     if verbose:
                         print_fail(e)
                         print_fail("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
@@ -167,6 +166,9 @@ def parse_cmds(cmds):
                         pass
                 else:
                     try:
+                        plugin = "/broot"
+                        var.unload_plugin()
+                        var.wipe_loaded_plugin_info()
                         var.import_plugin(cmds[1].lower())
                         print_good("Loaded {} plugin successfully".format(cmds[1].lower()))
                         if cmds[1].lower() not in plugin:

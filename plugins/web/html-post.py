@@ -78,23 +78,23 @@ def parse_plugin_cmds(commands):
 
 #This is an example, variables must have a unique name
 plugin_vars = {
-    'Password-Field-ID': {
+    'password-field-id': {
         "Name": "Password-Field-ID",
         "Value": None,
         "Type": 'String',
         "Default": None,
         "Help": "This value is the password id value from the html form.",
-        "Example": "|<input id=password-id>| {password-id} is the value."
+        "Example": "|<input id=password-id>| >>password-id<< is the value."
     },
-    'Username-Field-ID': {
+    'username-field-id': {
         "Name": "Username-Field-ID",
         "Value": None,
         "Type": 'String',
         "Default": None,
         "Help": "This value is the password id value from the html form.",
-        "Example": "|<input id=username-id>| {username-id} is the value." 
+        "Example": "|<input id=username-id>| >>username-id<< is the value." 
     },
-    'Submit-Field-ID': {
+    'submit-field-id': {
         "Name": "Submit-Field-ID",
         "Value": None,
         "Type": 'String',
@@ -102,7 +102,7 @@ plugin_vars = {
         "Help": "This value is the password id value from the html form.",
         "Example": "|<input id='submit' value='Login'>| >>submit<< is Field-ID." 
     },
-    'Submit-Field-Value': {
+    'submit-field-value': {
         "Name": "Submit-Field-Value",
         "Value": None,
         "Type": 'String',
