@@ -161,14 +161,15 @@ def parse_cmds(cmds):
                     try:
                         print(var.global_vars[cmds[1]]['Value'])
                     except KeyError:
-                        pass
+                        if verbose:
+                            print_info("Entry does not exist in the GLOBAL variable list")
                     try:
                         if var.check_plugin_loaded():
                             loaded_plugin_name = var.get_loaded_plugin_object()
-                            print(loaded_plugin_name.global_vars[cmds[1]]['Value'])
-                            
+                            print(loaded_plugin_name.global_vars[cmds[1]]['Value']) 
                     except KeyError:
-                        pass
+                        if verbose:
+                            print_info("Entry does not exist in the GLOBAL variable list")
             elif cmds[0].lower() == "use" or cmds[0].lower() == "load":
                 if cmds[1].lower() == "config":
                     try:
