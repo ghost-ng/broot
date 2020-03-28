@@ -284,8 +284,10 @@ def get_port(text):
 def get_target(text):
     if "http" not in text:
         temp = text.split(":")
-    if len(temp) > 1:
-        return temp[0]
+        if len(temp) > 1:
+            return temp[0]
+        else:
+            return text
     else:
         return text
 
