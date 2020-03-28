@@ -122,18 +122,30 @@ plugin_vars = {
 
 def validate():
     validated = True        # Technically, field values can have numbers, letters, and special chars, no validation needed
-    if plugin_vars['POST-Password']['Value'] is None:
+    if plugin_vars['Password-Field-ID']['Value'] is None:
         validated = False
-        print_fail("POST-Password is a required field")
-    if plugin_vars['POST-Username']['Value'] is None:
+        print_fail("Password-Field-ID is a required field")
+
+    if plugin_vars['Username-Field-ID']['Value'] is None:
         validated = False
-        print_fail("POST-Username is a required field")
-    if "<" in plugin_vars['POST-Password']['Value'] or ">" in plugin_vars['POST-Password']['Value']:
+        print_fail("Username-Field-ID is a required field")
+
+    if plugin_vars['Submit-Field-ID']['Value'] is None:
         validated = False
-        print_fail("POST-Password should not contain html brackets")
-    if "<" in plugin_vars['POST-Username']['Value'] or ">" in plugin_vars['POST-Username']['Value']:
+        print_fail("Submit-Field-ID is a required field")
+
+    if plugin_vars['Submit-Field-Value']['Value'] is None:
         validated = False
-        print_fail("POST-Username should not contain html brackets")
+        print_fail("Submit-Field-Value is a required field")
+
+    if "<" in plugin_vars['Password-Field-ID']['Value'] or ">" in plugin_vars['Password-Field-ID']['Value']:
+        validated = False
+        print_fail("Password-Field-ID should not contain html brackets")
+
+    if "<" in plugin_vars['Username-Field-ID']['Value'] or ">" in plugin_vars['Username-Field-ID']['Value']:
+        validated = False
+        print_fail("Username-Field-ID should not contain html brackets")
+
     return validated
 
 #############################

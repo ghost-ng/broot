@@ -96,6 +96,10 @@ def parse_cmds(cmds):
                 plugin = "/broot"
                 var.unload_plugin()
                 var.wipe_loaded_plugin_info()
+            elif cmds[0].lower() == "options":
+                var.opts_to_table("global")
+                if var.check_plugin_loaded():
+                    var.opts_to_table("plugin")
             elif cmds[0].lower() == "reload":
                 if cmds[1].lower() == var.get_loaded_plugin_name():
                     var.reload_loaded_plugin()

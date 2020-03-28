@@ -350,7 +350,8 @@ def opts_to_table(var_type):
     for d in v:
         table.add_row([v[d]['Name'], v[d]['Value'], v[d]['Example']])
     if var_type.lower() == "plugin":
-        print_good("{} {} Variables:".format(system_vars['Loaded-Plugin']['Name'], var_type.capitalize()))
+        plugin_name = system_vars['Loaded-Plugin']['Name']
+        print_good("{} {} Variables:".format(plugin_name.upper(), var_type.capitalize()))
     else:
         print_good("{} Variables:".format(var_type.capitalize()))
     print(table)
@@ -550,7 +551,9 @@ def reset_all_vars():
 
 def update_cmds():
     global global_cmds
-    if check_plugin_loaded():    
+    if check_plugin_loaded():
+        if global_vars['Verbose']['Value'] is True:
+            print_info("Loading Plugin Variables...")    
         loaded_plugin = get_loaded_plugin_object()
         set_vars = vars_to_list(global_vars) + vars_to_list(loaded_plugin.plugin_vars)
     else:
