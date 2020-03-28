@@ -224,7 +224,7 @@ def run(username, password, target, port):
         if verbose:
             print(attempt)
         if plugin_vars['request-header']['Value'] is not None:
-            post_header = parse_header(plugin_vars['request-headers']['Value'])
+            post_header = parse_header(plugin_vars['request-header']['Value'])
             r = requests.post(target, data=post_payload, header=post_header)
         else:
             r = requests.post(target, data=post_payload)
