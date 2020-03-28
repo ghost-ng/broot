@@ -264,6 +264,8 @@ def format_variable(variable, setting=None):
     elif str(setting).lower() == "none":
         return None
     else:
+        if var.global_vars['verbose']['Value'] is True:
+            print_info("Variable did not need to be formatted --> {}".format(setting))
         return setting
 
 def handle_random_input(variable, cmds):

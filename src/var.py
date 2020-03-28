@@ -200,12 +200,12 @@ global_vars = {
         "Example": "set syn-probe True"
     },
     "stop-on-success": {
-    "Name": "Stop-on-Success",
-    "Value": 'target',
-    "Type": 'String',
-    "Default": 'target',
-    "Help": "If set to True, then stop testing creds against a given object (target,username) after a successful authentication",
-    "Example": "set stop-on-success target,username"
+        "Name": "Stop-on-Success",
+        "Value": 'target',
+        "Type": 'String',
+        "Default": 'target',
+        "Help": "If set to True, then stop testing creds against a given object (target,username) after a successful authentication",
+        "Example": "set stop-on-success target,username"
     }
 }
 
