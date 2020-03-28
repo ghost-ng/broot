@@ -109,21 +109,29 @@ plugin_vars = {
         "Help": "This value is the password id value from the html form.",
         "Example": "|<input id='submit' value='Login'>| >>Login<< is Field-Value." 
     },
+    'skip-submit-field': {
+        "Name": "Request-Header",
+        "Value": False,
+        "Type": 'Boolean',
+        "Default": False,
+        "Help": "Some services do not add the submit id/value in the POST payload",
+        "Example": "set skip-submit-field False" 
+    },
     'check-login': {
         "Name": "Check-Login",
         "Value": None,
         "Type": 'String',
         "Default": None,
         "Help": "If this value is NOT in the response html text, then the login succeeded",
-        "Example": "password" 
+        "Example": "set check-login password" 
     },
     'request-header': {
         "Name": "Request-Header",
         "Value": None,
         "Type": 'Multi-Line',
         "Default": None,
-        "Help": "None --> proceed with default headers; cusotm --> proceed with custom headers",
-        "Example": "password" 
+        "Help": "None --> proceed with default headers; custum --> add custom headers through an interactive prompt",
+        "Example": "set request-header custom" 
     }
 }
 
@@ -215,11 +223,18 @@ def parse_header(header_glob):
 def run(username, password, target, port):
     attempt = "Target:{}:{} Username:{} Password:{}".format(target, port, username, password) # for printing messages if you want to
     verbose = global_vars['verbose']['Value']
-    post_payload = {
-        plugin_vars['password-field-id']['Value']: password,
-        plugin_vars['username-field-id']['Value']: username,
-        plugin_vars['submit-field-id']['Value']: plugin_vars['submit-field-value']['Value']
-    }
+    
+    if plugin_vars['skip-submit-field']['Value'] is True:
+        post_payload = {
+            plugin_vars['password-field-id']['Value']: password,
+            plugin_vars['username-field-id']['Value']: username
+            }
+    else:
+        post_payload = {
+            plugin_vars['password-field-id']['Value']: password,
+            plugin_vars['username-field-id']['Value']: username,
+            plugin_vars['submit-field-id']['Value']: plugin_vars['submit-field-value']['Value']
+            }
     post_header = plugin_vars['request-header']['Value']
     try:
         if verbose:
