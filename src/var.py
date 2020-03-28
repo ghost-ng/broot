@@ -552,7 +552,7 @@ def reset_all_vars():
 def update_cmds():
     global global_cmds
     if check_plugin_loaded():
-        if global_vars['Verbose']['Value'] is True:
+        if global_vars['verbose']['Value'] is True:
             print_info("Loading Plugin Variables...")    
         loaded_plugin = get_loaded_plugin_object()
         set_vars = vars_to_list(global_vars) + vars_to_list(loaded_plugin.plugin_vars)
@@ -625,7 +625,7 @@ def update_cmds():
         "help": {
             "Command": "help",
             "Help": "Print the help files.  Alone, the command prints the entire manual.",
-            "Sub-Cmds": [set_vars, "commands"],
+            "Sub-Cmds": [set_vars],
             "Usage": "help, help <command>, help <variable>",
             "Alias": "?"
         },
