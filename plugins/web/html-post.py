@@ -107,6 +107,14 @@ plugin_vars = {
         "Default": "submit",
         "Help": "This value is the password id value from the html form.",
         "Example": "|<input id='submit' value='Login'>| >>Login<< is Field-Value." 
+    },
+    'check-login': {
+        "Name": "Check-Login",
+        "Value": None,
+        "Type": 'String',
+        "Default": None,
+        "Help": "If this value is NOT in the response html text, then the login succeeded",
+        "Example": "password" 
     }
 }
 
@@ -135,6 +143,10 @@ def validate():
     if plugin_vars['submit-field-value']['Value'] is None:
         validated = False
         print_fail("submit-field-value is a required field")
+
+    if plugin_vars['check-login']['Value'] is None:
+        validated = False
+        print_fail("check-login is a required field")
 
     if "<" in plugin_vars['password-field-id']['Value'] or ">" in plugin_vars['password-field-id']['Value']:
         validated = False
@@ -170,7 +182,7 @@ def run(username, password, target, port):
         if r.status_code != 200 and verbose is True:
             print_fail("Uh oh, something is wrong...received server response {}".format(str(r.status_code)))
 
-        if plugin_vars['password-field-id']['Value'] in r.text:
+        if plugin_vars['check-login']['Value'] in r.text:
             return False
         else:
             return True
