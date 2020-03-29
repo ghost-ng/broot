@@ -130,7 +130,7 @@ plugin_vars = {
         "Value": None,
         "Type": 'Multi-Line',
         "Default": None,
-        "Help": "None --> proceed with default headers; custum --> add custom headers through an interactive prompt",
+        "Help": "None --> proceed with default headers; custom --> add custom headers through an interactive prompt",
         "Example": "set request-header custom" 
     },
     'view-response': {
@@ -138,8 +138,16 @@ plugin_vars = {
         "Value": False,
         "Type": 'Boolean',
         "Default": False,
-        "Help": "View the web server's response.  Normally used to test configs as it will be very noisy on your screen",
+        "Help": "View the web server's response.  Normally used to test configs as it will be very noisy on your screen.",
         "Example": "set view-response true" 
+    },
+    'min-password-length': {
+        "Name": "Min-Password-Length",
+        "Value": 1,
+        "Type": "Integer",
+        "Default": 1,
+        "Help": "Set a minimum password length for your authentication attempts; this will skip password that do not meet this requirement.",
+        "Example": "set min-password-length 5" 
     }
 }
 
@@ -229,6 +237,8 @@ def parse_header(header_glob):
     return header
 
 def run(username, password, target, port):
+    if len(password) < plugin_vars['min-password-length']['Value']:
+        return False
     attempt = "Target:{}:{} Username:{} Password:{}".format(target, port, username, password) # for printing messages if you want to
     verbose = global_vars['verbose']['Value']
     

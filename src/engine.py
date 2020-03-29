@@ -16,6 +16,8 @@ threads = []
 offline_hosts = []
 online_hosts = []
 
+REASON_TO_SKIP = ""
+
 #Order of checks
 # passwords
 #     a. password file
@@ -76,6 +78,17 @@ def get_targets():
         target_list = [var.global_vars['target']['Value']]
     return target_list
 
+def check_to_skip(target, username):
+    global REASON_TO_SKIP
+    skip = False
+    if var.global_vars['stop-on-success']['Value'] is 'target' and target not in var.system_vars["valid-creds"]['Targets']:
+        skip = True
+        REASON_TO_SKIP = 'Creds Found for This Target'
+    if var.global_vars['stop-on-success']['Value'] is 'username' and username not in var.system_vars["valid-creds"]['Usernames']:
+        skip = True
+        REASON_TO_SKIP = 'Creds Found for This Username'
+    return skip
+
 def clean_up(obj):
     if type(obj) is not list:
         obj.close()
@@ -92,8 +105,6 @@ def check_status(status, creds):
     if status is True:
         if var.global_vars['print-successes']['Value'] or verbose:
             print_good("Success --> {}".format(attempt))
-        if var.global_vars["stop-on-success"]['Value'] is True:
-            exitFlag = True
         var.save_creds(creds)
         save.save_credentials(attempt)
     elif status is False:
@@ -158,21 +169,15 @@ def broot(q, loaded_plugin):
             username = username.rstrip()
             password = password.rstrip()
             target = get_target(target)
+            skip = check_to_skip(target, username)
             port = get_port(target)
             attempt = "Target:{}:{} Username:{} Password:{}".format(target, port, username, password)
             
-            if attempt_number % wait_interval == 0 and attempt_number > 0:
-                if verbose:
-                    print("[wait-interval] Sleeping for {} sec".format(wait_time))
-                sleep(wait_time)
-            if "username" in str(stop) and username in str(var.system_vars['valid-creds']['Usernames']):
-                skip = True
-                if verbose:
-                    print_info("Creds already found for this username, skipping...")
-            if "target" in str(stop) and target in str(var.system_vars['valid-creds']['Targets']):
-                skip = True
-                if verbose:
-                    print_info("Creds already found for this target, skipping...")
+            if skip is False:
+                if attempt_number % wait_interval == 0 and attempt_number > 0:
+                    if verbose:
+                        print("[wait-interval] Sleeping for {} sec".format(wait_time))
+                    sleep(wait_time)
 
             if skip is False:
                 if var.global_vars['syn-probe']['Value'] is True or var.global_vars['tcp-probe']['Value'] is True:
@@ -223,7 +228,7 @@ def broot(q, loaded_plugin):
                 else:
                     if verbose or var.global_vars['print-attempts']['Value']:
                         print_info("Trying --> {}".format(attempt))
-                    try:
+                    try:   
                         status = loaded_plugin.run(username, password, target, port)
                     except Exception as e:
                         if verbose:
