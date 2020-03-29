@@ -356,6 +356,8 @@ def opts_to_table(var_type):
         print_good("{} {} Variables:".format(plugin_name.upper(), var_type.capitalize()))
     else:
         print_good("{} Variables:".format(var_type.capitalize()))
+    table.sortby = "Name"
+    table.print_header()
     print(table)
 
 
