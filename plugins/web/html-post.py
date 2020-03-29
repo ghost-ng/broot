@@ -248,9 +248,15 @@ def run(username, password, target, port):
         if verbose:
             print(attempt)
         if post_header is not None:
-            r = requests.post(target, data=post_payload, headers=post_header)
+            try:
+                r = requests.post(target, data=post_payload, headers=post_header)
+            except requests.exceptions.ConnectionError:
+                raise ConnectionAbortedError
         else:
-            r = requests.post(target, data=post_payload)
+            try:
+                r = requests.post(target, data=post_payload)
+            except requests.exceptions.ConnectionError:
+                raise ConnectionAbortedError
         if r.status_code != 200 and verbose is True:
             print_fail("Uh oh, something is wrong...received server response {}".format(str(r.status_code)))
 
