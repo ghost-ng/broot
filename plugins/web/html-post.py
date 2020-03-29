@@ -132,6 +132,14 @@ plugin_vars = {
         "Default": None,
         "Help": "None --> proceed with default headers; custum --> add custom headers through an interactive prompt",
         "Example": "set request-header custom" 
+    },
+    'view-response': {
+        "Name": "View-Response",
+        "Value": False,
+        "Type": 'Boolean',
+        "Default": False,
+        "Help": "View the web server's response.  Normally used to test configs as it will be very noisy on your screen",
+        "Example": "set view-response true" 
     }
 }
 
@@ -246,10 +254,11 @@ def run(username, password, target, port):
         if r.status_code != 200 and verbose is True:
             print_fail("Uh oh, something is wrong...received server response {}".format(str(r.status_code)))
 
+        if plugin_vars['view-response']['Value'] is True:
+            print(r.text)
         if plugin_vars['check-login']['Value'] in r.text:
             return False
         else:
-            #print(r.text)
             return True
     except Exception as e:
         if verbose:
