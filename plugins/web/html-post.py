@@ -252,11 +252,15 @@ def run(username, password, target, port):
                 r = requests.post(target, data=post_payload, headers=post_header)
             except requests.exceptions.ConnectionError:
                 raise ConnectionAbortedError
+            except TimeoutError:
+                raise TimeoutError
         else:
             try:
                 r = requests.post(target, data=post_payload)
             except requests.exceptions.ConnectionError:
                 raise ConnectionAbortedError
+            except TimeoutError:
+                raise TimeoutError
         if r.status_code != 200 and verbose is True:
             print_fail("Uh oh, something is wrong...received server response {}".format(str(r.status_code)))
 
