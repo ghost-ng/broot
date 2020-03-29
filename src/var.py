@@ -350,7 +350,10 @@ def opts_to_table(var_type):
         loaded_plugin = system_vars['Loaded-Plugin']['Object']
         v = loaded_plugin.plugin_vars
     for d in v:
-        table.add_row([v[d]['Name'], v[d]['Value'], v[d]['Example']])
+        placeholder = v[d]['Value']
+        if len(placeholder) > 65:
+            placeholder = "To Large to View --> show {}".format(v[d]['Name'])
+        table.add_row([v[d]['Name'], placeholder, v[d]['Example']])
     if var_type.lower() == "plugin":
         plugin_name = system_vars['Loaded-Plugin']['Name']
         print_good("{} {} Variables:".format(plugin_name.upper(), var_type.capitalize()))
