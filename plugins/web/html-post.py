@@ -268,7 +268,7 @@ def run(username, password, target, port):
             return True
     except Exception as e:
         if verbose:
-            print_fail(e)
+            print_fail(str(e))
             print_fail("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
             print_info("Error in Module - {}".format(sys.path[0]))
         return False

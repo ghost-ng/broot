@@ -59,7 +59,7 @@ def save_credentials(creds, filename="../saves/creds.txt"):
     except Exception as e:
         print_warn("Unable to save credentials")
         if verbose:
-            print_fail(e)
+            print_fail(str(e))
             print_fail("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
             print_info("Error in Module - {}".format(sys.path[0]))
 

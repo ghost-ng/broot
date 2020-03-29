@@ -212,7 +212,7 @@ def broot(q, loaded_plugin):
                             status = loaded_plugin.run(username, password, target, port)
                         except Exception as e:
                             if verbose:
-                                print_fail(e)
+                                print_fail(str(e))
                                 print_fail("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
                                 print_info("Error in Module - {}".format(sys.path[0]))
                     elif (target,port) in offline_hosts:
@@ -227,7 +227,7 @@ def broot(q, loaded_plugin):
                         status = loaded_plugin.run(username, password, target, port)
                     except Exception as e:
                         if verbose:
-                            print_fail(e)
+                            print_fail(str(e))
                             print_fail("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
                             print_info("Error in Module - {}".format(sys.path[0]))
                         if "run" in str(e):
@@ -257,7 +257,7 @@ def broot(q, loaded_plugin):
                                 return
                             except Exception as e:
                                 if verbose:
-                                    print_fail(e)
+                                    print_fail(str(e))
                                     print_fail("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
                                     print_info("Error in Module - {}".format(sys.path[0]))
                             check_status(status, creds)
@@ -328,7 +328,7 @@ def initialize():
         print("punch!")
     except Exception as e:
         if verbose:
-            print_fail(e)
+            print_fail(str(e))
             print_fail("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
             print_info("Error in Module - {}".format(sys.path[0]))
 
@@ -352,7 +352,7 @@ def initialize():
         print("punch!")
     except Exception as e:
         if verbose:
-            print_fail(e)
+            print_fail(str(e))
             print_fail("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
             print_info("Error in Module - {}".format(sys.path[0]))
     
@@ -364,7 +364,7 @@ def initialize():
         print("punch!")
     except UnboundLocalError as e:
         if verbose:
-            print_fail(e)
+            print_fail(str(e))
             print_fail("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
             print_info("Error in Module - {}".format(sys.path[0]))
     try:
@@ -382,7 +382,7 @@ def initialize():
         print("punch!")
     except Exception as e:
         if verbose:
-            print_fail(e)
+            print_fail(str(e))
             print_fail("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
             print_info("Error in Module - {}".format(sys.path[0]))
 
