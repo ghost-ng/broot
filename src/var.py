@@ -351,7 +351,7 @@ def opts_to_table(var_type):
         v = loaded_plugin.plugin_vars
     for d in v:
         placeholder = v[d]['Value']
-        if len(placeholder) > 65:
+        if len(str(placeholder)) > 65:
             placeholder = "To Large to View --> show {}".format(v[d]['Name'])
         table.add_row([v[d]['Name'], placeholder, v[d]['Example']])
     if var_type.lower() == "plugin":
