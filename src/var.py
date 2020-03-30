@@ -221,7 +221,8 @@ system_vars = {
         'Name': None,
         'Object': None
     },
-    "Available-Plugins": {}
+    "Available-Plugins": {},
+    "HTML-Session": None
 }
 
 def parse_proxy_settings(variable="probe"):
@@ -352,7 +353,7 @@ def opts_to_table(var_type):
     for d in v:
         placeholder = v[d]['Value']
         if len(str(placeholder)) > 65:
-            placeholder = "To Large to View --> show {}".format(v[d]['Name'])
+            placeholder = "Too Large to View --> show {}".format(v[d]['Name'])
         table.add_row([v[d]['Name'], placeholder, v[d]['Example']])
     if var_type.lower() == "plugin":
         plugin_name = system_vars['Loaded-Plugin']['Name']

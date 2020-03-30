@@ -7,9 +7,7 @@ import requests
 import json
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-from var import global_vars
-
-
+from var import global_vars, system_vars
 
 ###########################
 #SECTION 2 - ABOUT
@@ -258,15 +256,20 @@ def run(username, password, target, port):
         if verbose:
             print(attempt)
         if post_header is not None:
+            if system_vars['HTML-Session'] is not None:
+                s = requests.Session()
+                system_vars['HTML-Session'] = s
+            else:
+                s = requests
             try:
-                r = requests.post(target, data=post_payload, headers=post_header)
+                r = s.post(target, data=post_payload, headers=post_header)
             except requests.exceptions.ConnectionError:
                 raise ConnectionAbortedError
             except TimeoutError:
                 raise TimeoutError
         else:
             try:
-                r = requests.post(target, data=post_payload)
+                r = s.post(target, data=post_payload)
             except requests.exceptions.ConnectionError:
                 raise ConnectionAbortedError
             except TimeoutError:
