@@ -214,7 +214,7 @@ def broot(q, loaded_plugin):
                         if verbose or var.global_vars['print-attempts']['Value']:
                             print_info("Trying --> {}".format(attempt))
                         try:
-                            status = loaded_plugin.run(username, password, target, port)
+                            status = loaded_plugin.run(username, password, target, port)    #RETURN: True --> successful login; False --> Login failed; None --> login attempt skipped
                         except Exception as e:
                             if verbose:
                                 print_fail(str(e))
@@ -229,7 +229,7 @@ def broot(q, loaded_plugin):
                     if verbose or var.global_vars['print-attempts']['Value']:
                         print_info("Trying --> {}".format(attempt))
                     try:   
-                        status = loaded_plugin.run(username, password, target, port)
+                        status = loaded_plugin.run(username, password, target, port)        #RETURN: True --> successful login; False --> Login failed; None --> login attempt skipped
                     except Exception as e:
                         if verbose:
                             print_fail(str(e))
@@ -238,15 +238,15 @@ def broot(q, loaded_plugin):
                         if "run" in str(e):
                             print_fail("Unable to find the mandatory 'run' function")
                         return
-                if offline is False:
+                if offline is False and status is not None:
                     check_status(status, creds)
-                attempt_number += 1
+                    attempt_number += 1
 
-                if status is False and wait_failure > 0:
+                if status is False and wait_failure > 0 and status is not None:
                     if verbose:
                         print("[failed] Sleeping for {} sec".format(wait_failure))
                     sleep(wait_failure)
-                if status is False and re_try > 0:
+                if status is False and re_try > 0 and status is not None:
                     if verbose:
                         print("Trying again...")
                     for i in range(re_try):

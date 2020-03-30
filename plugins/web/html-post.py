@@ -236,7 +236,8 @@ def parse_header(header_glob):
 
 def run(username, password, target, port):
     if len(password) < plugin_vars['min-password-length']['Value']:
-        return False
+        print_warn("{} does not meet the length requirements".format(password))
+        return None
     attempt = "Target:{}:{} Username:{} Password:{}".format(target, port, username, password) # for printing messages if you want to
     verbose = global_vars['verbose']['Value']
     
