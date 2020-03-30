@@ -363,7 +363,7 @@ def parse_seq(cmd):
 def main():
     initialize()
     while not end_prgm_flag:
-        prompt = plugin + "/>> "
+        prompt = "{}{}/>>{} ".format(GREEN,plugin,RSTCOLORS)
         response = input(prompt)
         commands = response
         if "seq=" in response:
