@@ -167,14 +167,14 @@ def parse_cmds(cmds):
                         var.opts_to_table("plugin")
                 else:
                     try:
-                        print(var.global_vars[cmds[1]]['Value'])
+                        print(var.global_vars[cmds[1].lower()]['Value'])
                     except KeyError:
                         if verbose:
                             print_info("Entry does not exist in the {}GLOBAL{} variable list".format(RED,RSTCOLORS))
                     try:
                         if var.check_plugin_loaded():
                             loaded_plugin_name = var.get_loaded_plugin_object()
-                            print(loaded_plugin_name.plugin_vars[cmds[1]]['Value']) 
+                            print(loaded_plugin_name.plugin_vars[cmds[1].lower()]['Value']) 
                     except KeyError:
                         if verbose:
                             print_info("Entry does not exist in the {}PLUGIN{} variable list".format(RED,RSTCOLORS))
@@ -360,6 +360,9 @@ def parse_seq(cmd):
         temp = cmd.split(" ", 2)
         parse_cmds(temp) 
 
+def reset():
+    var.system_vars["HTML-Session"] = None
+
 def main():
     initialize()
     while not end_prgm_flag:
@@ -371,6 +374,8 @@ def main():
         elif commands != "":
             cmds = commands.split(" ", 2)
             parse_cmds(cmds)
+            if cmds =="run":
+                reset()
         
 if __name__ == "__main__":
     try:
