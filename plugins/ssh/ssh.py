@@ -99,6 +99,11 @@ plugin_vars = {
 #Default Port
 global_vars['target-port']['Value'] = 22
 
+def validate():
+    validated = True
+
+    return validated
+
 def run(username, password, target, port):
     success = False
     verbose = global_vars['verbose']['Value']
