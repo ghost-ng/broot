@@ -103,7 +103,7 @@ def run(username, password, target, port):
     success = False
     verbose = global_vars['verbose']['Value']
     timeout = plugin_vars['timeout']['Value']
-    port = var.global_vars['target-port']['Value']
+    port = global_vars['target-port']['Value']
     banner_timeout = plugin_vars['banner-timeout']['Value']
     attempt = "Target:{}:{} Username:{} Password:{}".format(target, port, username, password)
 
