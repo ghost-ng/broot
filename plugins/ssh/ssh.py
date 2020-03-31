@@ -97,7 +97,7 @@ plugin_vars = {
 #This function does the main exection of the brutefore method
 
 #Default Port
-var.global_vars['target-port']['Value'] = 22
+global_vars['target-port']['Value'] = 22
 
 def run(username, password, target, port):
     success = False

@@ -21,7 +21,7 @@ Extra Help: Use only the Target Fields for your url
 Example: set target http://10.0.0.1:8443/Login.htm
 '''
 author = "midnightseer"
-version = "1.0"
+version = "1.01"
 art = r"""
      ____
     |    |
@@ -236,7 +236,7 @@ def parse_header(header_glob):
 
 def run(username, password, target, port):
     if len(password) < plugin_vars['min-password-length']['Value']:
-        print_warn("{} does not meet the length requirements".format(password))
+        print_warn("'{}' does not meet the length requirements".format(password))
         return None
     attempt = "Target:{}:{} Username:{} Password:{}".format(target, port, username, password) # for printing messages if you want to
     verbose = global_vars['verbose']['Value']
