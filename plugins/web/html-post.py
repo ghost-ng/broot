@@ -286,7 +286,10 @@ def run(username, password, target, port):
         if plugin_vars['check-login']['Value'] in r.text:
             return False
         else:
-            return True
+            if r.status_code == 200:
+                return True
+            else:
+                return False
     except Exception as e:
         if verbose:
             print_fail(str(e))
