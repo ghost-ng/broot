@@ -270,6 +270,7 @@ def run(username, password, target, port):
                 raise TimeoutError
         else:
             try:
+                s = requests
                 r = s.post(target, data=post_payload)
             except requests.exceptions.ConnectionError:
                 raise ConnectionAbortedError
@@ -277,6 +278,8 @@ def run(username, password, target, port):
                 raise TimeoutError
         if r.status_code != 200 and verbose is True:
             print_fail("Uh oh, something is wrong...received server response {}".format(str(r.status_code)))
+        elif r.status_code != 200 and verbose is False:
+            print_fail("Server Replied with a non-200 response code!")
 
         if plugin_vars['view-response']['Value'] is True:
             print(r.text)
