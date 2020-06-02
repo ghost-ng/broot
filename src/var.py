@@ -189,7 +189,7 @@ global_vars = {
         "Type": 'Boolean',
         "Default": False,
         "Help": "Send an initial TCP CONNECT probe priot to attempting authentication.  If the TCP handshake probe fails, the target is skipped.  This probe-type works with a proxy.",
-        "Example": "set syn-probe True"
+        "Example": "set tcp-probe True"
     },
     "syn-probe": {
         "Name": "SYN-Probe",

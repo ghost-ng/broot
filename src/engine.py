@@ -6,6 +6,7 @@ import threading
 from time import sleep
 import queue
 import scan
+MODULE_NAME = __file__.split("/")[len(__file__.split("/"))-1]
 
 loaded_plugin = var.get_loaded_plugin_object()
 exitFlag = False
@@ -219,7 +220,7 @@ def broot(q, loaded_plugin):
                             if verbose:
                                 print_fail(str(e))
                                 print_fail("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
-                                print_info("Error in Module - {}".format(sys.path[0]))
+                                print_fail("Error in Module - {}".format(MODULE_NAME))
                     elif (target,port) in offline_hosts:
                         status = False
                         if verbose:
@@ -234,7 +235,7 @@ def broot(q, loaded_plugin):
                         if verbose:
                             print_fail(str(e))
                             print_fail("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
-                            print_info("Error in Module - {}".format(sys.path[0]))
+                            print_fail("Error in Module - {}".format(MODULE_NAME))
                         if "run" in str(e):
                             print_fail("Unable to find the mandatory 'run' function")
                         return
@@ -264,7 +265,7 @@ def broot(q, loaded_plugin):
                                 if verbose:
                                     print_fail(str(e))
                                     print_fail("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
-                                    print_info("Error in Module - {}".format(sys.path[0]))
+                                    print_fail("Error in Module - {}".format(MODULE_NAME))
                             check_status(status, creds)
                             attempt_number += 1
                 
@@ -335,7 +336,7 @@ def initialize():
         if verbose:
             print_fail(str(e))
             print_fail("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
-            print_info("Error in Module - {}".format(sys.path[0]))
+            print_fail("Error in Module - {}".format(MODULE_NAME))
 
     try:
         #Load the queue
@@ -359,7 +360,7 @@ def initialize():
         if verbose:
             print_fail(str(e))
             print_fail("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
-            print_info("Error in Module - {}".format(sys.path[0]))
+            print_fail("Error in Module - {}".format(MODULE_NAME))
     
     try:
         clean_up(target_list)
@@ -371,7 +372,7 @@ def initialize():
         if verbose:
             print_fail(str(e))
             print_fail("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
-            print_info("Error in Module - {}".format(sys.path[0]))
+            print_fail("Error in Module - {}".format(MODULE_NAME))
     try:
         # Wait for queue to empty
         while not task_queue.empty():
@@ -389,7 +390,7 @@ def initialize():
         if verbose:
             print_fail(str(e))
             print_fail("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
-            print_info("Error in Module - {}".format(sys.path[0]))
+            print_fail("Error in Module - {}".format(MODULE_NAME))
 
 if __name__ == "__main__":
     initialize()

@@ -9,6 +9,7 @@ import importlib
 import art
 import save
 import validate
+MODULE_NAME = __file__.split("/")[len(__file__.split("/"))-1]
 
 plugin = "/broot"
 prompt = plugin + "/>> "
@@ -74,7 +75,7 @@ def parse_cmds(cmds):
                     if verbose:
                         print_fail(str(e))
                         print_fail("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
-                        print_info("Error in Module - {}".format(sys.path[0]))
+                        print_fail("Error in Module - {}".format(MODULE_NAME))
             elif cmds[0].lower() in ['clear', 'cls']:
                 clear_screen()
             elif cmds[0].lower() == "version":
@@ -206,7 +207,7 @@ def parse_cmds(cmds):
                         if verbose:
                             print_fail(str(e))
                             print_fail("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
-                            print_info("Error in Module - {}".format(sys.path[0]))
+                            print_fail("Error in Module - {}".format(MODULE_NAME))
                 
             elif cmds[0].lower() == "set":
                 if cmds[1].lower() not in var.global_cmds['set']['Sub-Cmds']:
@@ -250,7 +251,7 @@ def parse_cmds(cmds):
                         if verbose:
                             print_fail(str(e))
                             print_fail("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
-                            print_info("Error in Module - {}".format(sys.path[0]))
+                            print_fail("Error in Module - {}".format(MODULE_NAME))
             elif cmds[0].lower() == "unset":
                 if var.check_plugin_loaded():
                     loaded_plugin = var.get_loaded_plugin_object()
@@ -267,7 +268,7 @@ def parse_cmds(cmds):
                     if verbose:
                             print_fail(str(e))
                             print_fail("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
-                            print_info("Error in Module - {}".format(sys.path[0]))
+                            print_fail("Error in Module - {}".format(MODULE_NAME))
             if var.check_plugin_loaded():
                 loaded_plugin = var.get_loaded_plugin_object()
                 if cmds[0].lower() in loaded_plugin.plugin_cmds:

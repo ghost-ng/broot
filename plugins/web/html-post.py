@@ -8,7 +8,7 @@ import json
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 from var import global_vars, system_vars
-
+MODULE_NAME = __file__.split("/")[len(__file__.split("/"))-1]
 ###########################
 #SECTION 2 - ABOUT
 ###########################
@@ -211,7 +211,7 @@ def format_variable(variable, setting=None):
                 print("Setting:\n",setting)
                 print_fail(str(e))
                 print_fail("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
-                print_info("Error in Module - {}".format(sys.path[0]))     
+                print_fail("Error in Module - {}".format(MODULE_NAME))     
 
             print("Enter input, separate each item with ENTER [1st BLANK line ends the input session]")
             lines = []
@@ -288,5 +288,5 @@ def run(username, password, target, port):
         if verbose:
             print_fail(str(e))
             print_fail("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
-            print_info("Error in Module - {}".format(sys.path[0]))
+            print_fail("Error in Module - {}".format(MODULE_NAME))
         return False

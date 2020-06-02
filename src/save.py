@@ -3,6 +3,7 @@ import sys
 from printlib import *
 import var
 import datetime
+MODULE_NAME = __file__.split("/")[len(__file__.split("/"))-1]
 
 def init():
     config_file = os.path.join(os.getcwd(), "..", "saves", "configs.txt")
@@ -61,7 +62,7 @@ def save_credentials(creds, filename="../saves/creds.txt"):
         if verbose:
             print_fail(str(e))
             print_fail("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
-            print_info("Error in Module - {}".format(sys.path[0]))
+            print_fail("Error in Module - {}".format(MODULE_NAME))
 
 
 def show_sequences():
