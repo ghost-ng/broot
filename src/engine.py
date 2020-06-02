@@ -82,10 +82,10 @@ def get_targets():
 def check_to_skip(target, username):
     global REASON_TO_SKIP
     skip = False
-    if var.global_vars['stop-on-success']['Value'] == 'target' and target not in var.system_vars["valid-creds"]['Targets']:
+    if var.global_vars['stop-on-success']['Value'] == 'target' and target in var.system_vars["valid-creds"]['Targets']:
         skip = True
         REASON_TO_SKIP = 'Creds Found for This Target'
-    if var.global_vars['stop-on-success']['Value'] == 'username' and username not in var.system_vars["valid-creds"]['Usernames']:
+    if var.global_vars['stop-on-success']['Value'] == 'username' and username in var.system_vars["valid-creds"]['Usernames']:
         skip = True
         REASON_TO_SKIP = 'Creds Found for This Username'
     return skip
