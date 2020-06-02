@@ -270,9 +270,7 @@ def broot(q, loaded_plugin):
                             attempt_number += 1
                 
             else:
-                if verbose:
-                    print("Skipping...")
-                attempt_number += 1
+                pass
             
         else:
             #print("queue is empty")
