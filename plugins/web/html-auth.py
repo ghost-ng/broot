@@ -15,8 +15,7 @@ MODULE_NAME = __file__.split("/")[len(__file__.split("/"))-1]
 ###########################
 #SECTION 1 - Module IMPORTS
 ###########################
-from requests.auth import HTTPBasicAuth
-from requests.auth import HTTPDigestAuth
+import requests
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -135,10 +134,10 @@ def run(username, password, target, port):
     verbose = global_vars['verbose']['Value']
     try:
         if plugin_vars['basic-auth']['Value'] is True:
-            r = requests.get(target, auth=HTTPBasicAuth(username, password))
+            r = requests.get(target, auth=requests.HTTPBasicAuth(username, password))
 
         elif plugin_vars['digest-auth']['Value'] is True:
-            r = requests.get(target, auth=HTTPDigestAuth(username, password))
+            r = requests.get(target, auth=requests.HTTPDigestAuth(username, password))
 
         if r.status_code != 200 and verbose is True:
             print_fail("Uh oh, something is wrong...received server response {}".format(str(r.status_code)))
