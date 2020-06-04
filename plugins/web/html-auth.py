@@ -150,6 +150,8 @@ def run(username, password, target, port):
             return False
         
         else:
+            if verbose:
+                print_info("Server Reply: {}".format(r.status_code))
             return False
 
     except Exception as e:
