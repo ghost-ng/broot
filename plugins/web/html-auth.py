@@ -19,18 +19,6 @@ from requests.auth import HTTPDigestAuth
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-try:
-    import <new_module_here>    #HERE
-except ModuleNotFoundError:
-    print_warn("WARN", "Unable to find '<new_module_here>', install?")   #HERE
-    ans = input("[Y/N] ")
-    if ans.lower() == "y":
-        requires.install('<new_module_here>')   #HERE
-        import <new_module_here>
-    else:
-        print_fail("'<new_module_here>' is a dependency!")   #HERE
-        input()
-
 ###########################
 #SECTION 2 - ABOUT
 ###########################
