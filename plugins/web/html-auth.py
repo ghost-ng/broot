@@ -140,9 +140,11 @@ def run(username, password, target, port):
             r = requests.get(target, auth=HTTPDigestAuth(username, password))
 
         if r.status_code != 200 and verbose is True:
-                print_fail("Uh oh, something is wrong...received server response {}".format(str(r.status_code)))
-            elif r.status_code != 200 and verbose is False:
-                print_fail("Server Replied with a non-200 response code!")
+            print_fail("Uh oh, something is wrong...received server response {}".format(str(r.status_code)))
+            return False
+        elif r.status_code != 200 and verbose is False:
+            print_fail("Server Replied with a non-200 response code!")
+            return False
 
         if plugin_vars['check-login']['Value'] not in r.text:
             return True
