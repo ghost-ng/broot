@@ -14,6 +14,11 @@ MODULE_NAME = __file__.split("/")[len(__file__.split("/"))-1]
 ###########################
 #SECTION 1 - Module IMPORTS
 ###########################
+from requests.auth import HTTPBasicAuth
+from requests.auth import HTTPDigestAuth
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
 try:
     import <new_module_here>    #HERE
 except ModuleNotFoundError:
@@ -29,15 +34,23 @@ except ModuleNotFoundError:
 ###########################
 #SECTION 2 - ABOUT
 ###########################
-name = ""
+name = "html-auth"
 description = '''
-The <example> plugin helps with probing the ssh authentication service to determine valid credentials.\
-This is a simple plugin that comes with the default 'broot' framework.
+Perform simple authentication with the http basic authentication module.
 '''
-author = ""
+author = "midnightseer"
 version = "1.0"
 art = """
+  /\ ___ /\
+ (  o   o  ) 
+  \  >#<  /
+  /       \  
+ /         \       ^
+|           |     //
+ \         /    //
+  ///  ///   --
 
+-- YOU BASIC --
 
 """
 banner = '''
@@ -75,36 +88,49 @@ def parse_plugin_cmds(commands):
 
 #This is an example, variables must have a unique name
 plugin_vars = {
-    'threads': {        #lowercase
-        "Name": "Threads",
-        "Value": 1,
-        "Type": 'Integer',
-        "Default": 1,
-        "Help": "Amount of concurrent threads to run.  High values may slow down your computer.",
-        "Example": "10 (threads)"
+    'basic-auth': {
+        "Name": "Basic-Auth",
+        "Value": False,
+        "Type": 'Boolean',
+        "Default": False,
+        "Help": "Perform http basic authentication",
+        "Example": "set basic-auth true"
     },
-    'wait-period': {
-        "Name": "Wait-Period",
-        "Value": 0,
-        "Type": 'Integer',
-        "Default": 0,
-        "Help": "Amount of time in seconds to wait in between attempts.",
-        "Example": "Wait 0 seconds in between attempts" 
-    }
+    'digest-auth': {
+        "Name": "Digest-Auth",
+        "Value": False,
+        "Type": 'Boolean',
+        "Default": False,
+        "Help": "Perform http digest authentication",
+        "Example": "set digest-auth true" 
+    },
+    'check-login': {
+        "Name": "Check-Login",
+        "Value": None,
+        "Type": 'String',
+        "Default": None,
+        "Help": "If this value is NOT in the response html text, then the login succeeded",
+        "Example": "set check-login password" 
+    },
 }
 
 #############################
 #SECTION 5 - VALIDATE
 #############################
 #This function is used to validate your plugin variables prior to execution.  
-#'Broot" calles this function immediately after 'run' and upon 'validate.'
+#'Broot" calls this function immediately after 'run' and upon 'validate.'
 #This function does not need to be filled out but the skeleton structure here
 #is required. 
 
 def validate():
-    validated = True        # Do not change, must be the default
+    validated = True        # Do not change
 
-    #if and else logic
+    if plugin_vars['basic-auth']['Value'] is False and plugin_vars['digest-auth']['Value'] is False:
+        validated = False
+        print_fail("You must specify an authenticaiton method")
+    if plugin_vars['check-login']['Value'] is None:
+        validated = False
+        print_fail("You must specify a way to verify a logon attempt worked")
     return validated
 
 #############################
@@ -118,5 +144,27 @@ global_vars['target-port']['Value'] = ###
 def run(username, password, target, port):
     attempt = "Target:{}:{} Username:{} Password:{}".format(target, port, username, password) # for printing messages if you want to
     verbose = global_vars['verbose']['Value']
-    pass
+    try:
+        if plugin_vars['basic-auth']['Value'] is True:
+            r = requests.get(target, auth=HTTPBasicAuth(username, password))
+
+        elif plugin_vars['digest-auth']['Value'] is True:
+            r = requests.get(target, auth=HTTPDigestAuth(username, password))
+
+        if r.status_code != 200 and verbose is True:
+                print_fail("Uh oh, something is wrong...received server response {}".format(str(r.status_code)))
+            elif r.status_code != 200 and verbose is False:
+                print_fail("Server Replied with a non-200 response code!")
+
+        if plugin_vars['check-login']['Value'] not in r.text:
+            return True
+        else:
+            return False
+
+    except Exception as e:
+        if verbose:
+            print_fail(str(e))
+            print_fail("Error on Line:{}".format(sys.exc_info()[-1].tb_lineno))
+            print_fail("Error in Module - {}".format(MODULE_NAME))
+        return False
     #return True or False  -- must return True if the authentication attempt was successful and false if it failed
