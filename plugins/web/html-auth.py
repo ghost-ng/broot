@@ -29,7 +29,7 @@ Perform simple authentication with the http basic authentication module.
 '''
 author = "midnightseer"
 version = "1.0"
-art = """
+art = r"""
   /\ ___ /\
  (  o   o  ) 
   \  >#<  /

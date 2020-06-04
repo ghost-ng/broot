@@ -1,4 +1,4 @@
-#TEMPLATE VERSION 1.4
+#TEMPLATE VERSION 1.8
 
 ##############################################
 #SECTION 0 - DEFAULT IMPORTS (DO NOT CHANGE)
@@ -41,7 +41,7 @@ art = """
 
 
 """
-banner = '''
+banner = r'''
 {}
 {}
 Author:  {}
