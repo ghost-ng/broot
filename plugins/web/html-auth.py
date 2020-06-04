@@ -134,10 +134,10 @@ def run(username, password, target, port):
     verbose = global_vars['verbose']['Value']
     try:
         if plugin_vars['basic-auth']['Value'] is True:
-            r = requests.get(target, auth=requests.HTTPBasicAuth(username, password))
+            r = requests.get(target, auth=requests.auth.HTTPBasicAuth(username, password))
 
         elif plugin_vars['digest-auth']['Value'] is True:
-            r = requests.get(target, auth=requests.HTTPDigestAuth(username, password))
+            r = requests.get(target, auth=requests.auth.HTTPDigestAuth(username, password))
 
         if r.status_code != 200 and verbose is True:
             print_fail("Uh oh, something is wrong...received server response {}".format(str(r.status_code)))
