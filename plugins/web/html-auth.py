@@ -127,7 +127,7 @@ def validate():
 #This function does the main exection of the brutefore method and MUST BE HERE
 
 #Default Port - if you have a default port to auto fill some variable, enter it here.
-global_vars['target-port']['Value'] = ###
+#global_vars['target-port']['Value'] = ###
 
 def run(username, password, target, port):
     attempt = "Target:{}:{} Username:{} Password:{}".format(target, port, username, password) # for printing messages if you want to
