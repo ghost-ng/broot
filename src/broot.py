@@ -223,6 +223,8 @@ def parse_cmds(cmds):
                                 filename = var.file_exists(cmds[2])
                                 variable['Value'] = filename
                             elif "list" in cmds[1].lower():
+                                if verbose:
+                                    print_info("Found Special List formatting")
                                 variable['Value'] = format_variable(variable)
                             else:
                                 variable['Value'] = format_variable(variable, cmds[2])
@@ -297,8 +299,6 @@ def format_variable(variable, setting=None, mode="set"):
             return return_value
         except:
             print_fail("Incorrect variable type")
-    elif str(setting).lower() == "none":
-        return None
     elif variable['Type'] == 'List':
         exit_loop = False
         input_list = []
@@ -324,6 +324,8 @@ def format_variable(variable, setting=None, mode="set"):
             return text
         elif mode == "unset":
             return variable['Default']
+    elif str(setting).lower() == "none":
+        return None
     else:
         if var.global_vars['verbose']['Value'] is True:
             print_info("Variable did not need to be formatted --> {}".format(setting))

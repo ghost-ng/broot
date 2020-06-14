@@ -24,7 +24,7 @@ except ModuleNotFoundError:
         requires.install('socks')   #HERE
         from scapy.all import *
     else:
-        print_fail("'scapy' is a dependency!")   #HERE
+        print_fail("'socks' is a dependency!")   #HERE
         input()
 
 SYNACK = 0x12 # Set flag values for later reference
