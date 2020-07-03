@@ -102,7 +102,10 @@ def check_status(status, creds):
     target = get_target(target)
     port = get_port(target)
     plugin_name = var.get_loaded_plugin_name()
-    attempt = "Plugin:{} Target:{}:{} Username:{} Password:{}".format(plugin_name, target, port, username, password)
+    if port is None:
+        attempt = "Plugin:{} Target:{} Username:{} Password:{}".format(plugin_name, target, username, password)
+    else:
+        attempt = "Plugin:{} Target:{}:{} Username:{} Password:{}".format(plugin_name, target, port, username, password)
     if status is True:
         if var.global_vars['print-successes']['Value'] or verbose:
             print_good("Success --> {}".format(attempt))
