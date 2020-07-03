@@ -175,8 +175,10 @@ def broot(q, loaded_plugin):
             target = get_target(target)
             skip = check_to_skip(target, username)
             port = get_port(target)
-            attempt = "Target:{}:{} Username:{} Password:{}".format(target, port, username, password)
-            
+            if port is None:
+                attempt = "Plugin:{} Target:{} Username:{} Password:{}".format(plugin_name, target, username, password)
+            else:
+                attempt = "Plugin:{} Target:{}:{} Username:{} Password:{}".format(plugin_name, target, port, username, password)
             if skip is False:
                 if attempt_number % wait_interval == 0 and attempt_number > 0:
                     if verbose:

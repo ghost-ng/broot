@@ -238,7 +238,6 @@ def run(username, password, target, port):
     if len(password) < plugin_vars['min-password-length']['Value']:
         print_warn("'{}' does not meet the length requirements".format(password))
         return None
-    attempt = "Target:{}:{} Username:{} Password:{}".format(target, port, username, password) # for printing messages if you want to
     verbose = global_vars['verbose']['Value']
     
     if plugin_vars['skip-submit-field']['Value'] is True:
@@ -254,8 +253,7 @@ def run(username, password, target, port):
             }
     post_header = plugin_vars['request-header']['Value']
     try:
-        if verbose:
-            print(attempt)
+
         if post_header is not None:
             if system_vars['HTML-Session'] is not None:
                 s = requests.Session()
