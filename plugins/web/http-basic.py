@@ -22,7 +22,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 ###########################
 #SECTION 2 - ABOUT
 ###########################
-name = "html-auth"
+name = "http-basic"
 description = '''
 Perform simple authentication with the http basic authentication module.
 '''

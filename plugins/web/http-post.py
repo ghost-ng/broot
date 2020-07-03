@@ -12,7 +12,7 @@ MODULE_NAME = __file__.split("/")[len(__file__.split("/"))-1]
 ###########################
 #SECTION 2 - ABOUT
 ###########################
-name = "html-post"
+name = "http-post"
 description = '''
 This plugin is used to bruteforce a simple HTTP POST request.  You'll
 need the html for the username and password fields.
