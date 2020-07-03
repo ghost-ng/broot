@@ -175,6 +175,7 @@ def broot(q, loaded_plugin):
             target = get_target(target)
             skip = check_to_skip(target, username)
             port = get_port(target)
+            plugin_name = var.get_loaded_plugin_name()
             if port is None:
                 attempt = "Plugin:{} Target:{} Username:{} Password:{}".format(plugin_name, target, username, password)
             else:
