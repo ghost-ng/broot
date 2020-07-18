@@ -261,7 +261,10 @@ def run(username, password, target, port):
             else:
                 s = requests
             try:
-                r = s.post(target, data=post_payload, headers=post_header)
+                if "https" in target:
+                    r = s.post(target, data=post_payload,verify=False)
+                else:
+                    r = s.post(target, data=post_payload)
             except requests.exceptions.ConnectionError:
                 raise ConnectionAbortedError
             except TimeoutError:
@@ -269,7 +272,10 @@ def run(username, password, target, port):
         else:
             try:
                 s = requests
-                r = s.post(target, data=post_payload)
+                if "https" in target:
+                    r = s.post(target, data=post_payload,verify=False)
+                else:
+                    r = s.post(target, data=post_payload)
             except requests.exceptions.ConnectionError:
                 raise ConnectionAbortedError
             except TimeoutError:
