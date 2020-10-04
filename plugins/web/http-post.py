@@ -123,6 +123,38 @@ plugin_vars = {
         "Help": "If this value is NOT in the response html text, then the login succeeded",
         "Example": "set check-login password" 
     },
+    'csrf-element-id': {
+        "Name": "CSRF-Element-ID",
+        "Value": None,
+        "Type": 'String',
+        "Default": None,
+        "Help": "The html element id containing the crsf token",
+        "Example": "set csrf-element-id jstokenCSRF" 
+    },
+    'csrf-value-label': {
+        "Name": "CSRF-Value-Label",
+        "Value": 'value',
+        "Type": 'String',
+        "Default": 'value',
+        "Help": "The csrf html element tag containing the crsf token value ie: csrf_value='sdfdsfsdfds34r3425'",
+        "Example": "set csrf-value-tag csrf_value" 
+    },
+    'csrf-post-label': {
+        "Name": "CSRF-Post-Label",
+        "Value": None,
+        "Type": 'String',
+        "Default": None,
+        "Help": "The csrf post paramater label",
+        "Example": "set csrf-post-label tokenCSRF" 
+    },
+    'csrf-initial-get': {
+        "Name": "CSRF-Initial-Get",
+        "Value": True,
+        "Type": 'Boolean',
+        "Default": True,
+        "Help": "The csrf post paramater label",
+        "Example": "set csrf-post-label tokenCSRF" 
+    },
     'request-header': {
         "Name": "Request-Header",
         "Value": None,
@@ -148,6 +180,8 @@ plugin_vars = {
         "Example": "set min-password-length 5" 
     }
 }
+
+INITIAL_GET = False
 
 #############################
 #SECTION 5 - VALIDATE
@@ -234,12 +268,23 @@ def parse_header(header_glob):
             header[item.split(":", 1)[0]] = item.split(":", 1)[1][1:]
     return header
 
+def get_csrf_token(html):
+    verbose = global_vars['verbose']['Value']
+    from bs4 import BeautifulSoup
+    soup = BeautifulSoup(html)
+    match_html = soup.find_all(id=plugin_vars['csrf-element-id']['Value'])
+    csrf_value = match_html[0][plugin_vars['csrf-value-label']['Value']]
+    if verbose:
+        print_info("Found csrf value \n{}".format(csrf_value))
+    return csrf_value
+
+
 def run(username, password, target, port):
+    global INITIAL_GET
     if len(password) < plugin_vars['min-password-length']['Value']:
         print_warn("'{}' does not meet the length requirements".format(password))
         return None
     verbose = global_vars['verbose']['Value']
-    
     if plugin_vars['skip-submit-field']['Value'] is True:
         post_payload = {
             plugin_vars['password-field-id']['Value']: password,
@@ -253,25 +298,27 @@ def run(username, password, target, port):
             }
     post_header = plugin_vars['request-header']['Value']
     try:
-
-        if post_header is not None:
-            if system_vars['HTML-Session'] is not None:
-                s = requests.Session()
-                system_vars['HTML-Session'] = s
-            else:
-                s = requests
+        if plugin_vars['csrf-initial-get']['Value'] is True and INITIAL_GET is False:
+                res = s.get(target)
+                system_vars['HTTP-Session'] = res
+                INITIAL_GET = True
+            if plugin_vars['csrf-post-label']['Value'] is not None:
+                csrf_value = get_csrf_token(res.html)
+                csrf_dict = {plugin_vars['csrf-post-label']['Value']:csrf_value}
+            post_payload.update(csrf_dict)
+        s = requests.Session()
+        if plugin_vars['post-header'] is not None:
             try:
                 if "https" in target:
-                    r = s.post(target, data=post_payload,verify=False)
+                    r = s.post(target, headers=post_header, data=post_payload,verify=False)
                 else:
-                    r = s.post(target, data=post_payload)
+                    r = s.post(target, headers=post_header, data=post_payload)
             except requests.exceptions.ConnectionError:
                 raise ConnectionAbortedError
             except TimeoutError:
                 raise TimeoutError
         else:
             try:
-                s = requests
                 if "https" in target:
                     r = s.post(target, data=post_payload,verify=False)
                 else:
