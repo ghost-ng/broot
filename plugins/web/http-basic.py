@@ -141,9 +141,9 @@ def run(username, password, target, port):
 
         if r.status_code == 200:
             if plugin_vars['check-login']['Value'] not in r.text:
-                print_success("Text response indicates successful login")
+                print_good("Text response indicates successful login")
             else:
-                print_success("Receivd response code 200 but found the 'check-login' value in the response")
+                print_good("Receivd response code 200 but found the 'check-login' value in the response")
             return True
         elif str(50) in str(r.status_code) and verbose is False:
             print_fail("Server Replied with a 500 response code!")
