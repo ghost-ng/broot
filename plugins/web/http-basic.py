@@ -97,7 +97,7 @@ plugin_vars = {
         "Value": None,
         "Type": 'String',
         "Default": None,
-        "Help": "If this value is NOT in the response html text, then the login succeeded",
+        "Help": "If this value is FOUND in the response html text, then the login succeeded",
         "Example": "set check-login password" 
     },
 }
@@ -140,13 +140,22 @@ def run(username, password, target, port):
             r = requests.get(target, auth=requests.auth.HTTPDigestAuth(username, password))
 
         if r.status_code == 200:
-            if plugin_vars['check-login']['Value'] not in r.text:
-                print_good("Text response indicates successful login")
+            if plugin_vars['check-login']['Value'][0] == "!":
+                if plugin_vars['check-login']['Value'] not in r.text:
+                    print_good("Text response indicates successful login")
+                    return True
+                else:
+                    print_good("Received response code 200 but unable to find the 'check-login' value in the response")
+                    return False
             else:
-                print_good("Receivd response code 200 but found the 'check-login' value in the response")
-            return True
+                if plugin_vars['check-login']['Value'] in r.text:
+                    print_good("Text response indicates successful login")
+                    return True
+                else:
+                    print_good("Received response code 200 but found the 'check-login' value in the response")
+                    return False
         elif str(50) in str(r.status_code) and verbose is False:
-            print_fail("Server Replied with a 500 response code!")
+            print_fail("Server Replied with a 50X response code!")
             return False
         
         else:

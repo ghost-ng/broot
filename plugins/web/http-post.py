@@ -298,15 +298,16 @@ def run(username, password, target, port):
             }
     post_header = plugin_vars['request-header']['Value']
     try:
+        s = requests.Session()
         if plugin_vars['csrf-initial-get']['Value'] is True and INITIAL_GET is False:
-                res = s.get(target)
-                system_vars['HTTP-Session'] = res
-                INITIAL_GET = True
+            res = s.get(target)
+            system_vars['HTTP-Session'] = res
+            INITIAL_GET = True
             if plugin_vars['csrf-post-label']['Value'] is not None:
                 csrf_value = get_csrf_token(res.html)
                 csrf_dict = {plugin_vars['csrf-post-label']['Value']:csrf_value}
             post_payload.update(csrf_dict)
-        s = requests.Session()
+        
         if plugin_vars['post-header'] is not None:
             try:
                 if "https" in target:
