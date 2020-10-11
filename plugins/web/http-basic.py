@@ -145,14 +145,14 @@ def run(username, password, target, port):
                     print_good("Text response indicates successful login")
                     return True
                 else:
-                    print_good("Received response code 200 but unable to find the 'check-login' value in the response")
+                    print_good("Received response code 200 but found the 'check-login' value in the response")
                     return False
             else:
                 if plugin_vars['check-login']['Value'] in r.text:
                     print_good("Text response indicates successful login")
                     return True
                 else:
-                    print_good("Received response code 200 but found the 'check-login' value in the response")
+                    print_good("Received response code 200 but did not find the 'check-login' value in the response")
                     return False
         elif str(50) in str(r.status_code) and verbose is False:
             print_fail("Server Replied with a 50X response code!")
