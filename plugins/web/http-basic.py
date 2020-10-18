@@ -134,11 +134,15 @@ def run(username, password, target, port):
     verbose = global_vars['verbose']['Value']
     try:
         if plugin_vars['basic-auth']['Value'] is True:
-            r = requests.get(target, auth=requests.auth.HTTPBasicAuth(username, password))
-
+            if "https" in target:
+                r = requests.get(target, auth=requests.auth.HTTPBasicAuth(username, password),verify=False)
+            else:
+                r = requests.get(target, auth=requests.auth.HTTPBasicAuth(username, password))
         elif plugin_vars['digest-auth']['Value'] is True:
-            r = requests.get(target, auth=requests.auth.HTTPDigestAuth(username, password))
-
+            if "https" in target:
+                r = requests.get(target, auth=requests.auth.HTTPDigestAuth(username, password),verify=True)
+            else:
+                r = requests.get(target, auth=requests.auth.HTTPDigestAuth(username, password))
         if r.status_code == 200:
             if plugin_vars['check-login']['Value'][0] == "!":
                 if plugin_vars['check-login']['Value'] not in r.text:
