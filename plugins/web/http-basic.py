@@ -97,7 +97,7 @@ plugin_vars = {
         "Value": None,
         "Type": 'String',
         "Default": None,
-        "Help": "If this value is FOUND in the response html text, then the login succeeded",
+        "Help": "If this value is FOUND in the response html text, then the login succeeded; use !{string} to indicate NOT FOUND",
         "Example": "set check-login password" 
     },
 }
