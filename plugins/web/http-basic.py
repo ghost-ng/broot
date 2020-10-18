@@ -145,7 +145,7 @@ def run(username, password, target, port):
                 r = requests.get(target, auth=requests.auth.HTTPDigestAuth(username, password))
         if r.status_code == 200:
             if plugin_vars['check-login']['Value'][0] == "!":
-                if plugin_vars['check-login']['Value'] not in r.text:
+                if plugin_vars['check-login']['Value'][1::] not in r.text:
                     print_good("Text response indicates successful login")
                     return True
                 else:
