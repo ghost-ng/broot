@@ -120,6 +120,6 @@ def run(username, password, target, port):
     except Exception as e:
         M.shutdown()
         if verbose:
-            print_info("Error:",e)
+            print_info("Error: {}".format(e))
         if b"Login failed" in e:
             return False
