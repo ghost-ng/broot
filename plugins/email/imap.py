@@ -30,8 +30,7 @@ except ModuleNotFoundError:
 ###########################
 name = ""
 description = '''
-The rdp plugin helps with probing the rdp service to determine valid credentials.\
-This is a simple plugin that comes with the default 'broot' framework.
+The IMAP plugin allows you to test credentials using the python3 imap library
 '''
 author = "midnightseer"
 version = "1.0"
@@ -55,8 +54,6 @@ banner = '''
 Author:  {}
 Version: {}'''.format(art,name,author,version)
 print(banner)
-print_warn("At this time this plugin is unable to determine authentication if the RDP server only uses RDP security")
-sleep(2)
 
 #############################
 #SECTION 3 - PLUGIN COMMANDS
@@ -114,6 +111,8 @@ def run(username, password, target, port):
         print_info("Running IMAP Plugin")
     attempt = "Target:{}:{} Username:{} Password:{}".format(target, port, username, password)
     try:
+        if verbose:
+            print_info(attempt)
         M = imaplib.IMAP4(target)
         M.login("test","rwet")
         M.shutdown()
