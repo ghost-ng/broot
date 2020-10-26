@@ -121,5 +121,15 @@ def run(username, password, target, port):
         M.shutdown()
         if verbose:
             print_info("Error: {}".format(e))
-        if "Login failed" in str(e.decode()):
+        if "Login failed" in str(e):
             return False
+
+
+# try:
+#     M = imaplib.IMAP4("10.10.10.197")
+#     M.login("test","rwet")
+# except Exception as e:
+#     print(e)
+#     print(str(e))
+#     print(type(e))
+
