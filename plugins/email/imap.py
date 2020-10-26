@@ -121,5 +121,5 @@ def run(username, password, target, port):
         M.shutdown()
         if verbose:
             print_info("Error: {}".format(e))
-        if b"Login failed" in e:
+        if "Login failed" in str(e.decode()):
             return False
