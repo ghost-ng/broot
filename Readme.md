@@ -64,4 +64,4 @@ See the [LICENSE.md](LICENSE.md) file for details
 ## Examples
 
 Wordpress BruteForce:
-seq=set password admin<|>set username admin<|>set target https://northnews.us<|>set print-failures True<|>load http-post<|>set password-field-id user_pass<|>set username-field-id user_login<|>set submit-field-id wp-submit<|>set check-login Lost<|>set csrf-initial-get False<|>
+seq=set password admin<|>set username admin<|>set target https://me.me<|>set print-failures True<|>load http-post<|>set password-field-id user_pass<|>set username-field-id user_login<|>set submit-field-id wp-submit<|>set check-login Lost<|>set csrf-initial-get False<|>
